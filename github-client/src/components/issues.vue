@@ -32,7 +32,7 @@
         <v-flex xs12>
           <ul>
             <li v-for="issue in viewer.issues.nodes.slice().reverse()">
-              <router-link :to="{name: 'singleIssue', params: { owner: viewer.login, name: issue.id }}">
+              <router-link :to="{name: 'singleIssue', params: { owner: issue.repository.owner.login, repo: issue.repository.name, number: issue.number }}">
                 <v-card ripple tile append replace style="width: 75vh;">
                   <v-card-title primary-title>
                     <div >
@@ -94,9 +94,23 @@
                           number
                           repository {
                             nameWithOwner
+                            name
+                            owner{
+                              login
+                            }
                           }
                           state
                           title
+                          comments(last:100) {
+                            nodes{
+                              author{
+                                login
+                                avatarUrl
+                              }
+                              body
+                              createdAt
+                            }
+                          }
                         }
                       }
                      }
