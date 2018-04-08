@@ -14,6 +14,7 @@ import singleFile from '@/components/singleFile'
 import visitedRepo from '@/components/visitedRepo'
 import CreateRepo from '@/components/CreateRepo'
 import PullRequest from '@/components/PullRequest'
+import CreateIssue from '@/components/CreateIssue'
 import NotFound from '@/components/NotFound'
 
 Vue.use(Router)
@@ -63,7 +64,7 @@ export default new Router({
       meta: { auth: true }
     },
     {
-      path: '/repos/:owner/:repo/issues/:number',
+      path: '/repo/:owner/:repo/issues/:number',
       name: 'singleIssue',
       component: singleIssue,
       meta: { auth: true }
@@ -102,6 +103,12 @@ export default new Router({
       path: '/repo/:owner/:name/pull/:number',
       name: 'PullRequest',
       component: PullRequest,
+      meta: { auth: true }
+    },
+    {
+      path: '/repo/:owner/:name/issue/new',
+      name: 'CreateIssue',
+      component: CreateIssue,
       meta: { auth: true }
     },
     {
