@@ -1,12 +1,49 @@
 <template>
-    <div>
-      hello
-        <span>hasdfhka {{viewer.gist.name}}</span>
-      <span>{{viewer.gist.createdAt}}</span>
-      <span>{{viewer.gist.description}}</span>
-      <span>{{viewer.gist.stargazers.totalCount}}</span>
-      <span>{{viewer.gist.createdAt}}</span>
-    </div>
+  <div
+    id="e3"
+    style="max-width: 85vh; margin: auto;"
+    class=" lighten-3"
+  >
+
+    <v-container
+      fluid
+      style="min-height: 0; position: relative;"
+      grid-list-lg
+    >
+      <span class="title text-sm-left">{{viewer.gist.name}}</span>
+      <span class="caption text-sm-left">{{viewer.gist.createdAt | moment("from") }}</span>
+      <p class="subheading text-sm-left">{{viewer.gist.description}}</p>
+      <v-layout row wrap>
+        <v-flex xs12>
+          <ul>
+            <li v-for="file in files">
+
+                <v-card ripple tile append replace style="width: 75vh;" class="my-2">
+                  <v-card-title primary-title>
+                    <div >
+                      <p class="headline text-sm-left">{{file.filename}}</p>
+                      <!--<ul class="text-sm-left">-->
+                      <!--<li v-for="lang in repo.languages.nodes">-->
+                      <!--<div class="text-xs-center">-->
+                      <!--<v-chip v-bind:color="lang.color">{{lang.name}}</v-chip>-->
+                      <!--</div>-->
+                      <!--</li>-->
+                      <!--</ul>-->
+                    </div>
+                  </v-card-title>
+                  <v-card-text>
+                    <div>
+                      <p class="body-1 text-sm-left">{{file.content}}</p>
+                    </div>
+                  </v-card-text>
+                </v-card>
+
+            </li>
+          </ul>
+        </v-flex>
+      </v-layout>
+    </v-container>
+  </div>
 
 </template>
 
@@ -19,7 +56,8 @@
       name: 'singleGist',
       gistName: null,
       viewer: null,
-      gist: null
+      gist: null,
+      files: null
     }),
     apollo: {
       viewer: {
@@ -49,8 +87,7 @@
       this.gistName = this.$route.params.name
       this.gist = _self.gh.getGist(this.gistName)
       this.gist.read().then(function (data) {
-        var files = data.data.files
-        console.log(files)
+        _self.files = data.data.files
       })
       console.log('name', this.$route.params.name)
     }

@@ -18,7 +18,6 @@
                   <v-card-title primary-title>
                     <div >
                       <p class="headline text-sm-left">{{gist.name}}</p>
-                      <p class="headline text-sm-left">{{gist.id}}</p>
                       <p class="grey--text text-sm-left">Created {{ gist.createdAt | moment("from") }}</p>
                       <p class="grey--text text-sm-left">Stargazers: {{gist.stargazers.totalCount}}</p>
                       <p class="grey--text text-sm-left">Comments: {{gist.comments.totalCount}}</p>

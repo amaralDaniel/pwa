@@ -59,15 +59,28 @@
     name: 'repos',
     data () {
       return {
-        viewer: []
+        viewer: null
       }
+    },
+    mounted () {
+      var _self = this
+      this.$apollo.queries.viewer.refetch().then(function () {
+        console.log('called a query')
+        _self.$store.dispatch('setViewer', {viewer: _self.viewer})
+        console.log('setted viewer')
+      })
     },
     apollo: {
       viewer: {
-        query: gql`query($number_of_repos:Int!) {
+        query: gql`query getViewer($number_of_repos:Int!) {
                     viewer {
-                      name
-                      login
+                    login
+                    id
+                    avatarUrl
+                    name
+                    email
+                    location
+                    createdAt
                        repositories(last: $number_of_repos) {
                          nodes {
                           name

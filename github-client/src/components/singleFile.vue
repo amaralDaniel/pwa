@@ -9,7 +9,7 @@
   export default {
     data () {
       return {
-        name: 'single-file'
+        name: 'singleFile'
       }
     }
   }
