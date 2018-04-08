@@ -13,6 +13,7 @@
                         <v-card ripple tile append replace class="my-2">
                           <v-card-title primary-title>
                             <div >
+                              {{repo.viewerPermission}}
                               <p class="headline text-sm-left">{{repo.full_name}}</p>
                               <p class="body-2 grey--text text-sm-left">Created <span class="body-1">{{ repo.created_at | moment("from") }}</span></p>
                               <p class="body-2 grey--text text-sm-left">Forks: <span class="body-1">{{repo.forks_count}}</span></p>
@@ -32,10 +33,11 @@
                           </v-card-actions>
                         </v-card>
                       </router-link>
-                      <router-link v-else-if="repo.viewerPermission === 'ADMINå'" :to="{name: 'knownRepo', params: { owner: repo.owner.login, name: repo.name }}">
+                      <router-link v-else-if="repo.viewerPermission === 'ADMIN'" :to="{name: 'knownRepo', params: { owner: repo.owner.login, name: repo.name }}">
                         <v-card ripple tile append replace class="my-2">
                           <v-card-title primary-title>
                             <div >
+                              {{repo.viewerPermission}}
                               <p class="headline text-sm-left">{{repo.full_name}}</p>
                               <p class="body-2 grey--text text-sm-left">Created <span class="body-1">{{ repo.created_at | moment("from") }}</span></p>
                               <p class="body-2 grey--text text-sm-left">Forks: <span class="body-1">{{repo.forks_count}}</span></p>
@@ -59,6 +61,7 @@
                         <v-card ripple tile append replace class="my-2">
                           <v-card-title primary-title>
                             <div >
+                              {{repo.viewerPermission}}
                               <p class="headline text-sm-left">{{repo.full_name}}</p>
                               <p class="body-2 grey--text text-sm-left">Created <span class="body-1">{{ repo.created_at | moment("from") }}</span></p>
                               <p class="body-2 grey--text text-sm-left">Forks: <span class="body-1">{{repo.forks_count}}</span></p>
