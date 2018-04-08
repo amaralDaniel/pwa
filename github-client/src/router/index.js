@@ -63,7 +63,7 @@ export default new Router({
       meta: { auth: true }
     },
     {
-      path: '/issue/:id',
+      path: '/repos/:owner/:repo/issues/:number',
       name: 'singleIssue',
       component: singleIssue,
       meta: { auth: true }
@@ -87,7 +87,7 @@ export default new Router({
       meta: { auth: true }
     },
     {
-      path: '/repo/:owner/:name',
+      path: '/vrepo/:owner/:name',
       name: 'visitedRepo',
       component: visitedRepo,
       meta: { auth: true }
