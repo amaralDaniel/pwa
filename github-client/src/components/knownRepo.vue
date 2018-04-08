@@ -43,7 +43,6 @@
       >
         <v-card flat>
           <v-card-text>
-            <h2>{{ item }}</h2>
             <v-layout justify-start>
               <div v-if="item === 'Readme'">
                 <vue-markdown v-bind:source="readme"></vue-markdown>
@@ -81,22 +80,39 @@
                 </ul>
               </div>
               <div v-if="item === 'Issues'">
-                <ul >
-                  <li v-for="issue in repository.issues.nodes">
-                    <v-layout row>
-                      <v-layout align-center class="mb-2" column>
-                        <router-link :to="{name: 'User', params: {login: issue.author.login}}">
-                          <v-avatar>
-                            <img :src="issue.author.avatarUrl" alt="John">
-                          </v-avatar>
-                          <v-spacer></v-spacer>
-                          <span class="body-2">{{issue.author.login}}</span>
-                        </router-link>
-                      </v-layout>
-                      <div>{{issue.title}}</div>
-                    </v-layout>
-                  </li>
-                </ul>
+                <v-flex row>
+                  <router-link :to="{name: 'CreateIssue'}">
+                    <v-btn
+                      color="pink"
+                      small
+                      absolute
+                      top
+                      right
+                      class="mt-5 mr-2"
+                    >
+                      Create Issue
+                    </v-btn>
+                  </router-link>
+                  <ul >
+                    <li v-for="issue in repository.issues.nodes">
+                      <router-link :to="{name: 'singleIssue', params: { owner: issue.author.login, repo: repositoryName, number: issue.number }}">
+                        <v-card>
+                          <v-layout row text-md-left>
+                            <v-layout class="mb-2" column>
+                              <router-link :to="{name: 'User', params: {login: issue.author.login}}">
+                                <v-avatar>
+                                  <img :src="issue.author.avatarUrl" alt="John">
+                                </v-avatar>
+                                <span class="body-2">{{issue.author.login}}</span>
+                              </router-link>
+                            </v-layout>
+                            <div>{{issue.title}}</div>
+                          </v-layout>
+                        </v-card>
+                      </router-link>
+                    </li>
+                  </ul>
+                </v-flex>
               </div>
               <div v-if="item === 'Contributors'">
                 <ul >
