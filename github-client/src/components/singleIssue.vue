@@ -84,11 +84,19 @@
     },
     mounted () {
       var _self = this
-      axios.get('https://api.github.com/repos/' + this.owner + '/' + this.repo + '/issues/' + this.number).then(function (response) {
+      axios.get('https://api.github.com/repos/' + this.owner + '/' + this.repo + '/issues/' + this.number, null, {
+        headers: {
+          'Authorization': 'token ' + _self.$store.getters.getToken
+        }
+      }).then(function (response) {
         console.log(response.data)
         _self.issue = response.data
       })
-      axios.get('https://api.github.com/repos/' + this.owner + '/' + this.repo + '/issues/' + this.number + '/comments').then(function (response) {
+      axios.get('https://api.github.com/repos/' + this.owner + '/' + this.repo + '/issues/' + this.number + '/comments', null, {
+        headers: {
+          'Authorization': 'token ' + _self.$store.getters.getToken
+        }
+      }).then(function (response) {
         _self.comments = response.data
       })
     },
