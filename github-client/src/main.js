@@ -14,6 +14,7 @@ import { InMemoryCache } from 'apollo-cache-inmemory'
 import { setContext } from 'apollo-link-context'
 import VueApollo from 'vue-apollo'
 import colors from 'vuetify/es5/util/colors'
+import axios from 'axios'
 
 Vue.config.productionTip = false
 Vue.use(Vuetify, {
@@ -57,6 +58,14 @@ const apolloProvider = new VueApollo({
 })
 
 Vue.prototype.gh = new GitHub({ token: store.getters.getToken })
+
+Vue.prototype.axiosInstance = axios.create({
+  baseURL: 'https://api.github.com',
+  timeout: 1000,
+  headers: {
+    'Authorization': 'token ' + store.getters.getToken
+  }
+})
 
 new Vue({ // eslint-disable-line no-new
   el: '#app',
