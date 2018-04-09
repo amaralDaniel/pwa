@@ -107,13 +107,13 @@ export default new Router({
       meta: { auth: true }
     },
     {
-      path: '/repo/:owner/:name/issue/new',
+      path: '/repo/:owner/:name/create/issue',
       name: 'CreateIssue',
       component: CreateIssue,
       meta: { auth: true }
     },
     {
-      path: '/repo/:owner/:name/pull/new',
+      path: '/repo/:owner/:name/create/pull',
       name: 'CreatePullRequest',
       component: CreatePullRequest,
       meta: { auth: true }
