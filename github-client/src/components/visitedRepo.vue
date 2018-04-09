@@ -35,13 +35,13 @@
         {{ item }}
       </v-tab>
     </v-tabs>
-    <v-tabs-items v-model="currentItem">
+    <v-tabs-items v-model="currentItem" class="py-5">
       <v-tab-item
         v-for="item in items"
         :key="item"
         :id="item"
       >
-        <v-card flat>
+        <v-card flat class="card-item">
           <v-card-text>
             <h2>{{ item }}</h2>
             <v-layout justify-start>
@@ -81,6 +81,18 @@
                 <!--</ul>-->
               <!--</div>-->
               <div v-if="item === 'Issues'">
+                <router-link :to="{name: 'CreateIssue'}">
+                  <v-btn
+                    color="pink"
+                    small
+                    absolute
+                    top
+                    right
+                    class="mt-5 mr-2"
+                  >
+                    Create Issue
+                  </v-btn>
+                </router-link>
                 <ul >
                   <li v-for="issue in repository.issues.nodes">
                     <v-layout row>
@@ -99,6 +111,18 @@
                 </ul>
               </div>
               <div v-if="item === 'Pull requests'">
+                <router-link :to="{name: 'CreatePullRequest'}">
+                  <v-btn
+                    color="pink"
+                    small
+                    absolute
+                    top
+                    right
+                    class="mt-5 mr-2"
+                  >
+                    Create Pull Request
+                  </v-btn>
+                </router-link>
                 <ul >
                   <li v-for="pr in repository.pullRequests.nodes">
                     <v-layout row>
@@ -388,4 +412,7 @@
       margin-right: 1vw
       font-size: 2em
       color: green
+
+  .card-item
+    min-height: 15vh
 </style>

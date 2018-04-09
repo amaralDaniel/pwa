@@ -41,7 +41,7 @@
         :key="item"
         :id="item"
       >
-        <v-card flat>
+        <v-card flat class="card-item">
           <v-card-text>
             <v-layout justify-start>
               <div v-if="item === 'Readme'">
@@ -131,6 +131,18 @@
                 </ul>
               </div>
               <div v-if="item === 'Pull requests'">
+                <router-link :to="{name: 'CreatePullRequest'}">
+                  <v-btn
+                    color="pink"
+                    small
+                    absolute
+                    top
+                    right
+                    class="mt-5 mr-2"
+                  >
+                    Create Pull Request
+                  </v-btn>
+                </router-link>
                 <ul >
                   <li v-for="pr in repository.pullRequests.nodes">
                     <v-layout row>
@@ -419,4 +431,7 @@
     margin-right: 1vw
     font-size: 2em
     color: green
+
+  .card-item
+    min-height: 15vh
 </style>
