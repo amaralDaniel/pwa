@@ -121,13 +121,21 @@
       },
       pushNewPR: function () {
         var _self = this
+        console.log(_self.title)
+        console.log(_self.comment)
+        console.log(_self.selectedHead.text)
+        console.log(_self.selectedBase.text)
+        console.log(_self.maintainerCanModifyCheckbox)
         _self.axiosInstance.post('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/pulls', {
-          data: {
-            title: _self.title,
-            body: _self.comment,
-            head: _self.selectedHead,
-            base: _self.selectedBase,
-            maintainer_can_modify: _self.maintainerCanModifyCheckbox
+          title: _self.title,
+          body: _self.comment,
+          head: _self.selectedHead.text,
+          base: _self.selectedBase.text,
+          maintainer_can_modify: _self.maintainerCanModifyCheckbox
+        }).then(function (response) {
+          if (response.status === 201) {
+            console.log(response.data)
+            _self.$router.push('/repo/' + _self.repositoryOwner + '/' + _self.repositoryName + '/pull/' + response.data.number)
           }
         })
       }
