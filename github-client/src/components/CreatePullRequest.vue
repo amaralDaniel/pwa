@@ -135,7 +135,7 @@
         }).then(function (response) {
           if (response.status === 201) {
             console.log(response.data)
-            _self.$router.push('/repo/' + _self.owner + '/' + _self.repo + '/pull/' + response.data.number)
+            _self.$router.push('/repo/' + _self.repositoryOwner + '/' + _self.repositoryName + '/pull/' + response.data.number)
           }
         })
       }
