@@ -227,7 +227,6 @@
 
 <script>
   import gql from 'graphql-tag'
-  import axios from 'axios'
 
   export default {
     name: 'user',
@@ -333,22 +332,12 @@
         var _self = this
         console.log('TOKEN', _self.$store.getters.getToken)
         if (!_self.following) {
-          axios.put('https://api.github.com/user/following/' + _self.user.login, null, {
-            headers: {
-              'Authorization': 'token ' + _self.$store.getters.getToken
-            }
-          }
-          ).then(function (data) {
+          _self.axiosInstance.put('/user/following/' + _self.user.login).then(function (data) {
             console.log('start following')
             _self.following = true
           })
         } else {
-          axios.delete('https://api.github.com/user/following/' + _self.user.login, null, {
-            headers: {
-              'Authorization': 'token ' + _self.$store.getters.getToken
-            }
-          }
-          ).then(function (data) {
+          _self.axiosInstance.delete('/user/following/' + _self.user.login).then(function (data) {
             console.log('stop following')
             _self.following = false
           })

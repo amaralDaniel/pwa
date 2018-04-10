@@ -36,7 +36,7 @@
         @click="pushNewIssue"
         :disabled="!valid"
       >
-        Submit new isue
+        Create New Issue
       </v-btn>
       <v-btn @click="clear">clear</v-btn>
     </v-form>
@@ -44,7 +44,6 @@
 </template>
 
 <script>
-  import axios from 'axios'
   export default {
     name: 'CreateIssue',
     data () {
@@ -76,13 +75,9 @@
         if (this.$refs.form.validate()) {
           // Native form submission is not yet supported
           var _self = this
-          axios.post('https://api.github.com/repos/' + _self.owner + '/' + _self.repo + '/issues', {
+          _self.axiosInstance.post('/repos/' + _self.owner + '/' + _self.repo + '/issues', {
             title: _self.title,
             body: _self.comment
-          }, {
-            headers: {
-              'Authorization': 'token ' + _self.$store.getters.getToken
-            }
           }).then(function (response) {
             _self.$router.push('/repo/' + _self.owner + '/' + _self.repo + '/issues/' + response.data.number)
           })
