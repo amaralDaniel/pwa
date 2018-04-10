@@ -160,7 +160,6 @@
   // import store from '../store'
   import VueMarkdown from 'vue-markdown'
   import gql from 'graphql-tag'
-  // import axios from 'axios'
 
   export default {
     name: 'visitedRepo',
@@ -283,12 +282,6 @@
           _self.commits.push(each)
         })
       })
-      // axios.get('http://api.github.com/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/contributors?anon=1').then(function (result) {
-      //   console.log(result.data)
-      //   result.data.forEach(function (each) {
-      //     _self.contributors.push(each)
-      //   })
-      // })
     },
     methods: {
       starLogic: function (event) {

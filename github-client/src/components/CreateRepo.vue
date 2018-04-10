@@ -87,7 +87,7 @@
           @click="submit"
           :disabled="!valid"
         >
-          submit
+          Create New Repository
         </v-btn>
         <v-btn @click="clear">clear</v-btn>
       </v-form>
@@ -96,7 +96,6 @@
 </template>
 
 <script>
-  import axios from 'axios'
   export default {
     name: 'CreateRepo',
     data () {
@@ -128,13 +127,13 @@
     },
     mounted () {
       var _self = this
-      axios.get('http://api.github.com/licenses').then(function (data) {
+      _self.axiosInstance.get('/licenses').then(function (data) {
         var items = data.data
         items.forEach(function (item) {
           _self.licenseItems.push(item)
         })
       })
-      axios.get('http://api.github.com/gitignore/templates').then(function (data) {
+      _self.axiosInstance.get('/gitignore/templates').then(function (data) {
         var items = data.data
         items.forEach(function (item) {
           _self.gitignoreItems.push(item)
