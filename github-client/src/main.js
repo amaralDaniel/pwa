@@ -15,6 +15,7 @@ import { setContext } from 'apollo-link-context'
 import VueApollo from 'vue-apollo'
 import colors from 'vuetify/es5/util/colors'
 import axios from 'axios'
+import VueHighlightJS from 'vue-highlightjs'
 
 Vue.config.productionTip = false
 Vue.use(Vuetify, {
@@ -66,6 +67,8 @@ Vue.prototype.axiosInstance = axios.create({
     'Authorization': 'token ' + store.getters.getToken
   }
 })
+
+Vue.use(VueHighlightJS)
 
 new Vue({ // eslint-disable-line no-new
   el: '#app',
