@@ -48,7 +48,7 @@ const getters = {
   getAuthState: state => { return state.authenticated },
   getToken: state => { return state.token },
   getActiveNav: state => { return state.activeNav },
-  getViewer: state => { return state.getViewer }
+  getViewer: state => { return state.viewer }
 }
 
 export default new Vuex.Store({
