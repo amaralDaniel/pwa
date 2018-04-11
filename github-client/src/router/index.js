@@ -16,6 +16,7 @@ import CreateRepo from '@/components/CreateRepo'
 import PullRequest from '@/components/PullRequest'
 import CreateIssue from '@/components/CreateIssue'
 import CreatePullRequest from '@/components/CreatePullRequest'
+import File from '@/components/File'
 import NotFound from '@/components/NotFound'
 
 Vue.use(Router)
@@ -116,6 +117,12 @@ export default new Router({
       path: '/repo/:owner/:name/create/pull',
       name: 'CreatePullRequest',
       component: CreatePullRequest,
+      meta: { auth: true }
+    },
+    {
+      path: '/repos/:owner/:repo/contents/:path',
+      name: 'File',
+      component: File,
       meta: { auth: true }
     },
     {
