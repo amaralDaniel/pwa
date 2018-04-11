@@ -11,33 +11,24 @@
       grid-list-lg
     >
       <span class="title text-sm-left">{{viewer.gist.name}}</span>
-      <span class="caption text-sm-left">{{viewer.gist.createdAt | moment("from") }}</span>
+      <p class="caption text-sm-left">{{viewer.gist.createdAt | moment("from") }}</p>
       <p class="subheading text-sm-left">{{viewer.gist.description}}</p>
       <v-layout row wrap>
         <v-flex xs12>
           <ul>
             <li v-for="file in files">
-
-                <v-card ripple tile append replace style="width: 75vh;" class="my-2">
-                  <v-card-title primary-title>
-                    <div >
-                      <p class="headline text-sm-left">{{file.filename}}</p>
-                      <!--<ul class="text-sm-left">-->
-                      <!--<li v-for="lang in repo.languages.nodes">-->
-                      <!--<div class="text-xs-center">-->
-                      <!--<v-chip v-bind:color="lang.color">{{lang.name}}</v-chip>-->
-                      <!--</div>-->
-                      <!--</li>-->
-                      <!--</ul>-->
-                    </div>
-                  </v-card-title>
-                  <v-card-text>
-                    <div>
-                      <p class="body-1 text-sm-left">{{file.content}}</p>
-                    </div>
-                  </v-card-text>
-                </v-card>
-
+              <v-card ripple tile append replace style="width: 75vh;" class="my-2">
+                <v-card-title primary-title>
+                  <div >
+                    <p class="headline text-sm-left">{{file.filename}}</p>
+                  </div>
+                </v-card-title>
+                <v-card-text>
+                  <div>
+                    <p class="body-1 text-sm-left">{{file.content}}</p>
+                  </div>
+                </v-card-text>
+              </v-card>
             </li>
           </ul>
         </v-flex>
