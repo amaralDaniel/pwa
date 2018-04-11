@@ -2,7 +2,6 @@
   <v-container grid-list-md class="mt-5" >
     <v-layout row wrap>
       <v-avatar
-        :tile="tile"
         :size="150"
         class="grey lighten-4 "
       >
@@ -234,7 +233,8 @@
       return {
         user: null,
         gh: null,
-        following: null
+        following: null,
+        viewer: this.$store.getters.getViewer
       }
     },
     apollo: {
@@ -326,6 +326,8 @@
       }
     },
     mounted () {
+      var _self = this
+      console.log(_self.viewer.viewer.login)
     },
     methods: {
       followLogic: function () {
@@ -338,7 +340,6 @@
           })
         } else {
           _self.axiosInstance.delete('/user/following/' + _self.user.login).then(function (data) {
-            console.log('stop following')
             _self.following = false
           })
         }
@@ -347,11 +348,14 @@
     computed: {
       isFollowing: function () {
         var _self = this
-        if (_self.user) {
-          console.log('FOLLOWING ' + _self.user.viewerIsFollowing)
-          if (_self.user.viewerIsFollowing) {
+        _self.axiosInstance.get('/users/' + _self.viewer.viewer.login + '/following/' + _self.user.login).then(function (response) {
+          if (response.status === 204) {
             _self.following = true
+          } else {
+            _self.following = false
           }
+        })
+        if (_self.user) {
           if (_self.following) return true
           else return false
         }
@@ -361,4 +365,6 @@
 </script>
 
 <style lang="sass" scoped>
+  .following-btn
+    outline: #0d47a1
 </style>
