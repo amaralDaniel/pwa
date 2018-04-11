@@ -82,12 +82,7 @@
 </template>
 
 <script>
-  import axios from 'axios'
-
   export default {
-    $_veeValidate: {
-      validator: 'new'
-    },
     name: 'CreatePullRequest',
     data () {
       return {
@@ -107,7 +102,7 @@
     },
     mounted () {
       var _self = this
-      axios.get('http://api.github.com/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/branches').then(function (result) {
+      _self.axiosInstance.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/branches').then(function (result) {
         console.log(result.data)
         result.data.forEach(function (each) {
           console.log(each.name)
@@ -138,14 +133,6 @@
             _self.$router.push('/repo/' + _self.repositoryOwner + '/' + _self.repositoryName + '/pull/' + response.data.number)
           }
         })
-      }
-    },
-    computed: {
-      selectErrors () {
-        const errors = []
-        if (!this.$v.select.$dirty) return errors
-        !this.$v.select.required && errors.push('Item is required')
-        return errors
       }
     }
   }
