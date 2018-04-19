@@ -284,7 +284,7 @@
           }
         })
       })
-      _self.axiosInstance.get('/issues', {
+      _self.axiosInstance.get('/user/issues', {
         params: {
           filter: 'assigned',
           state: 'all'
@@ -305,7 +305,7 @@
           state: 'all'
         }
       }).then(function (response) {
-        // console.log(response.data)
+        console.log(response.data)
         response.data.forEach(function (each) {
           if (each.state === 'closed') {
             _self.mentionedClosed.push(each)
