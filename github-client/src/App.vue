@@ -48,10 +48,10 @@
         <v-btn v-if="$store.getters.getAuthState" v-on:click="logout" color="secondary" class="white--text">Logout</v-btn>
       </div>
     </v-navigation-drawer>
-    <v-toolbar dark color="primary" extended>
+    <v-toolbar dark color="primary" extended >
       <v-toolbar-side-icon @click.native.stop="drawer = !drawer" dark>
       </v-toolbar-side-icon>
-      <router-link :to="{name: 'CreateRepo'}">
+      <router-link :to="{name: 'CreateRepo'}" v-if="$store.getters.getAuthState">
         <v-btn
           color="pink"
           small
@@ -66,22 +66,24 @@
       </router-link>
       <v-toolbar-title class="white--text title-gh">GitHub Client</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-select
-        :items="searchableItems"
-        v-model="selectedSearch"
-        label="Select"
-        single-line
-        color="secondary"
-      ></v-select>
-      <v-text-field v-model="searchInput" color="secondary"></v-text-field>
-      <router-link :to="{name: 'Search', params: {filter: selectedSearch.text, input: searchInput}}">
-        <v-btn icon>
-          <v-icon>search</v-icon>
-        </v-btn>
-      </router-link>
-      <v-btn icon>
-        <v-icon>more_vert</v-icon>
-      </v-btn>
+      <v-container v-if="$store.getters.getAuthState" class="search-container">
+        <v-layout row>
+            <v-select
+              :items="searchableItems"
+              v-model="selectedSearch"
+              label="Select"
+              single-line
+              color="secondary"
+              class="pt-1"
+            ></v-select>
+          <v-text-field class="pt-1 px-2" v-model="searchInput" color="secondary"></v-text-field>
+          <router-link :to="{name: 'Search', params: {filter: selectedSearch.text, input: searchInput}}">
+            <v-btn icon>
+              <v-icon>search</v-icon>
+            </v-btn>
+          </router-link>
+        </v-layout>
+      </v-container>
     </v-toolbar>
     <main>
       <transition>
@@ -160,53 +162,48 @@
   }
 </script>
 
-<style>
-  body {
-    margin: 0;
-  }
+<style lang="sass">
+  body
+    margin: 0
 
-  #app {
-    font-family: 'Avenir', Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    color: #2c3e50;
-    margin: 0;
-  }
+  #app
+    font-family: 'Avenir', Helvetica, Arial, sans-serif
+    -webkit-font-smoothing: antialiased
+    -moz-osx-font-smoothing: grayscale
+    color: #2c3e50
+    margin: 0
 
-  main {
-    text-align: center;
-  }
+  main
+    text-align: center
 
-  header {
-    margin: 0;
-    height: 56px;
-    padding: 0 16px 0 24px;
-    background-color: #8AEA92;
-    color: #2c3e50;
-  }
+  header
+    margin: 0
+    height: 56px
+    padding: 0 16px 0 24px
+    background-color: #8AEA92
+    color: #2c3e50
 
-  header span {
-    display: block;
-    position: relative;
-    font-size: 20px;
-    line-height: 1;
-    letter-spacing: .02em;
-    font-weight: 400;
-    box-sizing: border-box;
-    padding-top: 16px;
-  }
+  header span
+    display: block
+    position: relative
+    font-size: 20px
+    line-height: 1
+    letter-spacing: .02em
+    font-weight: 400
+    box-sizing: border-box
+    padding-top: 16px
 
-  ul {
-    list-style-type: none;
-  }
+  ul
+    list-style-type: none
 
-  a {
-    color: inherit;
-    text-decoration: none;
-  }
+  a
+    color: inherit
+    text-decoration: none
 
-  .title-gh {
-    font-weight: 700;
-  }
+  .title-gh
+    font-weight: 700
+
+  .search-container
+    max-width: 50vw
 
 </style>
