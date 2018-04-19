@@ -32,7 +32,7 @@
                 </v-avatar>
                 <span class="subheading">{{comment.author.login}}</span>
               </router-link>
-              <span color="success" class="subheading owner-tag" > is {{comment.authorAssociation}}</span><span> and commented {{comment.createdAt | moment("from")}}</span>
+              is <span color="success" class="subheading owner-tag" > {{comment.authorAssociation}}</span><span> and commented {{comment.createdAt | moment("from")}}</span>
               <v-card-title primary-title>
                 <div >
                   <p class="headline text-sm-left">{{comment.body}}</p>
@@ -114,8 +114,8 @@
         query: gql`query getpr($repo_owner: String!, $repo_name: String!, $number: Int!, $n: Int!) {
                     repository(owner: $repo_owner, name: $repo_name){
                       pullRequest(number: $number) {
-                      id
                       title
+                      id
                       body
                       closed
                       closedAt
@@ -210,7 +210,7 @@
     methods: {
       pushComment: function () {
         var _self = this
-        console.log('id is ' + _self.viewer.id)
+        console.log('id is ' + _self.viewer.viewer.id)
         _self.$apollo.mutate({
           mutation: gql`mutation pushComment($body: String!, $clientId: String!, $subId: ID!) {
                         addComment(input:{body: $body, clientMutationId: $clientId, subjectId: $subId }) {
@@ -222,8 +222,12 @@
                       }`,
           variables: {
             body: _self.comment.body,
-            clientId: _self.viewer.id,
+            clientId: _self.viewer.viewer.id,
             subId: _self.repository.pullRequest.id
+          }
+        }).then(function (response) {
+          if (response.status === 200) {
+            this.$apollo.queries.repository.refetch()
           }
         })
       }
