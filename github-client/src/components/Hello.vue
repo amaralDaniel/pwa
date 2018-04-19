@@ -1,7 +1,16 @@
 <template>
-  <div class="hello" id="div-not-authenticated">
-      you're not authenticated, please authenticate below
-  </div>
+  <v-jumbotron color="grey lighten-2">
+    <v-container fill-height>
+      <v-layout align-center>
+        <v-flex>
+          <h3 class="display-3">Welcome to the GitHub Client</h3>
+          <span class="subheading">This GitHub client is a Progressive Web App.</span>
+          <v-divider class="my-3"></v-divider>
+          <div class="title mb-3" id="div-not-authenticated"></div>
+        </v-flex>
+      </v-layout>
+    </v-container>
+  </v-jumbotron>
 </template>
 
 <script>
@@ -112,7 +121,7 @@
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style>
+<style scoped>
   h1, h2 {
     font-weight: normal;
   }
@@ -127,7 +136,6 @@
     margin: 0 10px;
   }
 
-  a {
-    color: #35495E;
-  }
+
+
 </style>
