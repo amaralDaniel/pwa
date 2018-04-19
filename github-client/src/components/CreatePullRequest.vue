@@ -89,7 +89,7 @@
         valid: true,
         branches: [],
         repositoryOwner: this.$route.params.owner,
-        repositoryName: this.$route.params.name,
+        repositoryName: this.$route.params.repo,
         title: '',
         titleRules: [
           v => !!v || 'Title is required'

@@ -20,6 +20,7 @@
                     <div >
                       <p class="headline text-sm-left">{{repo.name}}</p>
                       <p class="body-2 grey--text text-sm-left">Created <span class="body-1">{{ repo.createdAt | moment("from") }}</span></p>
+                      <p class="body-2 grey--text text-sm-left">Last updated <span class="body-1">{{ repo.updatedAt | moment("from") }}</span></p>
                       <p class="body-2 grey--text text-sm-left">Forks: <span class="body-1">{{repo.forks.totalCount}}</span></p>
                       <p class="body-2 grey--text text-sm-left">Disk Usage: <span class="body-1">{{repo.diskUsage}}</span></p>
                       <!--<ul class="text-sm-left">-->
@@ -92,7 +93,8 @@
                           stargazers {
                             totalCount
                           },
-                          createdAt,
+                          createdAt
+                          updatedAt
                           forks {
                             totalCount
                           },
@@ -155,4 +157,6 @@
 
 <style lang="sass" scoped>
 
+  router-link
+    text-decoration: none !important
 </style>
