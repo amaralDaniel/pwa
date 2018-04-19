@@ -1,14 +1,18 @@
 <template>
     <v-container class="text-sm-left">
-      <span class="display-1">{{file.name}}</span>
+      <span class="display-1">{{file.name}}</span> <span></span>
       <pre v-highlightjs="content"><code class="python"></code></pre>
     </v-container>
 
 </template>
 
 <script>
+  import code from 'vue-highlightjs'
   export default {
     name: 'File',
+    components: {
+      code
+    },
     data () {
       return {
         path: this.$route.params.path,
