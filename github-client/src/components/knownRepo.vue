@@ -18,6 +18,9 @@
           <i class="fas fa-code-branch"></i>
         </button>
         <span>{{repository.forkCount}}</span>
+        <button class="icon" v-on:click="goToMakeCommit">
+          <i class="fas fa-upload"></i>
+        </button>
       </v-layout>
     </v-card>
     <v-tabs
@@ -43,24 +46,18 @@
       >
         <v-card flat class="card-item">
           <v-card-text>
-            <v-layout justify-start>
+            <v-layout text-sm-left>
               <div v-if="item === 'Readme'">
-                <vue-markdown v-bind:source="readme"></vue-markdown>
+                <vue-markdown v-bind:source="readme" ></vue-markdown>
               </div>
               <div v-if="item === 'Files'">
-                <ul>
-                  <li v-for="file in contents">
-                    <v-icon v-if="file.type=='file'">insert_drive_file</v-icon>
-                    <v-icon v-if="file.type=='dir'">folder</v-icon>
-                    {{file.name}}
-                    <!--<p><span v-html="file.content"></span></p>-->
-                  </li>
-                </ul>
+                <TreeView></TreeView>
               </div>
               <div v-if="item === 'Commits'">
                 <ul>
                   <li v-for="commit in commits">
-                    {{commit.commit.message}}
+                    <router-link :to="{name: 'Commit', params: {owner: repositoryOwner, repo: repositoryName, sha: commit.sha}}">{{commit.commit.message}}</router-link>
+
                   </li>
                 </ul>
               </div>
@@ -181,18 +178,19 @@
   import Vue from 'vue'
   import VueMarkdown from 'vue-markdown'
   import gql from 'graphql-tag'
+  import TreeView from '@/components/TreeView'
   Vue.use(require('vue-moment'))
 
   export default {
     name: 'singleRepo',
     components: {
-      VueMarkdown
+      VueMarkdown,
+      TreeView
     },
     data () {
       return {
         repositoryOwner: this.$route.params.owner,
         repositoryName: this.$route.params.name,
-        contents: [],
         contributors: [],
         currentItem: 'Readme',
         items: [
@@ -287,24 +285,7 @@
       var user = _self.gh.getUser()
       console.log(user)
       _self.repo = _self.gh.getRepo(this.repositoryOwner, this.repositoryName)
-      _self.repo.getContents().then(function (result) {
-        // console.log(result.data)
-        result.data.forEach(function (each) {
-          if (each.type === 'file') {
-            _self.repo.getBlob(each.sha).then(function (inside) {
-              // console.log(inside.data)
-              each['content'] = inside.data
-              _self.contents.push(each)
-              if (each.name === 'README.md') {
-                _self.readme = inside.data
-              }
-            })
-          } else {
-            _self.contents.push(each)
-          }
-        })
-      })
-      _self.repo.listCommits().then(function (result) {
+      _self.axiosInstance.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/commits').then(function (result) {
         // console.log(result.data)
         result.data.forEach(function (each) {
           _self.commits.push(each)
@@ -315,6 +296,11 @@
         result.data.forEach(function (each) {
           _self.contributors.push(each)
         })
+      })
+      _self.axiosInstance.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/readme').then(function (response) {
+        _self.readme = _self.content = decodeURIComponent(atob(response.data.content).split('').map(function (c) {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+        }).join(''))
       })
     },
     methods: {
@@ -385,6 +371,15 @@
           _self.watched = false
           console.log(_self.watched)
         }
+      },
+      goToMakeCommit: function () {
+        this.$router.push({
+          name: 'CreateCommit',
+          params: {
+            owner: this.repositoryOwner,
+            repo: this.repositoryName
+          }
+        })
       }
     },
     computed: {

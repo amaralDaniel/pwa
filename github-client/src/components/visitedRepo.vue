@@ -49,14 +49,7 @@
                 <vue-markdown v-bind:source="readme"></vue-markdown>
               </div>
               <div v-if="item === 'Files'">
-                <ul>
-                  <li v-for="file in contents">
-                    <v-icon v-if="file.type=='file'">insert_drive_file</v-icon>
-                    <v-icon v-if="file.type=='dir'">folder</v-icon>
-                    {{file.name}}
-                    <!--<p><span v-html="file.content"></span></p>-->
-                  </li>
-                </ul>
+                <TreeView></TreeView>
               </div>
               <div v-if="item === 'Commits'">
                 <ul>
@@ -160,11 +153,13 @@
   // import store from '../store'
   import VueMarkdown from 'vue-markdown'
   import gql from 'graphql-tag'
+  import TreeView from '@/components/TreeView'
 
   export default {
     name: 'visitedRepo',
     components: {
-      VueMarkdown
+      VueMarkdown,
+      TreeView
     },
     data () {
       return {
@@ -259,23 +254,6 @@
       var user = _self.gh.getUser()
       console.log(user)
       _self.repo = _self.gh.getRepo(this.repositoryOwner, this.repositoryName)
-      _self.repo.getContents().then(function (result) {
-        // console.log(result.data)
-        result.data.forEach(function (each) {
-          if (each.type === 'file') {
-            _self.repo.getBlob(each.sha).then(function (inside) {
-              // console.log(inside.data)
-              each['content'] = inside.data
-              _self.contents.push(each)
-              if (each.name === 'README.md') {
-                _self.readme = inside.data
-              }
-            })
-          } else {
-            _self.contents.push(each)
-          }
-        })
-      })
       _self.repo.listCommits().then(function (result) {
         // console.log(result.data)
         result.data.forEach(function (each) {
