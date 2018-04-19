@@ -48,6 +48,9 @@
           <v-card-text>
             <v-layout text-sm-left>
               <div v-if="item === 'Readme'">
+                <div v-if="readme === ''">
+                  <span class="body-2 grey--text">Nothing to show here</span>
+                </div>
                 <vue-markdown v-bind:source="readme" ></vue-markdown>
               </div>
               <div v-if="item === 'Files'">
@@ -56,8 +59,7 @@
               <div v-if="item === 'Commits'">
                 <ul>
                   <li v-for="commit in commits">
-                    <router-link :to="{name: 'Commit', params: {owner: repositoryOwner, repo: repositoryName, sha: commit.sha}}">{{commit.commit.message}}</router-link>
-
+                    <router-link :to="{name: 'Commit', params: {owner: repositoryOwner, repo: repositoryName, sha: commit.sha}}" class="body-2">{{commit.commit.message}}</router-link>
                   </li>
                 </ul>
               </div>
@@ -291,9 +293,9 @@
           _self.commits.push(each)
         })
       })
-      _self.repo.getContributors().then(function (result) {
+      _self.axiosInstance.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/contributors').then(function (response) {
         // console.log(result.data)
-        result.data.forEach(function (each) {
+        response.data.forEach(function (each) {
           _self.contributors.push(each)
         })
       })
@@ -415,6 +417,8 @@
 </script>
 
 <style lang="sass" scoped>
+  @import '../styles/variables.scss'
+
   .icon
     margin: 1vh 1vw 1vh
     font-size: 2em
@@ -429,4 +433,8 @@
 
   .card-item
     min-height: 15vh
+
+  li a
+    text-decoration: none !important
+    color: $secondary
 </style>

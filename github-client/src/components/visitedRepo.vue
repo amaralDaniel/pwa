@@ -44,17 +44,20 @@
         <v-card flat class="card-item">
           <v-card-text>
             <h2>{{ item }}</h2>
-            <v-layout justify-start>
+            <v-layout text-md-left>
               <div v-if="item === 'Readme'">
-                <vue-markdown v-bind:source="readme"></vue-markdown>
+                <div v-if="readme === ''">
+                  <span class="body-2 grey--text">Nothing to show here</span>
+                </div>
+                <vue-markdown v-bind:source="readme" ></vue-markdown>
               </div>
               <div v-if="item === 'Files'">
                 <TreeView></TreeView>
               </div>
-              <div v-if="item === 'Commits'">
+              <div v-if="item === 'Commits'" >
                 <ul>
                   <li v-for="commit in commits">
-                    {{commit.commit.message}}
+                    <router-link :to="{name: 'Commit', params: {owner: repositoryOwner, repo: repositoryName, sha: commit.sha}}" class="body-2">{{commit.commit.message}}</router-link>
                   </li>
                 </ul>
               </div>
@@ -88,18 +91,21 @@
                 </router-link>
                 <ul >
                   <li v-for="issue in repository.issues.nodes">
-                    <v-layout row>
-                      <v-layout align-center class="mb-2" column>
-                        <router-link :to="{name: 'User', params: { login: issue.author.login}}">
-                          <v-avatar>
-                            <img :src="issue.author.avatarUrl" alt="John">
-                          </v-avatar>
-                          <v-spacer></v-spacer>
-                          <span class="body-2">{{issue.author.login}}</span>
-                        </router-link>
-                      </v-layout>
-                      <div>{{issue.title}}</div>
-                    </v-layout>
+                    <router-link :to="{name: 'singleIssue', params: { owner: issue.author.login, repo: repositoryName, number: issue.number }}">
+                      <v-card>
+                        <v-layout row text-md-left>
+                          <v-layout class="mb-2" column>
+                            <router-link :to="{name: 'User', params: {login: issue.author.login}}">
+                              <v-avatar>
+                                <img :src="issue.author.avatarUrl" alt="John">
+                              </v-avatar>
+                              <span class="body-2">{{issue.author.login}}</span>
+                            </router-link>
+                          </v-layout>
+                          <div>{{issue.title}}</div>
+                        </v-layout>
+                      </v-card>
+                    </router-link>
                   </li>
                 </ul>
               </div>
@@ -122,17 +128,17 @@
                       <router-link :to="{name: 'PullRequest', params: {owner: repositoryOwner, name: repositoryName, number: pr.number}}">
                         <v-card ripple tile append replace style="width: 75vh;" class="my-2">
                           <v-card-title primary-title>
-                            <span class="body-2">#{{pr.number}} {{pr.title}} by <router-link :to="{name: 'User', params: {login: pr.author.login}}">{{pr.author.login}}</router-link></span>
+                            <span class="body-2">#{{pr.number}} {{pr.title}}</span>
                           </v-card-title>
-                          <v-card-text>
+                          <v-card-text text-sm-left>
                             <v-spacer></v-spacer>
-                            <span class="body-2">Created {{pr.createdAt | moment("from")}}</span>
+                            <span class="body-2">Created <span class="body-1 grey--text">{{pr.createdAt | moment("from")}}</span></span>
                             <v-spacer></v-spacer>
-                            <span class="body-2">State: {{pr.state}}</span>
+                            <span class="body-2">State: <span class="body-1 grey--text">{{pr.state}}</span></span>
                             <v-spacer></v-spacer>
-                            <span class="body-2" :v-if="pr.merged">Merged {{pr.mergedAt | moment("from")}}</span>
+                            <span class="body-2" :v-if="pr.merged">Merged <span class="body-1 grey--text">{{pr.mergedAt | moment("from")}}</span></span>
                             <v-spacer></v-spacer>
-                            <span class="body-2" :v-if="pr.mer">Closed {{pr.closedAt | moment("from")}}</span>
+                            <span class="body-2" :v-if="pr.mer">Closed <span class="body-1 grey--text">{{pr.closedAt | moment("from")}}</span></span>
                           </v-card-text>
                         </v-card>
                       </router-link>
@@ -372,6 +378,8 @@
 </script>
 
 <style lang="sass" scoped>
+  @import '../styles/variables.scss'
+
   .icon
     margin: 1vh 1vw 1vh
     font-size: 2em
@@ -386,4 +394,8 @@
 
   .card-item
     min-height: 15vh
+
+  li a
+    text-decoration: none !important
+    color: $secondary
 </style>
