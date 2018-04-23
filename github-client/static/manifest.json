@@ -1,6 +1,6 @@
 {
   "name": "ghclient",
-  "short_name": "GitHub-Clinet",
+  "short_name": "GitHub-Client",
   "icons": [
     {
       "src": "/static/img/icons/android-chrome-192x192.png",
