@@ -260,6 +260,9 @@
       var user = _self.gh.getUser()
       console.log(user)
       _self.repo = _self.gh.getRepo(this.repositoryOwner, this.repositoryName)
+      _self.axiosInstance.get(`/repos/${this.repositoryName}/${this.repositoryOwner}/readme`).then(function (response) {
+        _self.readme = window.atob(response.data.content)
+      })
       _self.repo.listCommits().then(function (result) {
         // console.log(result.data)
         result.data.forEach(function (each) {

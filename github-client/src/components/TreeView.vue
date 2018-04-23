@@ -41,7 +41,7 @@
       renderFiles: function () {
         var _self = this
         _self.contents = []
-        _self.axiosInstance.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/contents/' + _self.path).then(function (response) {
+        _self.axiosInstance.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/contents/').then(function (response) {
           response.data.forEach(function (each) {
             _self.contents.push(each)
           })

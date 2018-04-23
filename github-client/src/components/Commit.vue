@@ -18,13 +18,12 @@
         repositoryOwner: this.$route.params.owner,
         repositoryName: this.$route.params.repo,
         sha: this.$route.params.sha,
-        commit: null
+        commit: null,
+        outputHtml: ''
       }
     },
     mounted () {
       var _self = this
-      console.log(_self.repositoryName)
-      console.log(_self.repositoryOwner)
       _self.axiosInstance.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/commits/' + _self.sha).then(function (response) {
         _self.commit = response.data
       })

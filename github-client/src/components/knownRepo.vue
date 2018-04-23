@@ -18,7 +18,7 @@
           <i class="fas fa-code-branch"></i>
         </button>
         <span>{{repository.forkCount}}</span>
-        <button class="icon" v-on:click="goToMakeCommit">
+        <button class="icon" v-on:click="goToUploadFile">
           <i class="fas fa-upload"></i>
         </button>
       </v-layout>
@@ -374,9 +374,9 @@
           console.log(_self.watched)
         }
       },
-      goToMakeCommit: function () {
+      goToUploadFile: function () {
         this.$router.push({
-          name: 'CreateCommit',
+          name: 'CreateFile',
           params: {
             owner: this.repositoryOwner,
             repo: this.repositoryName
