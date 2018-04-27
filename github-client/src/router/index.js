@@ -20,6 +20,7 @@ import File from '@/components/File'
 import Commit from '@/components/Commit'
 import CreateCommit from '@/components/CreateCommit'
 import CreateFile from '@/components/CreateFile'
+import UpdateFile from '@/components/UpdateFile'
 import NotFound from '@/components/NotFound'
 
 Vue.use(Router)
@@ -144,6 +145,12 @@ export default new Router({
       path: '/repos/:owner/:repo/create/file',
       name: 'CreateFile',
       component: CreateFile,
+      meta: { auth: true }
+    },
+    {
+      path: '/repos/:owner/:repo/update/:path',
+      name: 'UpdateFile',
+      component: UpdateFile,
       meta: { auth: true }
     },
     {
