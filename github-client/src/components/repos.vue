@@ -15,11 +15,12 @@
           <ul>
             <li v-for="repo in viewer.repositories.nodes.slice().reverse()">
               <router-link :to="{name: 'knownRepo', params: { owner: repo.owner.login, name: repo.name }}">
-                <v-card ripple tile append replace style="width: 75vh;" class="my-2">
-                  <v-card-title primary-title>
-                    <div >
+                <v-card ripple tile append replace xs2 class="my-2">
+                  <v-card-title primary-title class="text-xs-left" >
+                    <v-layout row>
+                      <v-flex xs12 sm12>
                       <p class="headline text-sm-left">{{repo.name}}</p>
-                      <p class="body-2 grey--text text-sm-left">Created <span class="body-1">{{ repo.createdAt | moment("from") }}</span></p>
+                      <p class="body-2 grey--text text-sm-left ">Created <span class="body-1">{{ repo.createdAt | moment("from") }}</span></p>
                       <p class="body-2 grey--text text-sm-left">Last updated <span class="body-1">{{ repo.updatedAt | moment("from") }}</span></p>
                       <p class="body-2 grey--text text-sm-left">Forks: <span class="body-1">{{repo.forks.totalCount}}</span></p>
                       <p class="body-2 grey--text text-sm-left">Disk Usage: <span class="body-1">{{repo.diskUsage}}</span></p>
@@ -30,18 +31,19 @@
                           <!--</div>-->
                         <!--</li>-->
                       <!--</ul>-->
-                    </div>
+                      </v-flex>
+                    </v-layout>
                   </v-card-title>
                   <v-card-text>
                     <div>
                       <p class="" v-if="repo.description">{{repo.description}}</p>
                     </div>
                   </v-card-text>
-                  <v-card-actions>
+                  <!--<v-card-actions>
                     <v-btn flat>Fork</v-btn>
-                    <!--<v-btn flat color="purple">Explore</v-btn>-->
+                    &lt;!&ndash;<v-btn flat color="purple">Explore</v-btn>&ndash;&gt;
                     <v-spacer></v-spacer>
-                  </v-card-actions>
+                  </v-card-actions>-->
                 </v-card>
               </router-link>
             </li>

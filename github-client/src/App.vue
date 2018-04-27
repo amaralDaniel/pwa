@@ -25,7 +25,7 @@
               </v-list-tile-content>
             </v-layout>
           </router-link>
-          <v-list-tile-action>
+          <v-list-tile-action align>
             <v-btn icon @click.stop="mini = !mini">
               <v-icon>chevron_left</v-icon>
             </v-btn>
@@ -43,13 +43,42 @@
           </v-list-tile-content>
         </v-list-tile>
       </v-list>
-      <div absolute class="text-sm-right">
+      <v-list class="pt-0" dense>
         <v-divider light></v-divider>
-        <v-btn v-if="$store.getters.getAuthState" v-on:click="logout" color="secondary" class="white--text">Logout</v-btn>
-      </div>
+        <v-list-tile v-for="item in actions" :key="item.title" append replace :to="item.route">
+          <v-list-tile-action >
+            <v-icon>{{ item.icon }}</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+      </v-list>
+      <v-divider dark></v-divider>
+      <v-list class="pt-0" dense>
+        <v-list-tile v-if="$store.getters.getAuthState && !mini" v-on:click="logout">
+          <v-list-tile-action>
+            <v-icon>
+              exit_to_app
+            </v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title>Logout</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+        <v-list-tile v-if="$store.getters.getAuthState && mini">
+          <v-list-tile-action>
+            <v-btn flat v-on:click="logout" color="secondary" class="white--text">
+              <v-icon>
+                exit_to_app
+              </v-icon>
+            </v-btn>
+          </v-list-tile-action>
+        </v-list-tile>
+      </v-list>
     </v-navigation-drawer>
     <v-toolbar dark color="primary" extended >
-      <v-toolbar-side-icon @click.native.stop="drawer = !drawer" dark>
+      <v-toolbar-side-icon @click.native.stop="drawer = !drawer" dark v-if="$store.getters.getAuthState">
       </v-toolbar-side-icon>
       <router-link :to="{name: 'CreateRepo'}" v-if="$store.getters.getAuthState">
         <v-btn
@@ -66,24 +95,13 @@
       </router-link>
       <v-toolbar-title class="white--text title-gh">GitHub Client</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-container v-if="$store.getters.getAuthState" class="search-container">
-        <v-layout row>
-            <v-select
-              :items="searchableItems"
-              v-model="selectedSearch"
-              label="Select"
-              single-line
-              color="secondary"
-              class="pt-1"
-            ></v-select>
-          <v-text-field class="pt-1 px-2" v-model="searchInput" color="secondary"></v-text-field>
-          <router-link :to="{name: 'Search', params: {filter: selectedSearch.text, input: searchInput}}">
-            <v-btn icon>
-              <v-icon>search</v-icon>
-            </v-btn>
-          </router-link>
-        </v-layout>
-      </v-container>
+      <!--<v-container >-->
+        <router-link :to="{name: 'Search'}" class="search-container" v-if="$store.getters.getAuthState">
+          <v-btn icon>
+            <v-icon>search</v-icon>
+          </v-btn>
+        </router-link>
+      <!--</v-container>-->
     </v-toolbar>
     <main>
       <transition>
@@ -120,24 +138,20 @@
 
     name: 'app',
     data: () => ({
-      selectedSearch: '',
-      searchableItems: [
-        { text: 'Repositories' },
-        { text: 'Users' },
-        { text: 'Code' },
-        { text: 'Issues' }
-      ],
       activeNav: store.getters.getActiveNav,
       drawer: null,
       items: [
         { title: 'Repositories', icon: 'code', route: '/repos' },
         { title: 'Issues', icon: 'info', route: '/issues' },
-        { title: 'Gists', icon: 'description', route: '/gists' }
+        { title: 'Gists', icon: 'description', route: '/gists' },
+        { title: 'Search', icon: 'search', route: '/search' }
+      ],
+      actions: [
+        { title: 'Create Repository', icon: 'add', route: '/create' }
       ],
       mini: false,
       right: null,
-      viewer: [],
-      searchInput: ''
+      viewer: []
     }),
     apollo: {
       viewer: {
@@ -202,8 +216,5 @@
 
   .title-gh
     font-weight: 700
-
-  .search-container
-    max-width: 50vw
 
 </style>

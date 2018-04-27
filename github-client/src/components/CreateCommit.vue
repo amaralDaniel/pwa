@@ -27,6 +27,7 @@
                     @focus="onCmFocus"
                     @input="onCmCodeChange">
         </codemirror>
+
       </v-flex>
       <v-flex xs12>
         <div class="add-comment">

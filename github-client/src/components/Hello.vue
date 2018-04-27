@@ -1,5 +1,5 @@
 <template>
-  <v-jumbotron color="grey lighten-2">
+  <v-jumbotron color="grey lighten-2" light >
     <v-container fill-height>
       <v-layout align-center>
         <v-flex>
@@ -121,21 +121,27 @@
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-  h1, h2 {
-    font-weight: normal;
-  }
+<style lang="sass" scoped>
+  @import '../styles/variables.scss'
 
-  ul {
-    list-style-type: none;
-    padding: 0;
-  }
+  h1, h2
+    font-weight: normal
 
-  li {
-    display: inline-block;
-    margin: 0 10px;
-  }
+  ul
+    list-style-type: none
+    padding: 0
 
+  li
+    display: inline-block
+    margin: 0 10px
 
+  a
+    color: $secondary
+
+  #div-not-authenticated
+    background-color: white
+    padding: 2px 0 2px 0
+    font-color: black
+    font-weight: 900
 
 </style>

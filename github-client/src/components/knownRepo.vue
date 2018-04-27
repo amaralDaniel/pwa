@@ -11,7 +11,7 @@
           <i class="fas fa-eye"></i>
         </button>
         <span>{{repository.watchers.totalCount}}</span>
-        <button v-if="repository.hasWikiEnabled" class="icon" v-on:click="">
+        <button v-if="repository.hasWikiEnabled" class="icon" v-on:click="getWiki">
           <i class="fas fa-book"></i>
         </button>
         <button class="icon" v-on:click="">
@@ -49,23 +49,23 @@
             <v-layout text-sm-left>
               <div v-if="item === 'Readme'">
                 <div v-if="readme === ''">
-                  <span class="body-2 grey--text">Nothing to show here</span>
+                  <span class="body-2 grey--text text-xs-left text-sm-left">Nothing to show here</span>
                 </div>
-                <vue-markdown v-bind:source="readme" ></vue-markdown>
+                <vue-markdown v-bind:source="readme" class="text-xs-left text-sm-left"></vue-markdown>
               </div>
               <div v-if="item === 'Files'">
-                <TreeView></TreeView>
+                <TreeView class="text-xs-left text-sm-left"></TreeView>
               </div>
               <div v-if="item === 'Commits'">
                 <ul>
-                  <li v-for="commit in commits">
+                  <li v-for="commit in commits" class="text-xs-left text-sm-left">
                     <router-link :to="{name: 'Commit', params: {owner: repositoryOwner, repo: repositoryName, sha: commit.sha}}" class="body-2">{{commit.commit.message}}</router-link>
                   </li>
                 </ul>
               </div>
               <div v-if="item === 'Collaborators'">
                 <ul >
-                  <li v-for="user in repository.collaborators.nodes">
+                  <li v-for="user in repository.collaborators.nodes" class="text-xs-left text-sm-left">
                     <router-link :to="{name: 'User', params: {login: user.login}}">
                       <v-layout align-center class="mb-2" row>
                         <v-avatar>
@@ -93,7 +93,7 @@
                     </v-btn>
                   </router-link>
                   <ul >
-                    <li v-for="issue in repository.issues.nodes">
+                    <li v-for="issue in repository.issues.nodes" class="text-xs-left text-sm-left">
                       <router-link :to="{name: 'singleIssue', params: { owner: issue.author.login, repo: repositoryName, number: issue.number }}">
                         <v-card>
                           <v-layout row text-md-left>
@@ -115,7 +115,7 @@
               </div>
               <div v-if="item === 'Contributors'">
                 <ul >
-                  <li v-for="user in contributors">
+                  <li v-for="user in contributors" class="text-xs-left text-sm-left">
 
                     <router-link :to="{name: 'User', params: {login: user.login}}">
                       <v-layout align-center class="mb-2" row>
@@ -143,25 +143,27 @@
                   </v-btn>
                 </router-link>
                 <ul >
-                  <li v-for="pr in repository.pullRequests.nodes">
+                  <li v-for="pr in repository.pullRequests.nodes" class="text-xs-left text-sm-left">
                     <v-layout row>
-                      <router-link :to="{name: 'PullRequest', params: {owner: repositoryOwner, name: repositoryName, number: pr.number}}">
-                        <v-card ripple tile append replace style="width: 75vh;" class="my-2">
-                          <v-card-title primary-title>
-                            <span class="body-2">#{{pr.number}} {{pr.title}} by <router-link :to="{name: 'User', params: {login: pr.author.login}}">{{pr.author.login}}</router-link></span>
-                          </v-card-title>
-                          <v-card-text>
-                            <v-spacer></v-spacer>
-                            <span class="body-2">Created {{pr.createdAt | moment("from")}}</span>
-                            <v-spacer></v-spacer>
-                            <span class="body-2">State: {{pr.state}}</span>
-                            <v-spacer></v-spacer>
-                            <span class="body-2" :v-if="pr.merged">Merged {{pr.mergedAt | moment("from")}}</span>
-                            <v-spacer></v-spacer>
-                            <span class="body-2" :v-if="pr.mer">Closed {{pr.closedAt | moment("from")}}</span>
-                          </v-card-text>
-                        </v-card>
-                      </router-link>
+                      <v-flex fluid>
+                        <router-link :to="{name: 'PullRequest', params: {owner: repositoryOwner, name: repositoryName, number: pr.number}}">
+                          <v-card ripple tile append replace xs6 class="my-2">
+                            <v-card-title primary-title>
+                              <span class="body-2">#{{pr.number}} {{pr.title}} by <router-link :to="{name: 'User', params: {login: pr.author.login}}">{{pr.author.login}}</router-link></span>
+                            </v-card-title>
+                            <v-card-text>
+                              <v-spacer></v-spacer>
+                              <span class="body-2">Created {{pr.createdAt | moment("from")}}</span>
+                              <v-spacer></v-spacer>
+                              <span class="body-2">State: {{pr.state}}</span>
+                              <v-spacer></v-spacer>
+                              <span class="body-2" :v-if="pr.merged">Merged {{pr.mergedAt | moment("from")}}</span>
+                              <v-spacer></v-spacer>
+                              <span class="body-2" :v-if="pr.mer">Closed {{pr.closedAt | moment("from")}}</span>
+                            </v-card-text>
+                          </v-card>
+                        </router-link>
+                      </v-flex>
                     </v-layout>
                   </li>
                 </ul>
@@ -381,6 +383,13 @@
             owner: this.repositoryOwner,
             repo: this.repositoryName
           }
+        })
+      },
+      getWiki: function () {
+        let _self = this
+        console.log('wiki')
+        _self.axiosInstance.get(`/repos/${_self.repositoryOwner}/${_self.repositoryName}/wiki`).then(function (response) {
+          console.log(response.data)
         })
       }
     },

@@ -82,7 +82,7 @@ export default new Router({
       meta: { auth: true }
     },
     {
-      path: '/search/:filter/:input',
+      path: '/search',
       name: 'Search',
       component: Search,
       meta: { auth: true }

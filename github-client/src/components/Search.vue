@@ -1,7 +1,19 @@
 <template>
     <div>
-      <v-container grid-list-xl text-xs-center>
+      <v-container grid-list-xl text-xs-center fluid>
         <v-layout row wrap>
+          <v-container>
+            <v-layout row justify-center>
+              <v-flex>
+                <v-text-field v-model="searchString" color="secondary"></v-text-field>
+              </v-flex>
+              <v-flex align-baseline>
+                <v-btn icon v-on:click="doSearch">
+                  <v-icon>search</v-icon>
+                </v-btn>
+              </v-flex>
+            </v-layout>
+          </v-container>
           <v-flex xs12 >
             <v-expansion-panel focusable popout>
               <v-expansion-panel-content >
@@ -168,51 +180,40 @@
     name: 'search',
     data () {
       return {
-        searchString: this.$route.params.input,
-        searchFilter: this.$route.params.filter,
+        searchString: '',
         repositoriesResult: null,
         usersResult: null,
         codeResult: null,
-        issuesResult: null
+        issuesResult: null,
+        selectedSearch: ''
       }
     },
-    beforeCreate () {
-      var _self = this
-      if (_self.$route.params.filter === 'Repositories') {
-        console.log('searching for ' + _self.$route.params.filter + ' with keyword ' + _self.$route.params.input)
-        _self.gh.search().forRepositories({q: _self.$route.params.input})
+    methods: {
+      doSearch () {
+        var _self = this
+        _self.gh.search().forRepositories({q: _self.searchString})
           .then(({data: repositories}) => {
-            console.log(repositories)
             _self.repositoriesResult = repositories
           }).catch((error) => {
             console.log('forRepositories error:', error)
           })
-      }
-      if (_self.$route.params.filter === 'Users') {
-        console.log('searching for ' + _self.$route.params.filter + ' with keyword ' + _self.$route.params.input)
-        _self.gh.search().forUsers({q: _self.$route.params.input})
+
+        _self.gh.search().forUsers({q: _self.searchString})
           .then(({data: users}) => {
-            console.log(users)
             _self.usersResult = users
           }).catch((error) => {
             console.log('forUsers error:', error)
           })
-      }
-      if (_self.$route.params.filter === 'Code') {
-        console.log('searching for ' + _self.$route.params.filter + ' with keyword ' + _self.$route.params.input)
-        _self.gh.search().forCode({q: _self.$route.params.input})
+
+        _self.gh.search().forCode({q: _self.searchString})
           .then(({data: code}) => {
-            console.log(code)
             _self.codeResult = code
           }).catch((error) => {
             console.log('forCode error:', error)
           })
-      }
-      if (_self.$route.params.filter === 'Issues') {
-        console.log('searching for ' + _self.$route.params.filter + ' with keyword ' + _self.$route.params.input)
-        _self.gh.search().forIssues({q: _self.$route.params.input})
+
+        _self.gh.search().forIssues({q: _self.searchString})
           .then(({data: issues}) => {
-            console.log(issues)
             _self.issuesResult = issues
           }).catch((error) => {
             console.log('forIssues error:', error)
