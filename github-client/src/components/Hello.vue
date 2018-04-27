@@ -52,7 +52,7 @@
       },
       getToken: function (code, callback) {
         var options = {
-          url: 'http://localhost:9999/authenticate/' + code,
+          url: 'https://gatekeeper-pwa.herokuapp.com/authenticate/' + code,
           json: true
         }
         xhr(options, function (err, res, body) {
