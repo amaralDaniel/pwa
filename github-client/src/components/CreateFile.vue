@@ -149,7 +149,7 @@
           branch: _self.selectedBranch.text
         }).then(function (response) {
           console.log(response.data)
-          _self.successMessage = 'All went well, you\'ll be redirected in 5 seconds'
+          _self.successMessage = 'File created, you\'ll be redirected in 5 seconds'
           _self.success = true
           setTimeout(function () {
             _self.$router.push('/repo/' + _self.repositoryOwner + '/' + _self.repositoryName)
