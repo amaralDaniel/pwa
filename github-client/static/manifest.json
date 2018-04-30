@@ -1,6 +1,6 @@
 {
-  "name": "ghclient",
-  "short_name": "GitHub-Client",
+  "name": "PWAGithub",
+  "short_name": "PWAGithub",
   "icons": [
     {
       "src": "/static/img/icons/android-chrome-192x192.png",
