@@ -20,18 +20,14 @@
             <li v-for="file in files">
               <v-card ripple tile append replace class="my-2">
                 <v-card-title primary-title class="text-xs-left text-sm-left">
-                  <v-layout row>
-                    <v-flex xs12 sm12>
+                  <div>
                     <p class="headline">{{file.filename}}</p>
-                    </v-flex>
-                  </v-layout>
+                  </div>
                 </v-card-title>
                 <v-card-text class="text-xs-left text-sm-left">
-                  <v-layout row>
-                    <v-flex xs12 sm12>
+                  <div>
                     <p class="body-1">{{file.content}}</p>
-                    </v-flex>
-                  </v-layout>
+                  </div>
                 </v-card-text>
               </v-card>
             </li>
