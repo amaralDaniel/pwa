@@ -1,14 +1,16 @@
 <template>
-    <v-container text-md-left>
+    <v-container class="text-md-left text-xs-left text-sm-left">
       <span class="title">{{issue.title}}</span>
-      <p class="subheading">Created {{issue.created_at | moment("from")}} by
-        <router-link :to="{name: 'User', params: { login: issue.user.login}}">
-          <v-avatar>
-            <img :src="issue.user.avatar_url" :alt="issue.user.login">
-          </v-avatar>
-          <span class="subheading">{{issue.user.login}}</span>
-        </router-link>
-      </p>
+      <p class="subheading">Created {{issue.created_at | moment("from")}} by</p>
+        <p>
+          <router-link :to="{name: 'User', params: { login: issue.user.login}}">
+            <v-avatar>
+              <img :src="issue.user.avatar_url" :alt="issue.user.login">
+            </v-avatar>
+            <span class="subheading">{{issue.user.login}}</span>
+          </router-link>
+        </p>
+
       <v-card class="text-sm-left body-1 pa-4">
         {{issue.body}}
       </v-card>
@@ -26,7 +28,7 @@
                       <span class="subheading">{{comment.user.login}}</span>
                     </router-link>
                     <span v-if="comment.author_association === 'OWNER'"><span color="success" class="subheading owner-tag" >{{comment.author_association}}</span></span>
-                    <span class="body-2">{{comment.created_at | moment("from")}}</span>
+                    <p class="body-2 my-2">{{comment.created_at | moment("from")}}</p>
                     <div class="body-1">{{comment.body}}</div>
                   </div>
                 </v-flex>
@@ -65,7 +67,7 @@
     name: 'singleIssue',
     data: () => ({
       issue: null,
-      comments: null,
+      issueComments: null,
       comment: {
         body: ''
       }
@@ -79,6 +81,9 @@
       },
       number () {
         return this.$route.params.number
+      },
+      comments () {
+        return this.issueComments
       }
     },
     mounted () {
@@ -88,7 +93,7 @@
         _self.issue = response.data
       })
       _self.axiosInstance.get('/repos/' + this.owner + '/' + this.repo + '/issues/' + this.number + '/comments').then(function (response) {
-        _self.comments = response.data
+        _self.issueComments = response.data
       })
     },
     methods: {
@@ -98,8 +103,10 @@
           body: _self.comment.body
         }).then(function (response) {
           if (response.status === 201) {
-            console.log('added comment')
+            _self.issueComments.push(response.data)
           }
+        }).catch(function (error) {
+          console.log(error)
         })
       }
     }
