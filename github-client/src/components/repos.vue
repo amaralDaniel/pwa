@@ -19,18 +19,18 @@
                   <v-card-title primary-title class="text-xs-left" >
                     <v-layout row>
                       <v-flex xs12 sm12>
-                      <p class="headline text-sm-left">{{repo.name}}</p>
-                      <p class="body-2 grey--text text-sm-left ">Created <span class="body-1">{{ repo.createdAt | moment("from") }}</span></p>
-                      <p class="body-2 grey--text text-sm-left">Last updated <span class="body-1">{{ repo.updatedAt | moment("from") }}</span></p>
-                      <p class="body-2 grey--text text-sm-left">Forks: <span class="body-1">{{repo.forks.totalCount}}</span></p>
-                      <p class="body-2 grey--text text-sm-left">Disk Usage: <span class="body-1">{{repo.diskUsage}}</span></p>
-                      <!--<ul class="text-sm-left">-->
-                        <!--<li v-for="lang in repo.languages.nodes">-->
-                          <!--<div class="text-xs-center">-->
-                            <!--<v-chip v-bind:color="lang.color">{{lang.name}}</v-chip>-->
-                          <!--</div>-->
-                        <!--</li>-->
-                      <!--</ul>-->
+                        <p class="headline text-sm-left">{{repo.name}}</p>
+                        <p class="body-2 grey--text text-sm-left ">Created <span class="body-1">{{ repo.createdAt | moment("from") }}</span></p>
+                        <p class="body-2 grey--text text-sm-left">Last updated <span class="body-1">{{ repo.updatedAt | moment("from") }}</span></p>
+                        <p class="body-2 grey--text text-sm-left">Forks: <span class="body-1">{{repo.forks.totalCount}}</span></p>
+                        <p class="body-2 grey--text text-sm-left">Disk Usage: <span class="body-1">{{repo.diskUsage}}</span></p>
+                        <!--<ul class="text-sm-left">-->
+                          <!--<li v-for="lang in repo.languages.nodes">-->
+                            <!--<div class="text-xs-center">-->
+                              <!--<v-chip v-bind:color="lang.color">{{lang.name}}</v-chip>-->
+                            <!--</div>-->
+                          <!--</li>-->
+                        <!--</ul>-->
                       </v-flex>
                     </v-layout>
                   </v-card-title>

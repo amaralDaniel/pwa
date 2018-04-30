@@ -14,13 +14,18 @@
           <ul>
             <li v-for="gist in gists">
               <router-link :to="{name: 'singleGist', params: {name: gist.id}}">
-                <v-card ripple tile append replace class="my-2" >
-                  <v-card-title primary-title>
-                    <div >
-                      <span class="headline text-sm-left">{{gist.id}}</span>
-                      <span v-if="gist.public" class="public-tag text-sm-right">PUBLIC</span>
-                      <span v-else class="private-tag text-sm-right">PRIVATE</span>
-                    </div>
+                <v-card ripple tile append replace xs2 class="my-2" >
+                  <v-card-title primary-title class="text-xs-left text-sm-left">
+                    <v-layout row>
+                      <v-flex xs12 sm12>
+                        <p class="body-1 text-sm-left">{{gist.id}}</p>
+                        <p v-if="gist.public" class="public-tag text-sm-right">PUBLIC</p>
+                        <p v-else class="private-tag text-sm-right">PRIVATE</p>
+                        <p class="caption grey--text">Created <span class="body-1">{{ gist.created_at | moment("from") }}</span></p>
+                        <p class="caption grey--text" v-if="gist.created_at != gist.updated_at">Last updated <span class="body-1">{{ gist.updated_at | moment("from") }}</span></p>
+                        <p class="caption grey--text">Never updated</p>
+                      </v-flex>
+                    </v-layout>
                   </v-card-title>
                 </v-card>
               </router-link>
@@ -69,6 +74,7 @@
     -webkit-border-radius: 1px
     -moz-border-radius: 1px
     border-radius: 1px
+    max-width: fit-content
 
   .public-tag
     border-style: solid
@@ -81,5 +87,6 @@
     -webkit-border-radius: 1px
     -moz-border-radius: 1px
     border-radius: 1px
+    max-width: fit-content
 
 </style>
