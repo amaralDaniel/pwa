@@ -36,7 +36,7 @@
                   </v-card-title>
                   <v-card-text>
                     <div>
-                      <p class="" v-if="repo.description">{{repo.description}}</p>
+                      <p v-if="repo.description">{{repo.description}}</p>
                     </div>
                   </v-card-text>
                   <!--<v-card-actions>

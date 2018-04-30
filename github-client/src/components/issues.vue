@@ -11,6 +11,7 @@
         v-for="item in tabItems"
         :key="item"
         :href="'#' + item"
+        class="caption"
       >
         {{ item }}
       </v-tab>
