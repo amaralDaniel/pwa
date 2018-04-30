@@ -10,22 +10,22 @@
       style="min-height: 0; position: relative;"
       grid-list-lg
     >
-      <span class="title text-sm-left">{{viewer.gist.name}}</span>
-      <p class="caption text-sm-left">{{viewer.gist.createdAt | moment("from") }}</p>
-      <p class="subheading text-sm-left">{{viewer.gist.description}}</p>
+      <span class="subheading text-sm-left text-xs-left mt-5">{{viewer.gist.name}}</span>
+      <p class="caption text-sm-left text-xs-left">{{viewer.gist.createdAt | moment("from") }}</p>
+      <p class="subheading text-sm-left text-xs-left">{{viewer.gist.description}}</p>
       <v-layout row wrap>
         <v-flex xs12>
           <ul>
             <li v-for="file in files">
               <v-card ripple tile append replace style="width: 75vh;" class="my-2">
-                <v-card-title primary-title>
+                <v-card-title primary-title class="text-xs-left text-sm-left">
                   <div >
-                    <p class="headline text-sm-left">{{file.filename}}</p>
+                    <p class="headline">{{file.filename}}</p>
                   </div>
                 </v-card-title>
-                <v-card-text>
+                <v-card-text class="text-xs-left text-sm-left">
                   <div>
-                    <p class="body-1 text-sm-left">{{file.content}}</p>
+                    <p class="body-1">{{file.content}}</p>
                   </div>
                 </v-card-text>
               </v-card>
