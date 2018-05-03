@@ -35,6 +35,7 @@
                     // fresh content will have been added to the cache.
                     // It's the perfect time to display a "New content is
                     // available; please refresh." message in the page's interface.
+                    console.log('INSTALLED')
                     break;
 
                   case 'redundant':
@@ -52,4 +53,16 @@
         });
       }
   });
+
+  // if ('serviceWorker' in navigator) {
+  //   window.addEventListener('load', function() {
+  //     navigator.serviceWorker.register('/service-worker.js').then(function(registration) {
+  //       // Registration was successful
+  //       console.log('ServiceWorker registration successful with scope: ', registration.scope);
+  //     }, function(err) {
+  //       // registration failed :(
+  //       console.log('ServiceWorker registration failed: ', err);
+  //     });
+  //   });
+  // }
 })();
