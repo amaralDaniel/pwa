@@ -5,7 +5,7 @@
           <v-flex xs4>
             <v-subheader class="subheading">Repository Name</v-subheader>
           </v-flex>
-          <v-flex xs12 sm6>
+          <v-flex xs8 sm8>
             <v-text-field
               label="Repository name"
               v-model="name"
@@ -20,7 +20,7 @@
             <v-subheader class="subheading">Description</v-subheader>
             <v-subheader>(Optional)</v-subheader>
           </v-flex>
-          <v-flex xs12 sm6>
+          <v-flex xs8 sm6>
             <v-text-field
               name="input-7-1"
               label="Description"
@@ -33,7 +33,7 @@
           <v-flex xs4>
             <v-subheader class="subheading">Homepage</v-subheader>
           </v-flex>
-          <v-flex xs12 sm6>
+          <v-flex xs8 sm6>
             <v-text-field
               label="Homepage"
               v-model="homepage"
@@ -44,7 +44,7 @@
           <v-flex xs4>
             <v-subheader class="subheading">License</v-subheader>
           </v-flex>
-          <v-flex xs12 sm6>
+          <v-flex xs8 sm6>
             <v-select
               :items="licenseItems"
               :filter="customFilter"
@@ -56,10 +56,10 @@
           </v-flex>
         </v-layout>
         <v-layout row>
-          <v-flex xs4>
+          <v-flex xs sm6>
             <v-subheader class="subheading">.gitignore</v-subheader>
           </v-flex>
-          <v-flex xs12 sm6>
+          <v-flex xs8 sm6>
             <v-select
               :items="gitignoreItems"
               :filter="customFilter"
@@ -82,7 +82,11 @@
             color="primary"
           ></v-radio>
         </v-radio-group>
-        <v-checkbox color="primary" label="Initiate this repository with a README" v-model="readmeCheckbox"></v-checkbox>
+        <v-layout row>
+          <v-flex sm2>
+            <v-checkbox color="primary" label="Initiate this repository with a README" v-model="readmeCheckbox"></v-checkbox>
+          </v-flex>
+        </v-layout>
         <v-btn
           @click="submit"
           :disabled="!valid"
