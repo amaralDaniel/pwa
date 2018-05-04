@@ -82,7 +82,6 @@
       this.gist.read().then(function (data) {
         _self.files = data.data.files
       })
-      console.log('name', this.$route.params.name)
     }
   }
 </script>

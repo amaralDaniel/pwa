@@ -108,7 +108,7 @@
                 token: component.$store.getters.getToken
               })
             } else {
-              console.log('Invalid code')
+              // console.log('Invalid code')
             }
           })
         }

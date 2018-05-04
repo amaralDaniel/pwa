@@ -144,9 +144,12 @@
             }, 5000)
           }
         }).catch(function (error) {
-          console.log(error)
           _self.errorMessage = 'Something went wrong, check your inputs.'
           _self.error = true
+          setTimeout(function () {
+            _self.error = false
+          }, 5000)
+          throw error
         })
       }
     }

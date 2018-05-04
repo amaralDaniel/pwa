@@ -306,7 +306,7 @@
           state: 'all'
         }
       }).then(function (response) {
-        console.log(response.data)
+        // console.log(response.data)
         response.data.forEach(function (each) {
           if (each.state === 'closed') {
             _self.mentionedClosed.push(each)

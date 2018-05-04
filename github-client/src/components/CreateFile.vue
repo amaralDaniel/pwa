@@ -2,9 +2,9 @@
   <v-container>
     <v-layout row>
       <v-flex xs4>
-        <v-subheader>Filename</v-subheader>
+        <v-subheader class="subheading">Filename</v-subheader>
       </v-flex>
-      <v-flex xs12 sm6>
+      <v-flex xs8 sm6>
         <v-text-field
           name="input-2"
           label="Filename"
@@ -19,7 +19,7 @@
       <v-flex xs4>
         <v-subheader class="subheading">Branch</v-subheader>
       </v-flex>
-      <v-flex xs12 sm6>
+      <v-flex xs8 sm6>
         <v-select
           :items="branches"
           v-model="selectedBranch"
@@ -32,7 +32,7 @@
         ></v-select>
       </v-flex>
     </v-layout>
-    <v-flex xs12 text-sm-left>
+    <v-flex xs12 class="text-sm-left text-xs-left">
       <!-- bidirectional data binding（双向数据绑定） -->
       <!-- or to manually control the datasynchronization（或者手动控制数据流，需要像这样手动监听changed事件） -->
       <codemirror ref="myCm"
@@ -43,20 +43,18 @@
                   @input="onCmCodeChange">
       </codemirror>
     </v-flex>
-    <v-flex xs12>
-      <div>
-        <!--<textarea name="comment" id="comment" cols="30" rows="10" placeholder="Insert your commment here" v-model="comment.body"></textarea>-->
-        <v-layout row>
-          <v-text-field
-            name="input-7-1"
-            full-width
-            multi-line
-            single-line
-            v-model="message"
-            placeholder="Leave a message here"
-          ></v-text-field>
-        </v-layout>
-      </div>
+    <v-flex xs12 text-sm-left text-xs-left>
+      <!--<textarea name="comment" id="comment" cols="30" rows="10" placeholder="Insert your commment here" v-model="comment.body"></textarea>-->
+      <v-layout row >
+        <v-text-field
+          name="input-7-1"
+          full-width
+          multi-line
+          single-line
+          v-model="message"
+          placeholder="Leave a message here"
+        ></v-text-field>
+      </v-layout>
     </v-flex>
     <v-alert type="error" class="alert custom-alert" :value="error">
       {{errorMessage}}
@@ -156,9 +154,12 @@
             _self.$destroy()
           }, 5000)
         }).catch(function (error) {
-          console.log(error)
           _self.errorMessage = 'Something went wrong, check your inputs.'
           _self.error = true
+          setTimeout(function () {
+            _self.error = false
+          }, 5000)
+          throw error
         })
       }
     }

@@ -1,6 +1,12 @@
 <template>
     <v-container  grid-list-md text-xs-center>
       <v-form v-model="valid" ref="form" lazy-validation>
+        <v-alert type="error" class="alert custom-alert" :value="error">
+          {{errorMessage}}
+        </v-alert>
+        <v-alert type="success custom-alert" :value="success">
+          {{successMessage}}
+        </v-alert>
         <v-layout row wrap>
           <v-flex xs4>
             <v-subheader class="subheading">Repository Name</v-subheader>
@@ -126,7 +132,11 @@
         radioGroup: 1,
         public: true,
         private: false,
-        readmeCheckbox: false
+        readmeCheckbox: false,
+        error: false,
+        errorMessage: '',
+        success: false,
+        successMessage: ''
       }
     },
     mounted () {
@@ -164,8 +174,20 @@
             private: this.publicOrPrivate,
             auto_init: this.readmeCheckbox}).then(function (response) {
             if (response.status === 201) {
-              _self.$router.push('/repos')
+              _self.successMessage = 'Repository created, you\'ll be redirected in 5 seconds'
+              _self.success = true
+              setTimeout(function () {
+                _self.$router.push('/repos')
+                _self.$destroy()
+              }, 5000)
             }
+          }).catch(function (error) {
+            _self.errorMessage = 'Something went wrong, check your inputs.'
+            _self.error = true
+            setTimeout(function () {
+              _self.error = false
+            }, 5000)
+            throw error
           })
         }
       },
@@ -177,5 +199,10 @@
 </script>
 
 <style scoped>
-
+  .custom-alert {
+    position: absolute;
+    top: 14%;
+    left: 50%;
+    right: 5%;
+  }
 </style>

@@ -18,7 +18,6 @@ import CreateIssue from '@/components/CreateIssue'
 import CreatePullRequest from '@/components/CreatePullRequest'
 import File from '@/components/File'
 import Commit from '@/components/Commit'
-import CreateCommit from '@/components/CreateCommit'
 import CreateFile from '@/components/CreateFile'
 import UpdateFile from '@/components/UpdateFile'
 import NotFound from '@/components/NotFound'
@@ -127,12 +126,6 @@ export default new Router({
       path: '/repos/:owner/:repo/contents/:path',
       name: 'File',
       component: File,
-      meta: { auth: true }
-    },
-    {
-      path: '/repos/:owner/:repo/create/git/commit',
-      name: 'CreateCommit',
-      component: CreateCommit,
       meta: { auth: true }
     },
     {

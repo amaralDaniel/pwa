@@ -68,9 +68,8 @@
     mounted () {
       var _self = this
       this.$apollo.queries.viewer.refetch().then(function () {
-        console.log('called a query')
         _self.$store.dispatch('setViewer', {viewer: _self.viewer})
-        console.log('setted viewer')
+        console.log('viewer was setted')
       })
     },
     apollo: {

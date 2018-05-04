@@ -89,7 +89,6 @@
     mounted () {
       var _self = this
       _self.axiosInstance.get('/repos/' + this.owner + '/' + this.repo + '/issues/' + this.number).then(function (response) {
-        console.log(response.data)
         _self.issue = response.data
       })
       _self.axiosInstance.get('/repos/' + this.owner + '/' + this.repo + '/issues/' + this.number + '/comments').then(function (response) {

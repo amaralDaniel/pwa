@@ -1,11 +1,17 @@
 <template>
   <v-container  grid-list-md text-xs-center>
+    <v-alert type="error" class="alert custom-alert" :value="error">
+      {{errorMessage}}
+    </v-alert>
+    <v-alert type="success custom-alert" :value="success">
+      {{successMessage}}
+    </v-alert>
     <v-form v-model="valid" ref="form" lazy-validation>
       <v-layout row wrap>
         <v-flex xs4>
           <v-subheader class="subheading">Title</v-subheader>
         </v-flex>
-        <v-flex xs12 sm6>
+        <v-flex xs8 sm6>
           <v-text-field
             label="Title"
             v-model="title"
@@ -19,7 +25,7 @@
         <v-flex xs4>
           <v-subheader class="subheading">Base</v-subheader>
         </v-flex>
-        <v-flex xs12 sm6>
+        <v-flex xs8 sm6>
           <v-select
             :items="branches"
             v-model="selectedBase"
@@ -36,7 +42,7 @@
         <v-flex xs4>
           <v-subheader class="subheading">Head</v-subheader>
         </v-flex>
-        <v-flex xs12 sm6>
+        <v-flex xs8 sm6>
         <v-select
           :items="branches"
           v-model="selectedHead"
@@ -97,7 +103,11 @@
         comment: '',
         selectedHead: '',
         selectedBase: '',
-        maintainerCanModifyCheckbox: false
+        maintainerCanModifyCheckbox: false,
+        error: false,
+        errorMessage: '',
+        success: false,
+        successMessage: ''
       }
     },
     mounted () {
@@ -129,9 +139,20 @@
           maintainer_can_modify: _self.maintainerCanModifyCheckbox
         }).then(function (response) {
           if (response.status === 201) {
-            console.log(response.data)
-            _self.$router.push('/repo/' + _self.repositoryOwner + '/' + _self.repositoryName + '/pull/' + response.data.number)
+            _self.successMessage = 'File updated, you\'ll be redirected in 5 seconds'
+            _self.success = true
+            setTimeout(function () {
+              _self.$router.push('/repo/' + _self.repositoryOwner + '/' + _self.repositoryName + '/pull/' + response.data.number)
+              _self.$destroy()
+            }, 5000)
           }
+        }).catch(function (error) {
+          _self.errorMessage = 'Something went wrong, check your inputs.'
+          _self.error = true
+          setTimeout(function () {
+            _self.error = false
+          }, 5000)
+          throw error
         })
       }
     }
@@ -156,5 +177,11 @@
     color: $primary
     float: right
     margin: 2vh 0 1vh auto
+
+  .custom-alert
+    position: absolute
+    top: 14%
+    left: 50%
+    right: 5%
 
 </style>
