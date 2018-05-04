@@ -10,7 +10,6 @@ import singleGist from '@/components/singleGist'
 import singleIssue from '@/components/singleIssue'
 import User from '@/components/User'
 import Search from '@/components/Search'
-import singleFile from '@/components/singleFile'
 import visitedRepo from '@/components/visitedRepo'
 import CreateRepo from '@/components/CreateRepo'
 import PullRequest from '@/components/PullRequest'
@@ -84,12 +83,6 @@ export default new Router({
       path: '/search',
       name: 'Search',
       component: Search,
-      meta: { auth: true }
-    },
-    {
-      path: '/file/:sha',
-      name: 'singleFile',
-      component: singleFile,
       meta: { auth: true }
     },
     {

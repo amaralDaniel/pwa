@@ -50,12 +50,21 @@
           ></v-select>
         </v-flex>
       </v-layout>
-      <v-btn
-        @click="updateFile"
-        class="mt-3"
-      >
-        Update File
-      </v-btn>
+      <v-flex row>
+        <v-btn
+          @click="cancel"
+          class="mt-3"
+        >
+          Cancel
+        </v-btn>
+        <v-btn
+          @click="updateFile"
+          class="mt-3"
+        >
+          Update File
+        </v-btn>
+      </v-flex>
+
     </v-container>
 </template>
 
@@ -151,6 +160,10 @@
           }, 5000)
           throw error
         })
+      },
+      cancel: function () {
+        this.$destroy()
+        this.$router.go(-1)
       }
     }
   }
