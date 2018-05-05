@@ -20,6 +20,7 @@
                   class="CodeMirror">
       </codemirror>
     </v-flex>
+    <div id="outputHtml"></div>
   </v-container>
 </template>
 
@@ -33,6 +34,7 @@
 
   // require styles
   import 'codemirror/lib/codemirror.css'
+  var Diff2html = require('diff2html').Diff2Html
   export default {
     name: 'File',
     components: {
@@ -53,7 +55,8 @@
           line: true,
           message: '',
           readOnly: true
-        }
+        },
+        test: '"@@ -2,3 +2,4 @@ node_modules\\n .DS_Store\\n docs/_book\\n config.js\\n+hello\\n\\\\ No newline at end of file"'
       }
     },
     mounted () {
@@ -71,6 +74,10 @@
           return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
         }).join(''))
       })
+      let diff2htmlUi = new Diff2html({
+        diff: _self.test
+      })
+      diff2htmlUi.draw('#outputHtml', { inputFormat: 'json', showFiles: true, matching: 'lines', outputFormat: 'side-by-side' })
     },
     computed: {
       codemirror () {
