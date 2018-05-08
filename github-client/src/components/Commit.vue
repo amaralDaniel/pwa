@@ -1,5 +1,5 @@
 <template>
-    <v-container>
+    <v-container class="text-xs-left text-sm-left">
       <v-alert type="error" class="alert custom-alert" :value="error">
         {{errorMessage}}
       </v-alert>
@@ -9,7 +9,6 @@
       Commited by <span>{{commit.author.login}}</span> <span>{{commit.commit.committer.date | moment("from")}}</span>
       <p></p>
       <span style="color: green">+ {{commit.stats.additions}}</span> <span style="color: red">- {{commit.stats.deletions}}</span>
-
     </v-container>
 
 </template>
@@ -28,8 +27,6 @@
         commit: null,
         parents: [],
         commitFiles: [],
-        parentFiles: [],
-        outputHtml: '',
         error: false,
         errorMessage: '',
         success: false,
@@ -41,12 +38,8 @@
       _self.axiosInstance.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/commits/' + _self.sha).then(function (response) {
         _self.commit = response.data
         _self.commit.files.forEach(function (file) {
-          _self.commitFiles.push(file)
-        })
-        _self.commit.parents.forEach(function (parent) {
-          _self.axiosInstance.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/commits/' + parent.sha).then(function (response) {
-            _self.parents.push(response.data)
-          })
+          let outputHtml = ''
+          _self.commitFiles.push({file: file, html: outputHtml})
         })
       }).catch(function (error) {
         _self.errorMessage = 'Something went wrong, please refresh.'

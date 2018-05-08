@@ -57,7 +57,12 @@
               <div v-if="item === 'Commits'" >
                 <ul>
                   <li v-for="commit in commits">
-                    <router-link :to="{name: 'Commit', params: {owner: repositoryOwner, repo: repositoryName, sha: commit.sha}}" class="body-2">{{commit.commit.message}}</router-link>
+                    <router-link :to="{name: 'Commit', params: {owner: repositoryOwner, repo: repositoryName, sha: commit.sha}}">
+                      <span class="body-2">{{commit.commit.message}}</span></router-link>
+                    by
+                    <router-link :to="{name: 'User', params: {login: commit.author.login}}">
+                      <span class="body-1 primary" >{{commit.author.login}}</span>
+                    </router-link>
                   </li>
                 </ul>
               </div>
