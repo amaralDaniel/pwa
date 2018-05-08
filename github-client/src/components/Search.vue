@@ -125,7 +125,7 @@
                   <v-card-text class="grey lighten-3">
                     <li v-for="code in fetchedCodeResult">
                       <router-link :to="{name: 'singleFile', params: { sha: code.sha }}">
-                        <v-card ripple tile append replace style="width: 75vh;" class="my-2">
+                        <v-card ripple tile append replace class="my-2">
                           <v-card-title primary-title>
                             <div >
                               <p class="headline text-sm-left">{{code.name}}</p>
@@ -144,7 +144,7 @@
                   <v-card-text class="grey lighten-3">
                     <li v-for="issue in fetchedIssuesResult">
                       <router-link :to="{name: 'singleIssue', params: { owner: issue.user.login, name: issue.id }}">
-                        <v-card ripple tile append replace style="width: 75vh;" class="my-2">
+                        <v-card ripple tile append replace class="my-2">
                           <v-card-title primary-title>
                             <div >
                               <p class="headline text-sm-left">{{issue.title}}</p>
@@ -191,30 +191,46 @@
     methods: {
       doSearch () {
         var _self = this
-        _self.gh.search().forRepositories({q: _self.searchString})
+        _self.axiosInstance.get('/search/repositories', {
+          params: {
+            q: _self.searchString
+          }
+        })
           .then(({data: repositories}) => {
-            _self.repositoriesResult = repositories
+            _self.repositoriesResult = repositories.items
           }).catch((error) => {
             console.log('forRepositories error:', error)
           })
 
-        _self.gh.search().forUsers({q: _self.searchString})
+        _self.axiosInstance.get('/search/users', {
+          params: {
+            q: _self.searchString
+          }
+        })
           .then(({data: users}) => {
-            _self.usersResult = users
+            _self.usersResult = users.items
           }).catch((error) => {
             console.log('forUsers error:', error)
           })
 
-        _self.gh.search().forCode({q: _self.searchString})
+        _self.axiosInstance.get('/search/code', {
+          params: {
+            q: _self.searchString
+          }
+        })
           .then(({data: code}) => {
-            _self.codeResult = code
+            _self.codeResult = code.items
           }).catch((error) => {
             console.log('forCode error:', error)
           })
 
-        _self.gh.search().forIssues({q: _self.searchString})
+        _self.axiosInstance.get('/search/issues', {
+          params: {
+            q: _self.searchString
+          }
+        })
           .then(({data: issues}) => {
-            _self.issuesResult = issues
+            _self.issuesResult = issues.items
           }).catch((error) => {
             console.log('forIssues error:', error)
           })
