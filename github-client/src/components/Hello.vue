@@ -1,16 +1,20 @@
 <template>
-  <v-jumbotron color="grey lighten-2" light >
-    <v-container fill-height>
-      <v-layout align-center>
-        <v-flex>
-          <h3 class="display-3">Welcome to GHPWA</h3>
-          <span class="subheading">This GitHub client is a Progressive Web App.</span>
-          <v-divider class="my-3"></v-divider>
-          <div class="title mb-3" id="div-not-authenticated"></div>
-        </v-flex>
-      </v-layout>
+  <div>
+    <v-container grid-list-xl text-xs-center fluid>
+      <v-jumbotron color="grey lighten-2" light >
+        <v-container fill-height>
+          <v-layout align-center>
+            <v-flex>
+              <h3 class="display-3">Welcome to GHPWA</h3>
+              <span class="subheading">This GitHub client is a Progressive Web App.</span>
+              <v-divider class="my-3"></v-divider>
+              <div class="title mb-3" id="div-not-authenticated"></div>
+            </v-flex>
+          </v-layout>
+        </v-container>
+      </v-jumbotron>
     </v-container>
-  </v-jumbotron>
+  </div>
 </template>
 
 <script>

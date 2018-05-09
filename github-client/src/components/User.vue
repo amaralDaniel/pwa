@@ -7,8 +7,8 @@
       >
         <img :src="user.avatarUrl" alt="avatar">
       </v-avatar>
-      <v-layout column>
-        <v-flex xs12 sm2>
+      <v-layout column class="ml-5">
+        <v-flex xs12 sm2 class="text-sm-left">
           <span class="headline">{{user.login}}</span>
           <br>
           <span class="body-2" v-if="user.location">{{user.location}}</span>
