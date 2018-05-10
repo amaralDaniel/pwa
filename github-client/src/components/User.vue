@@ -13,7 +13,7 @@
           <br>
           <span class="body-2" v-if="user.location">{{user.location}}</span>
           <span v-else class="grey--text">n/a</span>
-          <v-btn round color="primary" dark :outline="!isFollowing" v-on:click="followLogic">Following</v-btn>
+          <v-btn v-if="viewer.viewer.login !== user.login" round color="primary" dark :outline="!isFollowing" v-on:click="followLogic">Following</v-btn>
         </v-flex>
       </v-layout>
       <v-expansion-panel focusable class="mt-4">
