@@ -6,18 +6,18 @@
           <button class="icon" v-bind:class="{isTrue: isStarred}" v-on:click="starLogic">
             <i class="fas fa-star"></i>
           </button>
-          <span>{{repository.stargazers.totalCount}}</span>
+          <span>{{repo.stargazers_count}}</span>
           <button class="icon" v-bind:class="{isTrue: isWatched}" v-on:click="watchLogic">
             <i class="fas fa-eye"></i>
           </button>
-          <span>{{repository.watchers.totalCount}}</span>
-          <button v-if="repository.hasWikiEnabled" class="icon" v-on:click="">
+          <span>{{repo.watchers_count}}</span>
+          <button v-if="repo.has_wiki" class="icon" v-on:click="">
             <i class="fas fa-book"></i>
           </button>
           <button class="icon" v-on:click="forkRepo">
             <i class="fas fa-code-branch"></i>
           </button>
-          <span>{{repository.forkCount}}</span>
+          <span>{{repo.fork_count}}</span>
         </v-layout>
       </v-card>
       <v-tabs
@@ -44,19 +44,19 @@
           <v-card flat class="card-item">
             <v-card-text>
               <h2>{{ item }}</h2>
-              <v-layout text-md-left>
+              <v-layout text-md-left class="my-2 mx-2">
                 <div v-if="item === 'Readme'">
                   <div v-if="readme === ''">
-                    <span class="body-2 grey--text">Nothing to show here</span>
+                    <span class="body-2 grey--text text-xs-left text-sm-left">Nothing to show here</span>
                   </div>
-                  <vue-markdown v-bind:source="readme" ></vue-markdown>
+                  <vue-markdown v-bind:source="readme" class="text-xs-left text-sm-left"></vue-markdown>
                 </div>
                 <div v-if="item === 'Files'">
                   <TreeView></TreeView>
                 </div>
-                <div v-if="item === 'Commits'" >
+                <div v-if="item === 'Commits'">
                   <ul>
-                    <li v-for="commit in commits">
+                    <li v-for="commit in commits" class="text-xs-left text-sm-left">
                       <router-link :to="{name: 'Commit', params: {owner: repositoryOwner, repo: repositoryName, sha: commit.sha}}">
                         <span class="body-2">{{commit.commit.message}}</span></router-link>
                       by
@@ -66,21 +66,21 @@
                     </li>
                   </ul>
                 </div>
-                <!--<div v-if="item === 'Contributors'">-->
-                <!--<ul >-->
-                <!--<li v-for="user in contributors">-->
-                <!--<router-link :to="{name: 'User', params: {login: user.login}}">-->
-                <!--<v-layout align-center class="mb-2" row>-->
-                <!--<v-avatar>-->
-                <!--<img :src="user.avatar_url" alt="John">-->
-                <!--</v-avatar>-->
-                <!--<v-spacer></v-spacer>-->
-                <!--<span class="body-2">{{user.login}}</span>-->
-                <!--</v-layout>-->
-                <!--</router-link>-->
-                <!--</li>-->
-                <!--</ul>-->
-                <!--</div>-->
+                <div v-if="item === 'Contributors'">
+                  <ul >
+                    <li v-for="user in contributors">
+                      <router-link :to="{name: 'User', params: {login: user.login}}">
+                        <v-layout align-center class="my-2" row>
+                          <v-avatar>
+                            <img :src="user.avatar_url" :alt="user.login">
+                          </v-avatar>
+                          <v-spacer></v-spacer>
+                          <span class="body-2">{{user.login}}</span>
+                        </v-layout>
+                      </router-link>
+                    </li>
+                  </ul>
+                </div>
                 <div v-if="item === 'Issues'">
                   <router-link :to="{name: 'CreateIssue'}">
                     <v-btn
@@ -95,20 +95,25 @@
                     </v-btn>
                   </router-link>
                   <ul >
-                    <li v-for="issue in repository.issues.nodes">
-                      <router-link :to="{name: 'singleIssue', params: { owner: issue.author.login, repo: repositoryName, number: issue.number }}">
-                        <v-card>
-                          <v-layout row text-md-left>
-                            <v-layout class="mb-2" column>
-                              <router-link :to="{name: 'User', params: {login: issue.author.login}}">
-                                <v-avatar>
-                                  <img :src="issue.author.avatarUrl" alt="John">
-                                </v-avatar>
-                                <span class="body-2">{{issue.author.login}}</span>
-                              </router-link>
+                    <li v-for="issue in issues" class="text-xs-left text-sm-left">
+                      <router-link :to="{name: 'singleIssue', params: { owner: issue.user.login, repo: repositoryName, number: issue.number }}">
+                        <v-card ripple tile append replace xs2 class="my-2">
+                          <v-card-title primary-title class="text-xs-left" >
+                            <v-layout row>
+                              <v-flex xs12 sm12>
+                                <span class="title">{{issue.title}}</span>
+                              </v-flex>
                             </v-layout>
-                            <div>{{issue.title}}</div>
-                          </v-layout>
+                          </v-card-title>
+                          <v-card-text>
+                            <router-link :to="{name: 'User', params: {login: issue.user.login}}">
+                              <v-avatar>
+                                <img :src="issue.user.avatar_url" :alt="issue.user.login">
+                              </v-avatar>
+                              <span class="body-2">{{issue.user.login}}</span>
+                            </router-link>
+                            <span class="body-2 grey--text text-sm-left">created this issue {{ issue.created_at | moment("from") }}</span>
+                          </v-card-text>
                         </v-card>
                       </router-link>
                     </li>
@@ -128,22 +133,22 @@
                     </v-btn>
                   </router-link>
                   <ul >
-                    <li v-for="pr in repository.pullRequests.nodes">
+                    <li v-for="pr in pullRequests" class="text-xs-left text-sm-left">
                       <v-layout row>
                         <router-link :to="{name: 'PullRequest', params: {owner: repositoryOwner, name: repositoryName, number: pr.number}}">
-                          <v-card ripple tile append replace style="width: 75vh;" class="my-2">
+                          <v-card ripple tile append replace xs6 class="my-2">
                             <v-card-title primary-title>
-                              <span class="body-2">#{{pr.number}} {{pr.title}}</span>
+                              <span class="body-2">#{{pr.number}} {{pr.title}} by <router-link :to="{name: 'User', params: {login: pr.author.login}}">{{pr.author.login}}</router-link></span>
                             </v-card-title>
-                            <v-card-text text-sm-left>
+                            <v-card-text>
                               <v-spacer></v-spacer>
-                              <span class="body-2">Created <span class="body-1 grey--text">{{pr.createdAt | moment("from")}}</span></span>
+                              <span class="body-2">Created {{pr.created_at | moment("from")}}</span>
                               <v-spacer></v-spacer>
-                              <span class="body-2">State: <span class="body-1 grey--text">{{pr.state}}</span></span>
+                              <span class="body-2">State: {{pr.state}}</span>
                               <v-spacer></v-spacer>
-                              <span class="body-2" :v-if="pr.merged">Merged <span class="body-1 grey--text">{{pr.mergedAt | moment("from")}}</span></span>
+                              <span class="body-2" :v-if="pr.merged">Merged {{pr.merged_at | moment("from")}}</span>
                               <v-spacer></v-spacer>
-                              <span class="body-2" :v-if="pr.mer">Closed <span class="body-1 grey--text">{{pr.closedAt | moment("from")}}</span></span>
+                              <span class="body-2" :v-if="pr.mer">Closed {{pr.closed_at | moment("from")}}</span>
                             </v-card-text>
                           </v-card>
                         </router-link>
@@ -164,7 +169,6 @@
   // import GitHub from 'github-api'
   // import store from '../store'
   import VueMarkdown from 'vue-markdown'
-  import gql from 'graphql-tag'
   import TreeView from '@/components/TreeView'
 
   export default {
@@ -181,168 +185,127 @@
         contributors: [],
         currentItem: 'Readme',
         items: [
-          'Readme', 'Files', 'Commits', 'Issues', 'Pull requests'
+          'Readme', 'Files', 'Commits', 'Issues', 'Pull requests', 'Contributors'
         ],
         readme: '',
         commits: [],
         avatarSize: '56',
         repo: null,
-        repository: null,
-        viewer: null,
+        repoGH: null,
         starred: null,
         starCount: 0,
         watched: false,
         watchCount: 0,
         forkCount: 0,
         stateToSubscribe: '',
-        collaborators: null
-      }
-    },
-    apollo: {
-      repository: {
-        query: gql`query($repo_name: String!, $repo_owner: String!, $number: Int!) {
-                      repository(owner: $repo_owner, name: $repo_name){
-                        id
-                        viewerSubscription
-                        viewerCanSubscribe
-                        viewerHasStarred
-                        viewerPermission
-                        forkCount
-                        hasWikiEnabled
-                        stargazers{
-                          totalCount
-                        }
-                        watchers{
-                          totalCount
-                        }
-
-                        issues(last: $number) {
-                          nodes{
-                            author{
-                              avatarUrl
-                              login
-                            }
-                            title
-                            closedAt
-                            number
-                            state
-                            id
-                            publishedAt
-                          }
-                        }
-                        pullRequests(first:$number){
-                          nodes{
-                            id
-                            author{
-                              login
-                            }
-                            state
-                            body
-                            merged
-                            mergedAt
-                            closed
-                            closedAt
-                            createdAt
-                            number
-                            title
-                          }
-                        }
-                      }
-                     }
-        `,
-        variables () {
-          return {
-            repo_name: this.repositoryName,
-            repo_owner: this.repositoryOwner,
-            number: 100
-          }
-        },
-        fetchPolicy: 'cache-then-network'
+        collaborators: null,
+        viewerHasStarred: null,
+        issues: null,
+        pullRequests: null,
+        authUser: null,
+        viewerIsWatching: null
       }
     },
     mounted () {
       var _self = this
-
-      var user = _self.gh.getUser()
-      console.log(user)
-      _self.repo = _self.gh.getRepo(this.repositoryOwner, this.repositoryName)
-      _self.axiosInstance.get(`/repos/${this.repositoryName}/${this.repositoryOwner}/readme`).then(function (response) {
-        _self.readme = window.atob(response.data.content)
+      _self.axiosInstance.get('/user').then(function (response) {
+        _self.authUser = response.data
+      }).catch(function (error) {
+        throw error
       })
-      _self.repo.listCommits().then(function (result) {
+      _self.repoGH = _self.gh.getRepo(this.repositoryOwner, this.repositoryName)
+      _self.axiosInstance.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName).then(function (response) {
+        _self.repo = response.data
+      })
+      _self.axiosInstance.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/readme').then(function (response) {
+        _self.readme = _self.content = decodeURIComponent(atob(response.data.content).split('').map(function (c) {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+        }).join(''))
+      })
+      _self.axiosInstance.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/commits').then(function (result) {
         // console.log(result.data)
         result.data.forEach(function (each) {
           _self.commits.push(each)
+        })
+      })
+      _self.axiosInstance.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/issues', {
+        params: {
+          subscribed: true,
+          ignored: false
+        }
+      }).then(function (response) {
+        _self.issues = response.data
+      }).catch(function (error) {
+        throw error
+      })
+      _self.axiosInstance.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/pulls').then(function (response) {
+        _self.pullRequests = response.data
+      }).catch(function (error) {
+        throw error
+      })
+      _self.axiosInstance.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/contributors').then(function (response) {
+        // console.log(result.data)
+        response.data.forEach(function (each) {
+          _self.contributors.push(each)
         })
       })
     },
     methods: {
       starLogic: function (event) {
         var _self = this
-        if (this.starred) {
-          _self.repo.unstar().then(function (response) {
-            _self.starred = false
-            console.log('unstarred' + response)
+        if (_self.isStarred) {
+          _self.axiosInstance.delete('/user/starred/' + _self.repositoryOwner + '/' + _self.repositoryName).then(function (response) {
+            if (response.status === 204) {
+              _self.starred = false
+            }
+          }).catch(function (error) {
+            throw error
           })
         } else {
-          _self.repo.star().then(function (response) {
-            _self.starred = true
-            console.log('starred' + response)
+          _self.axiosInstance.put('/user/starred/' + _self.repositoryOwner + '/' + _self.repositoryName).then(function (response) {
+            if (response.status === 204) {
+              _self.starred = true
+            }
+          }).catch(function (error) {
+            throw error
           })
         }
       },
       forkLogic: function () {
         var _self = this
-        if (_self.viewerHasForked) {
-          _self.showForkTooltip = true
-        } else {
-          _self.repo.fork().then(function (response) {
+
+        _self.axiosInstance.post('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/forks').then(response => {
+          if (response.status === 202) {
             _self.viewerHasForked = true
-            console.log(response)
-          })
-        }
+            _self.$router.push('/repos')
+          }
+        }).catch(error => {
+          throw error
+        })
       },
       watchLogic: function () {
         var _self = this
-        if (!_self.watched) {
-          console.log('unwatch logic')
-          _self.stateToSubscribe = 'SUBSCRIBED'
-          _self.$apollo.mutate({
-            mutation: gql`mutation subscribeRepository($user: String!, $state: SubscriptionState!, $subId: ID!) {
-                        updateSubscription(input:{clientMutationId: $user, state: $state, subscribableId: $subId }) {
-                          clientMutationId:clientMutationId
-                          subscribable:subscribable {
-                            id
-                          }
-                        }
-                      }`,
-            variables: {
-              user: _self.viewer.id,
-              state: _self.stateToSubscribe,
-              subId: _self.repository.id
+        if (!_self.isWatched) {
+          _self.axiosInstance.put('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/subscription', {
+            params: {
+              subscribed: true,
+              ignored: false
             }
+          }).then(response => {
+            if (response.status === 200) {
+              _self.watched = true
+            }
+          }).catch(function (error) {
+            throw error
           })
-          _self.watched = true
         } else {
-          console.log('watch logic')
-          _self.stateToSubscribe = 'UNSUBSCRIBED'
-          _self.$apollo.mutate({
-            mutation: gql`mutation subscribeRepository($user: String!, $state: SubscriptionState!, $subId: ID!) {
-                        updateSubscription(input:{clientMutationId: $user, state: $state, subscribableId: $subId }) {
-                          clientMutationId:clientMutationId
-                          subscribable:subscribable {
-                            id
-                          }
-                        }
-                      }`,
-            variables: {
-              user: _self.viewer.id,
-              state: _self.stateToSubscribe,
-              subId: _self.repository.id
+          _self.axiosInstance.delete('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/subscription').then(response => {
+            if (response.status === 204) {
+              _self.watched = false
             }
+          }).catch(function (error) {
+            throw error
           })
-          _self.watched = false
-          console.log(_self.watched)
         }
       },
       forkRepo: function () {
@@ -357,24 +320,19 @@
     computed: {
       isStarred: function () {
         var _self = this
-        if (_self.repository) {
-          console.log(_self.repository.viewerHasStarred)
-          if (_self.repository.viewerHasStarred) {
-            _self.starred = true
-          }
-          if (_self.starred) return true
-          else return false
+        if (_self.viewerHasStarred) {
+          _self.starred = true
         }
+        if (_self.starred) return true
+        else return false
       },
       isWatched: function () {
         var _self = this
-        if (_self.repository) {
-          if (_self.repository.viewerSubscription === 'SUBSCRIBED') {
-            _self.watched = true
-          }
-          if (_self.watched) return true
-          else return false
+        if (_self.viewerIsWatching) {
+          _self.watched = true
         }
+        if (_self.watched) return true
+        else return false
       },
       viewerIsOwner: function () {
         // var _self = this

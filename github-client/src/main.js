@@ -16,6 +16,7 @@ import VueApollo from 'vue-apollo'
 import colors from 'vuetify/es5/util/colors'
 import axios from 'axios'
 import VueHighlightJS from 'vue-highlightjs'
+import VueLodash from 'vue-lodash'
 
 Vue.config.productionTip = false
 Vue.use(Vuetify, {
@@ -64,11 +65,13 @@ Vue.prototype.axiosInstance = axios.create({
   baseURL: 'https://api.github.com',
   timeout: 5000,
   headers: {
-    'Authorization': 'token ' + store.getters.getToken
+    'Authorization': 'token ' + localStorage.getItem('token')
   }
 })
 
 Vue.use(VueHighlightJS)
+
+Vue.use(VueLodash)
 
 new Vue({ // eslint-disable-line no-new
   el: '#app',

@@ -18,7 +18,7 @@
           <router-link :to="{name: 'User', params: { login: viewer.login}}">
             <v-layout row align-center>
               <v-list-tile-avatar size="50" >
-                <img :src="viewer.avatarUrl" >
+                <img :src="viewer.avatar_url" >
               </v-list-tile-avatar>
               <v-list-tile-content>
                 <v-list-tile-title>{{viewer.name}}</v-list-tile-title>
@@ -130,7 +130,6 @@
 </template>
 
 <script>
-  import gql from 'graphql-tag'
   import Vue from 'vue'
   import store from './store'
   Vue.use(require('vue-moment'))
@@ -151,21 +150,13 @@
       ],
       mini: false,
       right: null,
-      viewer: []
+      viewer: {}
     }),
-    apollo: {
-      viewer: {
-        query: gql`query {
-                    viewer {
-                      login
-                      avatarUrl
-                      name
-                      email
-                      location
-                     }
-                  }
-                  `
-      }
+    beforeMount () {
+      var _self = this
+      _self.axiosInstance.get('/user').then(function (response) {
+        _self.viewer = response.data
+      })
     },
     methods: {
       logout: function () {
