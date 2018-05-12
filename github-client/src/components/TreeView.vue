@@ -1,5 +1,5 @@
 <template>
-    <v-container text-sm-left>
+    <v-container text-sm-left text-xs-left>
       <div v-if="path != ''">
         <v-btn v-on:click="goBack">..</v-btn>
       </div>

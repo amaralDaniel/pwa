@@ -43,7 +43,6 @@
         >
           <v-card flat class="card-item">
             <v-card-text>
-              <h2>{{ item }}</h2>
               <v-layout text-md-left class="my-2 mx-2">
                 <div v-if="item === 'Readme'">
                   <div v-if="readme === ''">
@@ -82,42 +81,44 @@
                   </ul>
                 </div>
                 <div v-if="item === 'Issues'">
-                  <router-link :to="{name: 'CreateIssue'}">
-                    <v-btn
-                      color="pink"
-                      small
-                      absolute
-                      top
-                      right
-                      class="mt-5 mr-2"
-                    >
-                      Create Issue
-                    </v-btn>
-                  </router-link>
-                  <ul >
-                    <li v-for="issue in issues" class="text-xs-left text-sm-left">
-                      <router-link :to="{name: 'singleIssue', params: { owner: issue.user.login, repo: repositoryName, number: issue.number }}">
-                        <v-card ripple tile append replace xs2 class="my-2">
-                          <v-card-title primary-title class="text-xs-left" >
-                            <v-layout row>
-                              <v-flex xs12 sm12>
-                                <span class="title">{{issue.title}}</span>
-                              </v-flex>
-                            </v-layout>
-                          </v-card-title>
-                          <v-card-text>
-                            <router-link :to="{name: 'User', params: {login: issue.user.login}}">
-                              <v-avatar>
-                                <img :src="issue.user.avatar_url" :alt="issue.user.login">
-                              </v-avatar>
-                              <span class="body-2">{{issue.user.login}}</span>
-                            </router-link>
-                            <span class="body-2 grey--text text-sm-left">created this issue {{ issue.created_at | moment("from") }}</span>
-                          </v-card-text>
-                        </v-card>
-                      </router-link>
-                    </li>
-                  </ul>
+                  <v-layout row>
+                    <router-link :to="{name: 'CreateIssue'}">
+                      <v-btn
+                        color="pink"
+                        small
+                        absolute
+                        top
+                        right
+                        class="my-5 mr-2"
+                      >
+                        Create Issue
+                      </v-btn>
+                    </router-link>
+                    <ul >
+                      <li v-for="issue in issues" class="text-xs-left text-sm-left">
+                        <router-link :to="{name: 'singleIssue', params: { owner: issue.user.login, repo: repositoryName, number: issue.number }}">
+                          <v-card ripple tile append replace xs2 class="my-2">
+                            <v-card-title primary-title class="text-xs-left" >
+                              <v-layout row>
+                                <v-flex xs12 sm12>
+                                  <span class="title">{{issue.title}}</span>
+                                </v-flex>
+                              </v-layout>
+                            </v-card-title>
+                            <v-card-text>
+                              <router-link :to="{name: 'User', params: {login: issue.user.login}}">
+                                <v-avatar>
+                                  <img :src="issue.user.avatar_url" :alt="issue.user.login">
+                                </v-avatar>
+                                <span class="body-2">{{issue.user.login}}</span>
+                              </router-link>
+                              <span class="body-2 grey--text text-sm-left">created this issue {{ issue.created_at | moment("from") }}</span>
+                            </v-card-text>
+                          </v-card>
+                        </router-link>
+                      </li>
+                    </ul>
+                  </v-layout>
                 </div>
                 <div v-if="item === 'Pull requests'">
                   <router-link :to="{name: 'CreatePullRequest'}">
@@ -138,7 +139,7 @@
                         <router-link :to="{name: 'PullRequest', params: {owner: repositoryOwner, name: repositoryName, number: pr.number}}">
                           <v-card ripple tile append replace xs6 class="my-2">
                             <v-card-title primary-title>
-                              <span class="body-2">#{{pr.number}} {{pr.title}} by <router-link :to="{name: 'User', params: {login: pr.author.login}}">{{pr.author.login}}</router-link></span>
+                              <span class="body-2">#{{pr.number}} {{pr.title}} by <router-link :to="{name: 'User', params: {login: pr.user.login}}">{{pr.user.login}}</router-link></span>
                             </v-card-title>
                             <v-card-text>
                               <v-spacer></v-spacer>

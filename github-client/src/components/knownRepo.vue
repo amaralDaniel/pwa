@@ -54,7 +54,7 @@
                   <vue-markdown v-bind:source="readme" class="text-xs-left text-sm-left"></vue-markdown>
                 </div>
                 <div v-if="item === 'Files'">
-                  <TreeView class="text-xs-left text-sm-left"></TreeView>
+                  <TreeView></TreeView>
                 </div>
                 <div v-if="item === 'Commits'">
                   <ul>
@@ -280,11 +280,6 @@
       }).catch(function (error) {
         throw error
       })
-      _self.axiosInstance.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/pulls').then(function (response) {
-        _self.pullRequests = response.data
-      }).catch(function (error) {
-        throw error
-      })
       _self.axiosInstance.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/subscription').then(function (response) {
         if (response.status === 200) {
           if (response.data.subscribed) {
@@ -295,6 +290,11 @@
         }
       }).catch(function (error) {
         _self.viewerIsWatching = false
+        throw error
+      })
+      _self.axiosInstance.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/pulls').then(function (response) {
+        _self.pullRequests = response.data
+      }).catch(function (error) {
         throw error
       })
     },
