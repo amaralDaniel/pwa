@@ -89,7 +89,7 @@
           ></v-radio>
         </v-radio-group>
         <v-layout row>
-          <v-flex sm2>
+          <v-flex xs12>
             <v-checkbox color="primary" label="Initiate this repository with a README" v-model="readmeCheckbox"></v-checkbox>
           </v-flex>
         </v-layout>

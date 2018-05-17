@@ -4,20 +4,38 @@
       <v-card height="10vh">
         <v-layout align-center justify-center>
           <button class="icon" v-bind:class="{isTrue: isStarred}" v-on:click="starLogic">
-            <i class="fas fa-star"></i>
+            <i class="material-icons">
+              star
+            </i>
           </button>
           <span>{{repo.stargazers_count}}</span>
           <button class="icon" v-bind:class="{isTrue: isWatched}" v-on:click="watchLogic">
-            <i class="fas fa-eye"></i>
+            <i class="material-icons">
+              visibility
+            </i>
           </button>
           <span>{{repo.watchers_count}}</span>
           <button v-if="repo.has_wiki" class="icon" v-on:click="">
-            <i class="fas fa-book"></i>
+            <i class="material-icons">
+              library_books
+            </i>
           </button>
           <button class="icon" v-on:click="forkRepo">
-            <i class="fas fa-code-branch"></i>
+            <i class="material-icons">
+              call_split
+            </i>
           </button>
           <span>{{repo.fork_count}}</span>
+          <button class="icon" id="download-button" v-on:click="downloadRepo">
+            <i class="material-icons">
+              archive
+            </i>
+          </button>
+          <button class="icon" id="save-button" v-on:click="saveRepo">
+            <i class="material-icons">
+              save
+            </i>
+          </button>
         </v-layout>
       </v-card>
       <v-tabs
@@ -58,10 +76,10 @@
                     <li v-for="commit in commits" class="text-xs-left text-sm-left">
                       <router-link :to="{name: 'Commit', params: {owner: repositoryOwner, repo: repositoryName, sha: commit.sha}}">
                         <span class="body-2">{{commit.commit.message}}</span></router-link>
-                      by
-                      <router-link :to="{name: 'User', params: {login: commit.author.login}}">
-                        <span class="body-1 primary" >{{commit.author.login}}</span>
-                      </router-link>
+                      <!--by-->
+                      <!--<router-link :to="{name: 'User', params: {login: commit.author.login}}">-->
+                        <!--<span class="body-1 primary" >{{commit.author.login}}</span>-->
+                      <!--</router-link>-->
                     </li>
                   </ul>
                 </div>
@@ -207,7 +225,7 @@
         viewerIsWatching: null
       }
     },
-    mounted () {
+    beforeMount () {
       var _self = this
       _self.axiosInstance.get('/user').then(function (response) {
         _self.authUser = response.data
@@ -316,6 +334,12 @@
             _self.$router.push('/repos')
           }
         })
+      },
+      downloadRepo: function () {
+
+      },
+      saveRepo: function () {
+
       }
     },
     computed: {
@@ -352,13 +376,13 @@
     margin: 1vh 1vw 1vh
     font-size: 2em
 
-    .icon:focus
-      outline: none
+  .icon:focus
+    outline: none
 
-    .isTrue
-      margin-right: 1vw
-      font-size: 2em
-      color: green
+  .isTrue
+    margin-right: 1vw
+    font-size: 2em
+    color: green
 
   .card-item
     min-height: 15vh
@@ -366,4 +390,7 @@
   li a
     text-decoration: none !important
     color: $secondary
+
+  .material-icons
+    font-size: 40px
 </style>

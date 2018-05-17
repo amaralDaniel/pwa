@@ -156,6 +156,7 @@
       var _self = this
       _self.axiosInstance.get('/user').then(function (response) {
         _self.viewer = response.data
+        _self.$store.dispatch('setViewer', response.data)
       })
     },
     methods: {

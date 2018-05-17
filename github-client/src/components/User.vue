@@ -13,7 +13,7 @@
           <br>
           <span class="body-2" v-if="user.location">{{user.location}}</span>
           <span v-else class="grey--text">n/a</span>
-          <v-btn v-if="viewer.viewer.login !== user.login" round color="primary" dark :outline="!isFollowing" v-on:click="followLogic">Following</v-btn>
+          <v-btn v-if="canFollow" round color="primary" dark :outline="!isFollowing" v-on:click="followLogic">Following</v-btn>
         </v-flex>
       </v-layout>
       <v-expansion-panel focusable class="mt-4">
@@ -291,7 +291,7 @@
     computed: {
       isFollowing: function () {
         var _self = this
-        _self.axiosInstance.get('/users/' + _self.viewer.viewer.login + '/following/' + _self.user.login).then(function (response) {
+        _self.axiosInstance.get('/users/' + _self.viewer.login + '/following/' + _self.user.login).then(function (response) {
           if (response.status === 204) {
             _self.following = true
           } else {
@@ -302,6 +302,9 @@
           if (_self.following) return true
           else return false
         }
+      },
+      canFollow: function () {
+        return this.viewer.login !== this.user.login
       }
     }
   }

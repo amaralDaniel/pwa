@@ -4,22 +4,42 @@
       <v-card height="10vh">
         <v-layout align-center justify-center>
           <button class="icon" v-bind:class="{isTrue: isStarred}" v-on:click="starLogic">
-            <i class="fas fa-star"></i>
+            <i class="material-icons">
+              star
+            </i>
           </button>
           <span>{{repo.stargazers_count}}</span>
           <button class="icon" v-bind:class="{isTrue: isWatched}" v-on:click="watchLogic">
-            <i class="fas fa-eye"></i>
+            <i class="material-icons">
+              visibility
+            </i>
           </button>
           <span>{{repo.watchers_count}}</span>
           <button v-if="repo.has_wiki" class="icon" v-on:click="getWiki">
-            <i class="fas fa-book"></i>
+            <i class="material-icons">
+              library_books
+            </i>
           </button>
           <button class="icon" v-on:click="forkLogic">
-            <i class="fas fa-code-branch"></i>
+            <i class="material-icons">
+              call_split
+            </i>
           </button>
           <span>{{repo.fork_count}}</span>
           <button class="icon" v-on:click="goToUploadFile">
-            <i class="fas fa-upload"></i>
+            <i class="material-icons">
+              backup
+            </i>
+          </button>
+          <button class="icon" id="download-button" v-on:click="downloadRepo">
+            <i class="material-icons">
+              archive
+            </i>
+          </button>
+          <button class="icon" id="save-button" v-on:click="saveRepo">
+            <i class="material-icons">
+              save
+            </i>
           </button>
         </v-layout>
       </v-card>
@@ -371,6 +391,12 @@
         _self.axiosInstance.get(`/repos/${_self.repositoryOwner}/${_self.repositoryName}/wiki`).then(function (response) {
           console.log(response.data)
         })
+      },
+      downloadRepo: function () {
+        console.log('Pending for now')
+      },
+      saveRepo: function () {
+
       }
     },
     computed: {
@@ -421,4 +447,7 @@
   li a
     text-decoration: none !important
     color: $secondary
+
+  .material-icons
+    font-size: 40px
 </style>

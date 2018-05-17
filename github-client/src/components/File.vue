@@ -4,7 +4,9 @@
     <span class="display-1">{{file.name}}</span>
       <span>
         <button class="icon" v-on:click="editFile" v-if="viewerCanEdit">
-        <i class="fas fa-pencil-alt"></i>
+        <i class="material-icons">
+          edit
+        </i>
         </button>
       </span>
     </v-flex>
@@ -62,7 +64,7 @@
     mounted () {
       var _self = this
       let viewer = _self.$store.getters.getViewer
-      _self.axiosInstance.get(`/repos/${_self.repositoryOwner}/${_self.repositoryName}/collaborators/${viewer.viewer.login}`).then(function (response) {
+      _self.axiosInstance.get(`/repos/${_self.repositoryOwner}/${_self.repositoryName}/collaborators/${viewer.login}`).then(function (response) {
         if (response.status === 204) {
           _self.viewerCanEdit = true
         }
@@ -104,7 +106,7 @@
 
 <style scoped>
 
-  .fa-pencil-alt {
+  .material-icons {
     font-size: 15pt;
     margin: 50% 50% 100% 100%;
   }

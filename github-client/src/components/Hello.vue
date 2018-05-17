@@ -19,7 +19,7 @@
 
 <script>
   import { mapGetters, mapActions } from 'vuex'
-  import router from '../router/index'
+  // import router from '../router/index'
   import GitHub from 'github-api'
   var qs = require('querystring')
   // var config = require('../../config')
@@ -100,14 +100,14 @@
           component.getToken(code, function (err, token) {
             if (err) return err
             if (token) {
-              component.setToken(token)
-              // component.getProfile(token, function (err, profile) {
-              //   if (err) return err
-              //   component.renderProfile(profile)
-              // })
-              component.setAuthState()
-
-              router.push({ name: 'repos' })
+              component.$store.dispatch('setAuthState')
+              localStorage.setItem('token', token)
+              component.$store.dispatch('setToken', token).then(function () {
+                component.axiosInstance.get('/user').then(function (response) {
+                  component.$store.dispatch('setViewer', response.data)
+                })
+                component.$router.push({ name: 'repos' })
+              })
               component.gh = new GitHub({
                 token: component.$store.getters.getToken
               })

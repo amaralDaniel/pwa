@@ -63,7 +63,8 @@
     data () {
       return {
         viewer: null,
-        repos: []
+        repos: [],
+        downloadSwitch: false
       }
     },
     beforeMount () {
@@ -78,12 +79,12 @@
       })
     },
     mounted () {
-      var _self = this
-      _self.axiosInstance.get('/user').then(function (response) {
-        _self.viewer = response.data
-        _self.$store.dispatch('setViewer', {viewer: response.data})
-        console.log('viewer was setted')
-      })
+      // var _self = this
+      // _self.axiosInstance.get('/user').then(function (response) {
+      //   _self.viewer = response.data
+      //   _self.$store.dispatch('setViewer', {viewer: response.data})
+      //   console.log('viewer was setted')
+      // })
     },
     computed: {
       orderedRepos: function () {
@@ -97,4 +98,5 @@
 
   router-link
     text-decoration: none !important
+
 </style>

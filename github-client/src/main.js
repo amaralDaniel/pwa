@@ -65,7 +65,7 @@ Vue.prototype.axiosInstance = axios.create({
   baseURL: 'https://api.github.com',
   timeout: 5000,
   headers: {
-    'Authorization': 'token ' + localStorage.getItem('token')
+    'Authorization': 'token ' + store.getters.getToken
   }
 })
 
