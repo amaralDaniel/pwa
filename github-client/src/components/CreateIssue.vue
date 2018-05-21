@@ -50,6 +50,7 @@
 </template>
 
 <script>
+  import axios from 'axios'
   export default {
     name: 'CreateIssue',
     data () {
@@ -81,7 +82,7 @@
         if (this.$refs.form.validate()) {
           // Native form submission is not yet supported
           var _self = this
-          _self.axiosInstance.post('/repos/' + _self.owner + '/' + _self.repo + '/issues', {
+          axios.post('/repos/' + _self.owner + '/' + _self.repo + '/issues', {
             title: _self.title,
             body: _self.comment
           }).then(function (response) {

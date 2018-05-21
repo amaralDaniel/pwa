@@ -80,6 +80,7 @@
 
   // require styles
   import 'codemirror/lib/codemirror.css'
+  import axios from 'axios'
 
   // require more codemirror resource...
 
@@ -117,7 +118,7 @@
     },
     mounted () {
       let _self = this
-      _self.axiosInstance.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/branches').then(function (result) {
+      axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/branches').then(function (result) {
         result.data.forEach(function (each) {
           _self.branches.push({text: each.name, sha: each.commit.sha})
         })
@@ -141,7 +142,7 @@
       },
       uploadFile () {
         let _self = this
-        _self.axiosInstance.put(`/repos/${_self.repositoryOwner}/${_self.repositoryName}/contents/${_self.filename}`, {
+        axios.put(`/repos/${_self.repositoryOwner}/${_self.repositoryName}/contents/${_self.filename}`, {
           message: _self.message,
           content: window.btoa(_self.content),
           branch: _self.selectedBranch.text

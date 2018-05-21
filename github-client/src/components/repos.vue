@@ -57,6 +57,7 @@
 
 <script>
   import Vue from 'vue'
+  import axios from 'axios'
   Vue.use(require('vue-moment'))
   export default {
     name: 'repos',
@@ -69,7 +70,7 @@
     },
     beforeMount () {
       var _self = this
-      _self.axiosInstance.get('/user/repos', {
+      axios.get('/user/repos', {
         params: {
           type: 'all',
           per_page: 100

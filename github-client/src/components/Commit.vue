@@ -15,6 +15,7 @@
 
 <script>
   import Vue from 'vue'
+  import axios from 'axios'
   Vue.use(require('vue-moment'))
 
   export default {
@@ -35,7 +36,7 @@
     },
     mounted () {
       var _self = this
-      _self.axiosInstance.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/commits/' + _self.sha).then(function (response) {
+      axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/commits/' + _self.sha).then(function (response) {
         _self.commit = response.data
         _self.commit.files.forEach(function (file) {
           let outputHtml = ''

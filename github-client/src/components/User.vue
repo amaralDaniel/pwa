@@ -1,6 +1,6 @@
 <template>
   <v-container grid-list-md class="mt-5" >
-    <v-layout row wrap>
+    <v-layout row wrap v-if="user">
       <v-avatar
         :size="150"
         class="grey lighten-4 "
@@ -225,6 +225,7 @@
 </template>
 
 <script>
+  import axios from 'axios'
   export default {
     name: 'user',
     data () {
@@ -241,32 +242,32 @@
     },
     beforeMount () {
       var _self = this
-      _self.axiosInstance.get('/users/' + _self.$route.params.login).then(response => {
+      axios.get('/users/' + _self.$route.params.login).then(response => {
         _self.user = response.data
       }).catch(error => {
         throw error
       })
-      _self.axiosInstance.get('/users/' + _self.$route.params.login + '/repos').then(response => {
+      axios.get('/users/' + _self.$route.params.login + '/repos').then(response => {
         _self.repos = response.data
       }).catch(error => {
         throw error
       })
-      _self.axiosInstance.get('/users/' + _self.$route.params.login + '/followers').then(response => {
+      axios.get('/users/' + _self.$route.params.login + '/followers').then(response => {
         _self.followers = response.data
       }).catch(error => {
         throw error
       })
-      _self.axiosInstance.get('/users/' + _self.$route.params.login + '/following').then(response => {
+      axios.get('/users/' + _self.$route.params.login + '/following').then(response => {
         _self.following = response.data
       }).catch(error => {
         throw error
       })
-      _self.axiosInstance.get('/users/' + _self.$route.params.login + '/gists').then(response => {
+      axios.get('/users/' + _self.$route.params.login + '/gists').then(response => {
         _self.gists = response.data
       }).catch(error => {
         throw error
       })
-      _self.axiosInstance.get('/users/' + _self.$route.params.login + '/starred').then(response => {
+      axios.get('/users/' + _self.$route.params.login + '/starred').then(response => {
         _self.starred = response.data
       }).catch(error => {
         throw error
@@ -277,12 +278,12 @@
         var _self = this
         console.log('TOKEN', _self.$store.getters.getToken)
         if (!_self.following) {
-          _self.axiosInstance.put('/user/following/' + _self.user.login).then(function (data) {
+          axios.put('/user/following/' + _self.user.login).then(function (data) {
             console.log('start following')
             _self.following = true
           })
         } else {
-          _self.axiosInstance.delete('/user/following/' + _self.user.login).then(function (data) {
+          axios.delete('/user/following/' + _self.user.login).then(function (data) {
             _self.following = false
           })
         }
@@ -291,7 +292,7 @@
     computed: {
       isFollowing: function () {
         var _self = this
-        _self.axiosInstance.get('/users/' + _self.viewer.login + '/following/' + _self.user.login).then(function (response) {
+        axios.get('/users/' + _self.viewer.login + '/following/' + _self.user.login).then(function (response) {
           if (response.status === 204) {
             _self.following = true
           } else {

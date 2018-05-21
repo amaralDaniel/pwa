@@ -8,7 +8,7 @@
               <h3 class="display-3">Welcome to GHPWA</h3>
               <span class="subheading">This GitHub client is a Progressive Web App.</span>
               <v-divider class="my-3"></v-divider>
-              <div class="title mb-3" id="div-not-authenticated"></div>
+              <div class="title mb-3" id="div-not-authenticated" v-if="!$store.getters.getAuthState"></div>
             </v-flex>
           </v-layout>
         </v-container>
@@ -21,6 +21,7 @@
   import { mapGetters, mapActions } from 'vuex'
   // import router from '../router/index'
   import GitHub from 'github-api'
+  import axios from 'axios'
   var qs = require('querystring')
   // var config = require('../../config')
   var xhr = require('xhr')
@@ -101,11 +102,15 @@
             if (err) return err
             if (token) {
               component.$store.dispatch('setAuthState')
+              console.log('Setting token in storage...')
               localStorage.setItem('token', token)
+              console.log('Setting token in store...')
               component.$store.dispatch('setToken', token).then(function () {
-                component.axiosInstance.get('/user').then(function (response) {
+                axios.defaults.headers.common['Authorization'] = 'token ' + token
+                axios.get('/user').then(function (response) {
                   component.$store.dispatch('setViewer', response.data)
                 })
+                console.log('All set, redirecting you to repos!')
                 component.$router.push({ name: 'repos' })
               })
               component.gh = new GitHub({

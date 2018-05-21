@@ -78,6 +78,7 @@
 
   // require styles
   import 'codemirror/lib/codemirror.css'
+  import axios from 'axios'
   export default {
     name: 'UpdateFile',
     components: {
@@ -108,12 +109,12 @@
     },
     mounted () {
       let _self = this
-      _self.axiosInstance.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/branches').then(function (result) {
+      axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/branches').then(function (result) {
         result.data.forEach(function (each) {
           _self.branches.push({text: each.name, sha: each.commit.sha})
         })
       })
-      _self.axiosInstance.get(`/repos/${_self.repositoryOwner}/${_self.repositoryName}/contents/${_self.path}`).then(function (response) {
+      axios.get(`/repos/${_self.repositoryOwner}/${_self.repositoryName}/contents/${_self.path}`).then(function (response) {
         _self.blobSha = response.data.sha
         _self.code = decodeURIComponent(atob(response.data.content).split('').map(function (c) {
           return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
@@ -138,7 +139,7 @@
       },
       updateFile: function () {
         let _self = this
-        _self.axiosInstance.put(`/repos/${_self.repositoryOwner}/${_self.repositoryName}/contents/${_self.path}`, {
+        axios.put(`/repos/${_self.repositoryOwner}/${_self.repositoryName}/contents/${_self.path}`, {
           message: _self.message,
           content: window.btoa(_self.code),
           sha: _self.blobSha,

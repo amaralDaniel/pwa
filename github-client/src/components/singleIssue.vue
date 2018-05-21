@@ -1,5 +1,5 @@
 <template>
-    <v-container class="text-md-left text-xs-left text-sm-left">
+    <v-container class="text-md-left text-xs-left text-sm-left" v-if="issue">
       <span class="title">{{issue.title}}</span>
       <p class="subheading">Created {{issue.created_at | moment("from")}} by</p>
         <p>
@@ -62,6 +62,7 @@
 
 <script>
   import Vue from 'vue'
+  import axios from 'axios'
   Vue.use(require('vue-moment'))
   export default {
     name: 'singleIssue',
@@ -88,17 +89,17 @@
     },
     mounted () {
       var _self = this
-      _self.axiosInstance.get('/repos/' + this.owner + '/' + this.repo + '/issues/' + this.number).then(function (response) {
+      axios.get('/repos/' + this.owner + '/' + this.repo + '/issues/' + this.number).then(function (response) {
         _self.issue = response.data
       })
-      _self.axiosInstance.get('/repos/' + this.owner + '/' + this.repo + '/issues/' + this.number + '/comments').then(function (response) {
+      axios.get('/repos/' + this.owner + '/' + this.repo + '/issues/' + this.number + '/comments').then(function (response) {
         _self.issueComments = response.data
       })
     },
     methods: {
       pushComment: function () {
         var _self = this
-        _self.axiosInstance.post('/repos/' + this.owner + '/' + this.repo + '/issues/' + this.number + '/comments', {
+        axios.post('/repos/' + this.owner + '/' + this.repo + '/issues/' + this.number + '/comments', {
           body: _self.comment.body
         }).then(function (response) {
           if (response.status === 201) {

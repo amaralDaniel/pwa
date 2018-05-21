@@ -231,6 +231,7 @@
 
 <script>
   import Vue from 'vue'
+  import axios from 'axios'
   Vue.use(require('vue-moment'))
   export default {
     name: 'issues',
@@ -255,7 +256,7 @@
     },
     mounted () {
       var _self = this
-      _self.axiosInstance.get('/issues', {
+      axios.get('/issues', {
         params: {
           filter: 'created',
           state: 'all'
@@ -270,7 +271,7 @@
           }
         })
       })
-      _self.axiosInstance.get('/issues', {
+      axios.get('/issues', {
         params: {
           filter: 'subscribed',
           state: 'all'
@@ -285,7 +286,7 @@
           }
         })
       })
-      _self.axiosInstance.get('/user/issues', {
+      axios.get('/user/issues', {
         params: {
           filter: 'assigned',
           state: 'all'
@@ -300,7 +301,7 @@
           }
         })
       })
-      _self.axiosInstance.get('/issues', {
+      axios.get('/issues', {
         params: {
           filter: 'mentioned',
           state: 'all'

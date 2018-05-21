@@ -88,6 +88,7 @@
 </template>
 
 <script>
+  import axios from 'axios'
   export default {
     name: 'CreatePullRequest',
     data () {
@@ -112,7 +113,7 @@
     },
     mounted () {
       var _self = this
-      _self.axiosInstance.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/branches').then(function (result) {
+      axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/branches').then(function (result) {
         console.log(result.data)
         result.data.forEach(function (each) {
           console.log(each.name)
@@ -131,7 +132,7 @@
         console.log(_self.selectedHead.text)
         console.log(_self.selectedBase.text)
         console.log(_self.maintainerCanModifyCheckbox)
-        _self.axiosInstance.post('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/pulls', {
+        axios.post('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/pulls', {
           title: _self.title,
           body: _self.comment,
           head: _self.selectedHead.text,

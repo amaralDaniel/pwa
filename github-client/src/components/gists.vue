@@ -39,6 +39,7 @@
 </template>
 
 <script>
+  import axios from 'axios'
   import Vue from 'vue'
   Vue.use(require('vue-moment'))
   export default {
@@ -51,7 +52,7 @@
     },
     mounted () {
       var _self = this
-      _self.axiosInstance.get('/gists').then(function (response) {
+      axios.get('/gists').then(function (response) {
         response.data.forEach(function (each) {
           _self.gists.push(each)
         })

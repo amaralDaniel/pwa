@@ -36,6 +36,7 @@
 
   // require styles
   import 'codemirror/lib/codemirror.css'
+  import axios from 'axios'
   var Diff2html = require('diff2html').Diff2Html
   export default {
     name: 'File',
@@ -64,12 +65,12 @@
     mounted () {
       var _self = this
       let viewer = _self.$store.getters.getViewer
-      _self.axiosInstance.get(`/repos/${_self.repositoryOwner}/${_self.repositoryName}/collaborators/${viewer.login}`).then(function (response) {
+      axios.get(`/repos/${_self.repositoryOwner}/${_self.repositoryName}/collaborators/${viewer.login}`).then(function (response) {
         if (response.status === 204) {
           _self.viewerCanEdit = true
         }
       })
-      _self.axiosInstance.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/contents/' + _self.path).then(function (response) {
+      axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/contents/' + _self.path).then(function (response) {
         _self.file = response.data
         // Going backwards: from bytestream, to percent-encoding, to original string.
         _self.content = decodeURIComponent(atob(response.data.content).split('').map(function (c) {

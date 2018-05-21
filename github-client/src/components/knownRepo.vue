@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-container grid-list-xl text-xs-center fluid class="mt-3">
+    <v-container grid-list-xl text-xs-center fluid class="mt-3" v-if="repo">
       <v-card height="10vh">
         <v-layout align-center justify-center>
           <button class="icon" v-bind:class="{isTrue: isStarred}" v-on:click="starLogic">
@@ -15,11 +15,11 @@
             </i>
           </button>
           <span>{{repo.watchers_count}}</span>
-          <button v-if="repo.has_wiki" class="icon" v-on:click="getWiki">
-            <i class="material-icons">
-              library_books
-            </i>
-          </button>
+          <!--<button v-if="repo.has_wiki" class="icon" v-on:click="getWiki">-->
+            <!--<i class="material-icons">-->
+              <!--library_books-->
+            <!--</i>-->
+          <!--</button>-->
           <button class="icon" v-on:click="forkLogic">
             <i class="material-icons">
               call_split
@@ -213,6 +213,7 @@
   import Vue from 'vue'
   import VueMarkdown from 'vue-markdown'
   import TreeView from '@/components/TreeView'
+  import axios from 'axios'
   Vue.use(require('vue-moment'))
 
   export default {
@@ -251,36 +252,36 @@
     },
     beforeMount () {
       var _self = this
-      _self.axiosInstance.get('/user').then(function (response) {
+      axios.get('/user').then(function (response) {
         _self.authUser = response.data
       }).catch(function (error) {
         throw error
       })
       _self.repoGH = _self.gh.getRepo(this.repositoryOwner, this.repositoryName)
-      _self.axiosInstance.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName).then(function (response) {
+      axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName).then(function (response) {
         _self.repo = response.data
       })
-      _self.axiosInstance.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/commits').then(function (result) {
+      axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/commits').then(function (result) {
         // console.log(result.data)
         result.data.forEach(function (each) {
           _self.commits.push(each)
         })
       })
-      _self.axiosInstance.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/contributors').then(function (response) {
+      axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/contributors').then(function (response) {
         // console.log(result.data)
         response.data.forEach(function (each) {
           _self.contributors.push(each)
         })
       })
-      _self.axiosInstance.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/readme').then(function (response) {
+      axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/readme').then(function (response) {
         _self.readme = _self.content = decodeURIComponent(atob(response.data.content).split('').map(function (c) {
           return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
         }).join(''))
       })
-      _self.axiosInstance.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/collaborators').then(function (response) {
+      axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/collaborators').then(function (response) {
         _self.collaborators = response.data
       })
-      _self.axiosInstance.get('/user/starred/' + _self.repositoryOwner + '/' + _self.repositoryName).then(function (response) {
+      axios.get('/user/starred/' + _self.repositoryOwner + '/' + _self.repositoryName).then(function (response) {
         if (response.status === 204) {
           _self.viewerHasStarred = true
         } else {
@@ -290,7 +291,7 @@
         _self.viewerHasStarred = false
         throw error
       })
-      _self.axiosInstance.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/issues', {
+      axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/issues', {
         params: {
           subscribed: true,
           ignored: false
@@ -300,7 +301,7 @@
       }).catch(function (error) {
         throw error
       })
-      _self.axiosInstance.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/subscription').then(function (response) {
+      axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/subscription').then(function (response) {
         if (response.status === 200) {
           if (response.data.subscribed) {
             _self.viewerIsWatching = true
@@ -312,7 +313,7 @@
         _self.viewerIsWatching = false
         throw error
       })
-      _self.axiosInstance.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/pulls').then(function (response) {
+      axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/pulls').then(function (response) {
         _self.pullRequests = response.data
       }).catch(function (error) {
         throw error
@@ -322,7 +323,7 @@
       starLogic: function () {
         var _self = this
         if (_self.isStarred) {
-          _self.axiosInstance.delete('/user/starred/' + _self.repositoryOwner + '/' + _self.repositoryName).then(function (response) {
+          axios.delete('/user/starred/' + _self.repositoryOwner + '/' + _self.repositoryName).then(function (response) {
             if (response.status === 204) {
               _self.starred = false
             }
@@ -330,7 +331,7 @@
             throw error
           })
         } else {
-          _self.axiosInstance.put('/user/starred/' + _self.repositoryOwner + '/' + _self.repositoryName).then(function (response) {
+          axios.put('/user/starred/' + _self.repositoryOwner + '/' + _self.repositoryName).then(function (response) {
             if (response.status === 204) {
               _self.starred = true
             }
@@ -342,7 +343,7 @@
       forkLogic: function () {
         var _self = this
 
-        _self.axiosInstance.post('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/forks').then(response => {
+        axios.post('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/forks').then(response => {
           if (response.status === 202) {
             _self.viewerHasForked = true
             _self.$router.push('/repos')
@@ -354,7 +355,7 @@
       watchLogic: function () {
         var _self = this
         if (!_self.isWatched) {
-          _self.axiosInstance.put('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/subscription', {
+          axios.put('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/subscription', {
             params: {
               subscribed: true,
               ignored: false
@@ -367,7 +368,7 @@
             throw error
           })
         } else {
-          _self.axiosInstance.delete('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/subscription').then(response => {
+          axios.delete('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/subscription').then(response => {
             if (response.status === 204) {
               _self.watched = false
             }
@@ -388,7 +389,7 @@
       getWiki: function () {
         let _self = this
         console.log('wiki')
-        _self.axiosInstance.get(`/repos/${_self.repositoryOwner}/${_self.repositoryName}/wiki`).then(function (response) {
+        axios.get(`/repos/${_self.repositoryOwner}/${_self.repositoryName}/wiki`).then(function (response) {
           console.log(response.data)
         })
       },
@@ -396,7 +397,7 @@
         console.log('Pending for now')
       },
       saveRepo: function () {
-
+        
       }
     },
     computed: {

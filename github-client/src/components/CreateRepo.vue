@@ -106,6 +106,7 @@
 </template>
 
 <script>
+  import axios from 'axios'
   export default {
     name: 'CreateRepo',
     data () {
@@ -141,13 +142,13 @@
     },
     mounted () {
       var _self = this
-      _self.axiosInstance.get('/licenses').then(function (data) {
+      axios.get('/licenses').then(function (data) {
         var items = data.data
         items.forEach(function (item) {
           _self.licenseItems.push(item)
         })
       })
-      _self.axiosInstance.get('/gitignore/templates').then(function (data) {
+      axios.get('/gitignore/templates').then(function (data) {
         var items = data.data
         items.forEach(function (item) {
           _self.gitignoreItems.push(item)

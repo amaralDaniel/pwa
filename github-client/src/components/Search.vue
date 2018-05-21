@@ -176,6 +176,7 @@
 </template>
 
 <script>
+  import axios from 'axios'
   export default {
     name: 'search',
     data () {
@@ -191,7 +192,7 @@
     methods: {
       doSearch () {
         var _self = this
-        _self.axiosInstance.get('/search/repositories', {
+        axios.get('/search/repositories', {
           params: {
             q: _self.searchString
           }
@@ -202,7 +203,7 @@
             console.log('forRepositories error:', error)
           })
 
-        _self.axiosInstance.get('/search/users', {
+        axios.get('/search/users', {
           params: {
             q: _self.searchString
           }
@@ -213,7 +214,7 @@
             console.log('forUsers error:', error)
           })
 
-        _self.axiosInstance.get('/search/code', {
+        axios.get('/search/code', {
           params: {
             q: _self.searchString
           }
@@ -224,7 +225,7 @@
             console.log('forCode error:', error)
           })
 
-        _self.axiosInstance.get('/search/issues', {
+        axios.get('/search/issues', {
           params: {
             q: _self.searchString
           }
