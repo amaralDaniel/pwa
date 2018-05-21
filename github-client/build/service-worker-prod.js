@@ -53,26 +53,4 @@
       }
   });
 
-
-  self.addEventListener('fetch', function (event) {
-    console.log('Fetch detected');
-    event.respondWith(
-      caches.match(event.request).then(function (response) {
-        console.log('Searching in the cache, then network');
-        return response || fetch(event.request);
-      })
-    )
-  });
-
-  // if ('serviceWorker' in navigator) {
-  //   window.addEventListener('load', function() {
-  //     navigator.serviceWorker.register('/service-worker.js').then(function(registration) {
-  //       // Registration was successful
-  //       console.log('ServiceWorker registration successful with scope: ', registration.scope);
-  //     }, function(err) {
-  //       // registration failed :(
-  //       console.log('ServiceWorker registration failed: ', err);
-  //     });
-  //   });
-  // }
 })();

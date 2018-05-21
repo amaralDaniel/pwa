@@ -13,6 +13,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin')
 const loadMinified = require('./load-minified')
+const babel = require('babel-core')
 
 const env = process.env.NODE_ENV === 'testing'
   ? require('../config/test.env')
@@ -100,6 +101,15 @@ const webpackConfig = merge(baseWebpackConfig, {
         from: path.resolve(__dirname, '../static'),
         to: config.build.assetsSubDirectory,
         ignore: ['.*']
+      },
+      {
+        // copy custom service worker
+        from: path.resolve(__dirname, '../src/mysw.js'),
+        to: config.build.assetsRoot + '/[name].js',
+        transform: (content, path) => {
+          // and transpile it while copying
+          return babel.transformFileSync(path).code;
+        }
       }
     ]),
     // service worker caching
@@ -109,6 +119,12 @@ const webpackConfig = merge(baseWebpackConfig, {
       staticFileGlobs: ['dist/**/*.{js,html,css}'],
       minify: true,
       stripPrefix: 'dist/',
+      importScripts: [
+        {
+          // transformed custom-service-worker (es6 -> js)
+          filename: 'mysw.js'
+        }
+      ],
       runtimeCaching: [
         {
           urlPattern: /^https:\/\/fonts\.googleapis\.com\//,
@@ -121,31 +137,32 @@ const webpackConfig = merge(baseWebpackConfig, {
         {
           urlPattern: /^https:\/\/fonts\.gstatic\.com\//,
           handler: 'cacheFirst'
-        },
-        {
-          urlPattern: /^https:\/\/api\.github\.com\//,
-          handler: 'cacheFirst',
-          options: {
-            cache: 'api-github-cache',
-            maxAgeSeconds: 2678400 // one month
-          }
-        },
-        {
-          urlPattern: /^https:\/\/avatars1\.githubusercontent\.com\//,
-          handler: 'cacheFirst',
-          options: {
-            cache: 'api-github-cache',
-            maxAgeSeconds: 2678400 // one month
-          }
-        },
-        {
-          urlPattern: /^https:\/\/avatars2\.githubusercontent\.com\//,
-          handler: 'cacheFirst',
-          options: {
-            cache: 'api-github-cache',
-            maxAgeSeconds: 2678400 // one month
-          }
-        }]
+        }
+        // {
+        //   urlPattern: /^https:\/\/api\.github\.com\//,
+        //   handler: 'cacheFirst',
+        //   options: {
+        //     cache: 'api-github-cache',
+        //     maxAgeSeconds: 2678400 // one month
+        //   }
+        // },
+        // {
+        //   urlPattern: /^https:\/\/avatars1\.githubusercontent\.com\//,
+        //   handler: 'cacheFirst',
+        //   options: {
+        //     cache: 'api-github-cache',
+        //     maxAgeSeconds: 2678400 // one month
+        //   }
+        // },
+        // {
+        //   urlPattern: /^https:\/\/avatars2\.githubusercontent\.com\//,
+        //   handler: 'cacheFirst',
+        //   options: {
+        //     cache: 'api-github-cache',
+        //     maxAgeSeconds: 2678400 // one month
+        //   }
+        // }
+      ]
 
     })
   ]
