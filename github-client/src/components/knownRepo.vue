@@ -1,6 +1,12 @@
 <template>
   <div>
     <v-container grid-list-xl text-xs-center fluid class="mt-3" v-if="repo">
+      <v-alert type="error" class="alert custom-alert" :value="error">
+        {{errorMessage}}
+      </v-alert>
+      <v-alert type="success custom-alert" :value="success">
+        {{successMessage}}
+      </v-alert>
       <v-card height="10vh">
         <v-layout align-center justify-center>
           <button class="icon" v-bind:class="{isTrue: isStarred}" v-on:click="starLogic">
@@ -31,11 +37,11 @@
               backup
             </i>
           </button>
-          <button class="icon" id="download-button" v-on:click="downloadRepo">
-            <i class="material-icons">
-              archive
-            </i>
-          </button>
+          <!--<button class="icon" id="download-button" v-on:click="downloadRepo">-->
+            <!--<i class="material-icons">-->
+              <!--archive-->
+            <!--</i>-->
+          <!--</button>-->
           <button class="icon" id="save-button" v-on:click="saveRepo">
             <i class="material-icons">
               save
@@ -247,7 +253,11 @@
         issues: null,
         pullRequests: null,
         authUser: null,
-        viewerIsWatching: null
+        viewerIsWatching: null,
+        error: false,
+        errorMessage: '',
+        success: false,
+        successMessage: ''
       }
     },
     beforeMount () {
@@ -397,7 +407,140 @@
         console.log('Pending for now')
       },
       saveRepo: function () {
-        
+        var _self = this
+        console.log('Saving...')
+        if (navigator.storage && navigator.storage.persist) {
+          navigator.storage.persist().then(function (persistent) {
+            if (persistent) {
+              console.log('Storage will not be cleared except by explicit user action')
+              // First we delete what was cached
+              caches.open('pwa-client').then(function (cache) {
+                cache.delete('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName) // repo info
+                cache.delete('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/commits') // commits
+                cache.delete('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/contributors') // contribs
+                cache.delete('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/readme') // readme
+                cache.delete('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/collaborators') // collabs
+                cache.delete('/user/starred/' + _self.repositoryOwner + '/' + _self.repositoryName) // star
+                cache.delete('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/issues') // issues
+                cache.delete('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/subscription') // subscription
+                cache.delete('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/pulls') // pulls
+                cache.delete('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/contents/') // contents
+              })
+              axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName).then(function (response) {
+                console.log('Repository info saved.')
+              }).catch(function (error) {
+                _self.errorMessage = 'Something went wrong when downloading repository information.'
+                _self.error = true
+                setTimeout(function () {
+                  _self.error = false
+                }, 5000)
+                throw error
+              })
+              axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/commits').then(function (result) {
+                console.log('Repository commits saved.')
+              }).catch(function (error) {
+                _self.errorMessage = 'Something went wrong when downloading repository commits.'
+                _self.error = true
+                setTimeout(function () {
+                  _self.error = false
+                }, 5000)
+                throw error
+              })
+              axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/contributors').then(function (response) {
+                console.log('Repository contributors saved.')
+              }).catch(function (error) {
+                _self.errorMessage = 'Something went wrong when downloading repository contributors.'
+                _self.error = true
+                setTimeout(function () {
+                  _self.error = false
+                }, 5000)
+                throw error
+              })
+              axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/readme').then(function (response) {
+                console.log('Repository readme saved.')
+              }).catch(function (error) {
+                _self.errorMessage = 'Something went wrong when downloading repository readme.'
+                _self.error = true
+                setTimeout(function () {
+                  _self.error = false
+                }, 5000)
+                throw error
+              })
+              axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/collaborators').then(function (response) {
+                console.log('Repository collaborators saved')
+              }).catch(function (error) {
+                _self.errorMessage = 'Something went wrong when downloading repository collaborators.'
+                _self.error = true
+                setTimeout(function () {
+                  _self.error = false
+                }, 5000)
+                throw error
+              })
+              axios.get('/user/starred/' + _self.repositoryOwner + '/' + _self.repositoryName).then(function (response) {
+                console.log('Repository contributors star saved.')
+              }).catch(function (error) {
+                _self.errorMessage = 'Something went wrong when downloading repository star.'
+                _self.error = true
+                setTimeout(function () {
+                  _self.error = false
+                }, 5000)
+                throw error
+              })
+              axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/issues', {
+                params: {
+                  subscribed: true,
+                  ignored: false
+                }
+              }).then(function (response) {
+                console.log('Repository issues saved.')
+              }).catch(function (error) {
+                _self.errorMessage = 'Something went wrong when downloading repository issues.'
+                _self.error = true
+                setTimeout(function () {
+                  _self.error = false
+                }, 5000)
+                throw error
+              })
+              axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/subscription').then(function (response) {
+                console.log('Repository subscription saved.')
+              }).catch(function (error) {
+                _self.errorMessage = 'Something went wrong when downloading repository subscription.'
+                _self.error = true
+                setTimeout(function () {
+                  _self.error = false
+                }, 5000)
+                throw error
+              })
+              axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/pulls').then(function (response) {
+                console.log('Repository pulls saved.')
+              }).catch(function (error) {
+                _self.errorMessage = 'Something went wrong when downloading repository pulls.'
+                _self.error = true
+                setTimeout(function () {
+                  _self.error = false
+                }, 5000)
+                throw error
+              })
+              axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/contents/').then(function (response) {
+                caches.open('pwa-client').then(function (cache) {
+                  response.data.forEach(function (each) {
+                    cache.delete('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/contents/' + each.name) // delete each file first then write over
+                    axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/contents/' + each.name)
+                  })
+                })
+              }).catch(function (error) {
+                _self.errorMessage = 'Something went wrong when downloading repository files.'
+                _self.error = true
+                setTimeout(function () {
+                  _self.error = false
+                }, 5000)
+                throw error
+              })
+            } else {
+              console.log('Storage may be cleared by the UA under storage pressure.')
+            }
+          })
+        }
       }
     },
     computed: {
@@ -451,4 +594,10 @@
 
   .material-icons
     font-size: 40px
+
+  .custom-alert
+    position: absolute
+    top: 14%
+    left: 50%
+    right: 5%
 </style>
