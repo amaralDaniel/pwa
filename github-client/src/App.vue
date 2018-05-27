@@ -14,7 +14,7 @@
             <v-icon>chevron_right</v-icon>
           </v-list-tile-action>
         </v-list-tile>
-        <v-list-tile avatar tag="div">
+        <v-list-tile avatar tag="div" v-if="viewer">
           <router-link :to="{name: 'User', params: { login: viewer.login}}">
             <v-layout row align-center>
               <v-list-tile-avatar size="50" >
@@ -149,20 +149,17 @@
         { title: 'Create Repository', icon: 'add', route: '/create' }
       ],
       mini: false,
-      right: null,
-      viewer: {}
+      right: null
     }),
-    beforeMount () {
-      var _self = this
-      _self.axiosInstance.get('/user').then(function (response) {
-        _self.viewer = response.data
-        _self.$store.dispatch('setViewer', response.data)
-      })
-    },
     methods: {
       logout: function () {
         this.$store.dispatch('resetState')
         this.$router.push('/')
+      }
+    },
+    computed: {
+      viewer: function () {
+        return this.$store.getters.getViewer
       }
     }
   }

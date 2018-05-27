@@ -14,9 +14,9 @@ import { InMemoryCache } from 'apollo-cache-inmemory'
 import { setContext } from 'apollo-link-context'
 import VueApollo from 'vue-apollo'
 import colors from 'vuetify/es5/util/colors'
-import axios from 'axios'
 import VueHighlightJS from 'vue-highlightjs'
 import VueLodash from 'vue-lodash'
+import axios from 'axios'
 
 Vue.config.productionTip = false
 Vue.use(Vuetify, {
@@ -61,22 +61,52 @@ const apolloProvider = new VueApollo({
 
 Vue.prototype.gh = new GitHub({ token: store.getters.getToken })
 
-Vue.prototype.axiosInstance = axios.create({
-  baseURL: 'https://api.github.com',
-  timeout: 5000,
-  headers: {
-    'Authorization': 'token ' + store.getters.getToken
-  }
-})
+axios.defaults.baseURL = 'https://api.github.com'
+axios.defaults.headers.common['Authorization'] = 'token ' + localStorage.getItem('token')
 
 Vue.use(VueHighlightJS)
 
 Vue.use(VueLodash)
 
+// This works on all devices/browsers, and uses IndexedDBShim as a final fallback
+var indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB || window.shimIndexedDB
+
+if (!window.indexedDB) {
+  window.alert("Your browser doesn't support a stable version of IndexedDB. Repository saving feature will not be available.")
+}
+const idb = indexedDB.open('saved-repos', 1)
+idb.onerror = function (event) {
+  alert('Something went wrong when creating an IndexedDB.')
+}
+
+idb.onupgradeneeded = function () {
+  var db = idb.result
+  var store = db.createObjectStore('saved-repos', {keyPath: 'url'})
+  store.createIndex('url', 'url')
+}
+
+// idb.onsuccess = function () {
+//   console.log('onsuccess')
+//   // new tx
+//   var db = idb.result
+//   var tx = db.transaction('saved-repos', 'readwrite')
+//   var store = tx.objectStore('saved-repos')
+//   store.index('url')
+//   console.log('new transaction')
+//
+//   store.put({url: 'repos/amaralDaniel/pwa', content: null})
+//
+//   tx.oncomplete = function () {
+//     console.log('completed')
+//     db.close()
+//   }
+// }
+
 new Vue({ // eslint-disable-line no-new
   el: '#app',
   router,
   store,
+  idb,
   provide: apolloProvider.provide(),
   template: '<App/>',
   components: { App }

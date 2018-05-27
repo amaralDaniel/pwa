@@ -1,7 +1,11 @@
 <template>
     <v-container text-sm-left text-xs-left>
       <div v-if="path != ''">
-        <v-btn v-on:click="goBack">..</v-btn>
+        <v-btn v-on:click="goBack">
+          <i class="material-icons">
+            arrow_back_ios
+          </i>
+        </v-btn>
       </div>
       <ul>
         <li v-for="file in contents">
@@ -42,7 +46,7 @@
       renderFiles: function () {
         var _self = this
         _self.contents = []
-        axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/contents/').then(function (response) {
+        axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/contents' + _self.path).then(function (response) {
           response.data.forEach(function (each) {
             _self.contents.push(each)
           })

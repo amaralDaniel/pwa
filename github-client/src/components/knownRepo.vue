@@ -1,12 +1,12 @@
 <template>
   <div>
+    <v-alert type="error" class="alert custom-alert" :value="error">
+      {{errorMessage}}
+    </v-alert>
+    <v-alert type="success custom-alert" :value="success">
+      {{successMessage}}
+    </v-alert>
     <v-container grid-list-xl text-xs-center fluid class="mt-3" v-if="repo">
-      <v-alert type="error" class="alert custom-alert" :value="error">
-        {{errorMessage}}
-      </v-alert>
-      <v-alert type="success custom-alert" :value="success">
-        {{successMessage}}
-      </v-alert>
       <v-card height="10vh">
         <v-layout align-center justify-center>
           <button class="icon" v-bind:class="{isTrue: isStarred}" v-on:click="starLogic">
@@ -21,11 +21,6 @@
             </i>
           </button>
           <span>{{repo.watchers_count}}</span>
-          <!--<button v-if="repo.has_wiki" class="icon" v-on:click="getWiki">-->
-            <!--<i class="material-icons">-->
-              <!--library_books-->
-            <!--</i>-->
-          <!--</button>-->
           <button class="icon" v-on:click="forkLogic">
             <i class="material-icons">
               call_split
@@ -37,11 +32,6 @@
               backup
             </i>
           </button>
-          <!--<button class="icon" id="download-button" v-on:click="downloadRepo">-->
-            <!--<i class="material-icons">-->
-              <!--archive-->
-            <!--</i>-->
-          <!--</button>-->
           <button class="icon" id="save-button" v-on:click="saveRepo">
             <i class="material-icons">
               save
@@ -267,67 +257,120 @@
       }).catch(function (error) {
         throw error
       })
-      _self.repoGH = _self.gh.getRepo(this.repositoryOwner, this.repositoryName)
-      axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName).then(function (response) {
-        _self.repo = response.data
-      })
-      axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/commits').then(function (result) {
-        // console.log(result.data)
-        result.data.forEach(function (each) {
-          _self.commits.push(each)
-        })
-      })
-      axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/contributors').then(function (response) {
-        // console.log(result.data)
-        response.data.forEach(function (each) {
-          _self.contributors.push(each)
-        })
-      })
-      axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/readme').then(function (response) {
-        _self.readme = _self.content = decodeURIComponent(atob(response.data.content).split('').map(function (c) {
-          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
-        }).join(''))
-      })
-      axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/collaborators').then(function (response) {
-        _self.collaborators = response.data
-      })
-      axios.get('/user/starred/' + _self.repositoryOwner + '/' + _self.repositoryName).then(function (response) {
-        if (response.status === 204) {
-          _self.viewerHasStarred = true
-        } else {
-          _self.viewerHasStarred = false
-        }
-      }).catch(function (error) {
-        _self.viewerHasStarred = false
-        throw error
-      })
-      axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/issues', {
-        params: {
-          subscribed: true,
-          ignored: false
-        }
-      }).then(function (response) {
-        _self.issues = response.data
-      }).catch(function (error) {
-        throw error
-      })
-      axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/subscription').then(function (response) {
-        if (response.status === 200) {
-          if (response.data.subscribed) {
-            _self.viewerIsWatching = true
+      const idb = indexedDB.open('saved-repos', 1)
+      idb.onsuccess = function () {
+        var db = idb.result
+        var tx = db.transaction('saved-repos', 'readwrite')
+        var store = tx.objectStore('saved-repos')
+
+        var getRepo = store.get('/gh/' + _self.repositoryOwner + '/' + _self.repositoryName)
+
+        getRepo.onsuccess = function () {
+          console.log('repo', getRepo.result)
+          if (getRepo.result) {
+            _self.repoGH = getRepo.result.content
+
+            var repo = store.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName)
+            repo.onsuccess = function () {
+              _self.repo = repo.result.content
+            }
+            var commits = store.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/commits')
+            commits.onsuccess = function () {
+              _self.commits = commits.result.content
+            }
+            var contributors = store.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/contributors')
+            contributors.onsuccess = function () {
+              _self.contributors = contributors.result.content
+            }
+            var readme = store.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/readme')
+            readme.onsuccess = function () {
+              _self.readme = readme.result.content
+            }
+            var collaborators = store.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/collaborators')
+            collaborators.onsuccess = function () {
+              _self.collaborators = collaborators.result.content
+            }
+            var viewerHasStarred = store.get('/user/starred/' + _self.repositoryOwner + '/' + _self.repositoryName)
+            viewerHasStarred.onsuccess = function () {
+              _self.viewerHasStarred = viewerHasStarred.result.content
+            }
+            var issues = store.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/issues')
+            issues.onsuccess = function () {
+              _self.issues = issues.result.content
+            }
+            var pullRequests = store.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/pulls')
+            pullRequests.onsuccess = function () {
+              _self.pullRequests = pullRequests.result.content
+            }
+            var viewerIsWatching = store.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/subscription')
+            viewerIsWatching.onsuccess = function () {
+              _self.viewerIsWatching = viewerIsWatching.result.content
+            }
+          } else {
+            _self.repoGH = _self.gh.getRepo(this.repositoryOwner, this.repositoryName)
+            axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName).then(function (response) {
+              _self.repo = response.data
+            })
+            axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/commits').then(function (result) {
+              // console.log(result.data)
+              result.data.forEach(function (each) {
+                _self.commits.push(each)
+              })
+            })
+            axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/contributors').then(function (response) {
+              // console.log(result.data)
+              response.data.forEach(function (each) {
+                _self.contributors.push(each)
+              })
+            })
+            axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/readme').then(function (response) {
+              _self.readme = _self.content = decodeURIComponent(atob(response.data.content).split('').map(function (c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+              }).join(''))
+            })
+            axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/collaborators').then(function (response) {
+              _self.collaborators = response.data
+            })
+            axios.get('/user/starred/' + _self.repositoryOwner + '/' + _self.repositoryName).then(function (response) {
+              if (response.status === 204) {
+                _self.viewerHasStarred = true
+              } else {
+                _self.viewerHasStarred = false
+              }
+            }).catch(function (error) {
+              _self.viewerHasStarred = false
+              throw error
+            })
+            axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/issues', {
+              params: {
+                subscribed: true,
+                ignored: false
+              }
+            }).then(function (response) {
+              _self.issues = response.data
+            }).catch(function (error) {
+              throw error
+            })
+            axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/subscription').then(function (response) {
+              if (response.status === 200) {
+                if (response.data.subscribed) {
+                  _self.viewerIsWatching = true
+                }
+              } else {
+                _self.viewerIsWatching = false
+              }
+            }).catch(function (error) {
+              _self.viewerIsWatching = false
+              throw error
+            })
+            axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/pulls').then(function (response) {
+              _self.pullRequests = response.data
+            }).catch(function (error) {
+              throw error
+            })
           }
-        } else {
-          _self.viewerIsWatching = false
         }
-      }).catch(function (error) {
-        _self.viewerIsWatching = false
-        throw error
-      })
-      axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/pulls').then(function (response) {
-        _self.pullRequests = response.data
-      }).catch(function (error) {
-        throw error
-      })
+      }
     },
     methods: {
       starLogic: function () {
@@ -403,143 +446,37 @@
           console.log(response.data)
         })
       },
-      downloadRepo: function () {
-        console.log('Pending for now')
-      },
       saveRepo: function () {
         var _self = this
         console.log('Saving...')
-        if (navigator.storage && navigator.storage.persist) {
-          navigator.storage.persist().then(function (persistent) {
-            if (persistent) {
-              console.log('Storage will not be cleared except by explicit user action')
-              // First we delete what was cached
-              caches.open('pwa-client').then(function (cache) {
-                cache.delete('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName) // repo info
-                cache.delete('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/commits') // commits
-                cache.delete('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/contributors') // contribs
-                cache.delete('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/readme') // readme
-                cache.delete('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/collaborators') // collabs
-                cache.delete('/user/starred/' + _self.repositoryOwner + '/' + _self.repositoryName) // star
-                cache.delete('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/issues') // issues
-                cache.delete('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/subscription') // subscription
-                cache.delete('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/pulls') // pulls
-                cache.delete('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/contents/') // contents
-              })
-              axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName).then(function (response) {
-                console.log('Repository info saved.')
-              }).catch(function (error) {
-                _self.errorMessage = 'Something went wrong when downloading repository information.'
-                _self.error = true
-                setTimeout(function () {
-                  _self.error = false
-                }, 5000)
-                throw error
-              })
-              axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/commits').then(function (result) {
-                console.log('Repository commits saved.')
-              }).catch(function (error) {
-                _self.errorMessage = 'Something went wrong when downloading repository commits.'
-                _self.error = true
-                setTimeout(function () {
-                  _self.error = false
-                }, 5000)
-                throw error
-              })
-              axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/contributors').then(function (response) {
-                console.log('Repository contributors saved.')
-              }).catch(function (error) {
-                _self.errorMessage = 'Something went wrong when downloading repository contributors.'
-                _self.error = true
-                setTimeout(function () {
-                  _self.error = false
-                }, 5000)
-                throw error
-              })
-              axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/readme').then(function (response) {
-                console.log('Repository readme saved.')
-              }).catch(function (error) {
-                _self.errorMessage = 'Something went wrong when downloading repository readme.'
-                _self.error = true
-                setTimeout(function () {
-                  _self.error = false
-                }, 5000)
-                throw error
-              })
-              axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/collaborators').then(function (response) {
-                console.log('Repository collaborators saved')
-              }).catch(function (error) {
-                _self.errorMessage = 'Something went wrong when downloading repository collaborators.'
-                _self.error = true
-                setTimeout(function () {
-                  _self.error = false
-                }, 5000)
-                throw error
-              })
-              axios.get('/user/starred/' + _self.repositoryOwner + '/' + _self.repositoryName).then(function (response) {
-                console.log('Repository contributors star saved.')
-              }).catch(function (error) {
-                _self.errorMessage = 'Something went wrong when downloading repository star.'
-                _self.error = true
-                setTimeout(function () {
-                  _self.error = false
-                }, 5000)
-                throw error
-              })
-              axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/issues', {
-                params: {
-                  subscribed: true,
-                  ignored: false
-                }
-              }).then(function (response) {
-                console.log('Repository issues saved.')
-              }).catch(function (error) {
-                _self.errorMessage = 'Something went wrong when downloading repository issues.'
-                _self.error = true
-                setTimeout(function () {
-                  _self.error = false
-                }, 5000)
-                throw error
-              })
-              axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/subscription').then(function (response) {
-                console.log('Repository subscription saved.')
-              }).catch(function (error) {
-                _self.errorMessage = 'Something went wrong when downloading repository subscription.'
-                _self.error = true
-                setTimeout(function () {
-                  _self.error = false
-                }, 5000)
-                throw error
-              })
-              axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/pulls').then(function (response) {
-                console.log('Repository pulls saved.')
-              }).catch(function (error) {
-                _self.errorMessage = 'Something went wrong when downloading repository pulls.'
-                _self.error = true
-                setTimeout(function () {
-                  _self.error = false
-                }, 5000)
-                throw error
-              })
-              axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/contents/').then(function (response) {
-                caches.open('pwa-client').then(function (cache) {
-                  response.data.forEach(function (each) {
-                    cache.delete('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/contents/' + each.name) // delete each file first then write over
-                    axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/contents/' + each.name)
-                  })
-                })
-              }).catch(function (error) {
-                _self.errorMessage = 'Something went wrong when downloading repository files.'
-                _self.error = true
-                setTimeout(function () {
-                  _self.error = false
-                }, 5000)
-                throw error
-              })
-            } else {
-              console.log('Storage may be cleared by the UA under storage pressure.')
-            }
-          })
+        const channel = new BroadcastChannel('pwa_channel')
+        channel.postMessage({owner: _self.repositoryOwner, name: _self.repositoryName})
+
+        const idb = indexedDB.open('saved-repos', 1)
+        idb.onsuccess = function () {
+          console.log('onsuccess')
+          // new tx
+          var db = idb.result
+          var tx = db.transaction('saved-repos', 'readwrite')
+          var store = tx.objectStore('saved-repos')
+          store.index('url')
+          console.log('new transaction')
+
+          store.put({url: '/gh/' + _self.repositoryOwner + '/' + _self.repositoryName, content: _self.repoGH})
+          store.put({url: '/repos/' + _self.repositoryOwner + '/' + _self.repositoryName, content: _self.repo})
+          store.put({url: '/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/commits', content: _self.commits})
+          store.put({url: '/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/contributors', content: _self.contributors})
+          store.put({url: '/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/readme', content: _self.readme})
+          store.put({url: '/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/collaborators', content: _self.collaborators})
+          store.put({url: '/user/starred/' + _self.repositoryOwner + '/' + _self.repositoryName, content: _self.viewerHasStarred})
+          store.put({url: '/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/issues', content: _self.issues})
+          store.put({url: '/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/subscription', content: _self.viewerIsWatching})
+          store.put({url: '/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/pulls', content: _self.pullRequests})
+
+          tx.oncomplete = function () {
+            console.log('completed')
+            db.close()
+          }
         }
       }
     },
@@ -600,4 +537,5 @@
     top: 14%
     left: 50%
     right: 5%
+    z-index: 999
 </style>
