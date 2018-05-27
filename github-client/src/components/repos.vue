@@ -77,6 +77,7 @@
         }
       }).then(function (response) {
         _self.repos = response.data
+        _self.$store.dispatch('setLoading', false)
       })
     },
     mounted () {

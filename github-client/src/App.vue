@@ -1,5 +1,8 @@
 <template>
   <v-app id="app">
+    <div v-if="loading" class="loader-spinner">
+      <square-grid background="#8AEA92"></square-grid>
+    </div>
     <v-navigation-drawer
       temporary
       v-model="drawer"
@@ -132,9 +135,12 @@
 <script>
   import Vue from 'vue'
   import store from './store'
+  import {SquareGrid} from 'vue-loading-spinner'
   Vue.use(require('vue-moment'))
   export default {
-
+    components: {
+      SquareGrid
+    },
     name: 'app',
     data: () => ({
       activeNav: store.getters.getActiveNav,
@@ -160,12 +166,16 @@
     computed: {
       viewer: function () {
         return this.$store.getters.getViewer
+      },
+      loading: function () {
+        return this.$store.getters.getLoading
       }
     }
   }
 </script>
 
 <style lang="sass">
+  @import './styles/variables.scss'
   body
     margin: 0
 
@@ -206,4 +216,16 @@
   .title-gh
     font-weight: 700
 
+  .loader-spinner
+    z-index: 999
+    width: 100%
+    height: 100%
+    position: absolute
+    background-color: white
+    display: flex
+    flex-direction: row
+    flex-wrap: nowrap
+    justify-content: center
+    align-items: center
+    align-content: stretch
 </style>

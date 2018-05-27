@@ -9,7 +9,8 @@ const initialState = {
   authenticated: false,
   token: '',
   activeNav: 'repositories',
-  viewer: null
+  viewer: null,
+  loading: false
 }
 
 const state = Vue.util.extend({}, initialState)
@@ -30,6 +31,9 @@ const mutations = {
   setViewer (state, viewer) {
     localStorage.setItem('viewer', viewer)
     state.viewer = viewer
+  },
+  setLoading (state, bool) {
+    state.loading = bool
   }
 }
 
@@ -41,6 +45,9 @@ const actions = {
   },
   setViewer (context, viewer) {
     context.commit('setViewer', viewer)
+  },
+  setLoading (context, bool) {
+    context.commit('setLoading', bool)
   }
 }
 
@@ -48,7 +55,8 @@ const getters = {
   getAuthState: state => { return state.authenticated },
   getToken: state => { return state.token },
   getActiveNav: state => { return state.activeNav },
-  getViewer: state => { return state.viewer }
+  getViewer: state => { return state.viewer },
+  getLoading: state => { return state.loading }
 }
 
 export default new Vuex.Store({

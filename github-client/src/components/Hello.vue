@@ -101,6 +101,7 @@
           component.getToken(code, function (err, token) {
             if (err) return err
             if (token) {
+              component.$store.dispatch('setLoading', true)
               component.$store.dispatch('setAuthState')
               console.log('Setting token in storage...')
               localStorage.setItem('token', token)
