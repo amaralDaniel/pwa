@@ -1,5 +1,5 @@
 <template>
-  <v-container class="text-sm-left">
+  <v-container v-if="file" class="text-sm-left">
     <v-flex row>
     <span class="display-1">{{file.name}}</span>
       <span>
@@ -65,18 +65,37 @@
     mounted () {
       var _self = this
       let viewer = _self.$store.getters.getViewer
+      const idb = indexedDB.open('saved-repos', 1)
       axios.get(`/repos/${_self.repositoryOwner}/${_self.repositoryName}/collaborators/${viewer.login}`).then(function (response) {
         if (response.status === 204) {
           _self.viewerCanEdit = true
         }
       })
-      axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/contents/' + _self.path).then(function (response) {
-        _self.file = response.data
-        // Going backwards: from bytestream, to percent-encoding, to original string.
-        _self.content = decodeURIComponent(atob(response.data.content).split('').map(function (c) {
-          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
-        }).join(''))
-      })
+      idb.onsuccess = function () {
+        var db = idb.result
+        var tx = db.transaction('saved-repos', 'readwrite')
+        var store = tx.objectStore('saved-repos')
+
+        var fetchedResource = store.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/contents/' + _self.path)
+        fetchedResource.onsuccess = function () {
+          console.log('Result ', fetchedResource)
+          if (fetchedResource.result) {
+            console.log('Fetched from idb')
+            _self.file = fetchedResource.result.content
+            _self.content = decodeURIComponent(atob(fetchedResource.result.content.content).split('').map(function (c) {
+              return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+            }).join(''))
+          } else {
+            axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/contents/' + _self.path).then(function (response) {
+              _self.file = response.data
+              // Going backwards: from bytestream, to percent-encoding, to original string.
+              _self.content = decodeURIComponent(atob(response.data.content).split('').map(function (c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+              }).join(''))
+            })
+          }
+        }
+      }
       let diff2htmlUi = new Diff2html({
         diff: _self.test
       })

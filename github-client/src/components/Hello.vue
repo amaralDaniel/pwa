@@ -95,13 +95,13 @@
         document.getElementById('div-not-authenticated').appendChild(link)
       },
       getCodeAndToken: function () {
-        var code = this.getCode()
         var component = this
+        var code = this.getCode()
         if (code) {
+          component.$store.dispatch('setLoading', true)
           component.getToken(code, function (err, token) {
             if (err) return err
             if (token) {
-              component.$store.dispatch('setLoading', true)
               component.$store.dispatch('setAuthState')
               console.log('Setting token in storage...')
               localStorage.setItem('token', token)

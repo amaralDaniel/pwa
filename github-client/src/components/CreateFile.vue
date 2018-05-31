@@ -59,7 +59,7 @@
     <v-alert type="error" class="alert custom-alert" :value="error">
       {{errorMessage}}
     </v-alert>
-    <v-alert type="success custom-alert" :value="success">
+    <v-alert type="success" class="alert custom-alert" :value="success">
       {{successMessage}}
     </v-alert>
     <v-btn

@@ -45,12 +45,33 @@
     methods: {
       renderFiles: function () {
         var _self = this
+        const idb = indexedDB.open('saved-repos', 1)
         _self.contents = []
-        axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/contents' + _self.path).then(function (response) {
-          response.data.forEach(function (each) {
-            _self.contents.push(each)
-          })
-        })
+
+        idb.onsuccess = function () {
+          var db = idb.result
+          var tx = db.transaction('saved-repos', 'readwrite')
+          var store = tx.objectStore('saved-repos')
+
+          console.log('Fetching path ', '/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/contents' + _self.path)
+          var getPathContents = store.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/contents' + _self.path)
+          getPathContents.onsuccess = function () {
+            console.log('onsuccess ', getPathContents.result)
+            if (getPathContents.result) {
+              getPathContents.result.content.forEach(function (each) {
+                _self.contents.push(each)
+              })
+              console.log('Path fetched from idb')
+            } else {
+              axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/contents' + _self.path).then(function (response) {
+                response.data.forEach(function (each) {
+                  _self.contents.push(each)
+                })
+                console.log('Path fetched from axios')
+              })
+            }
+          }
+        }
       },
       updateFiles: function (path) {
         var _self = this
@@ -60,10 +81,12 @@
       goBack: function () {
         var _self = this
         var separatedPath = _self.path.split('/')
+        console.log(separatedPath)
         separatedPath.shift()
         separatedPath.pop()
         separatedPath = Array.prototype.join.call(separatedPath, '/')
-        _self.path = separatedPath
+        _self.path = '/' + separatedPath
+        console.log(_self.path)
         _self.renderFiles()
       }
     }

@@ -438,7 +438,22 @@
 
           tx.oncomplete = function () {
             console.log('completed')
+            _self.successMessage = 'Repository saved.'
+            _self.success = true
+            setTimeout(function () {
+              _self.$router.push('/repo/' + _self.repositoryOwner + '/' + _self.repositoryName)
+              _self.$destroy()
+            }, 5000)
             db.close()
+          }
+
+          tx.onerror = function () {
+            console.log('failed')
+            _self.errorMessage = 'Something went wrong when saving the repository.'
+            _self.error = true
+            setTimeout(function () {
+              _self.error = false
+            }, 5000)
           }
         }
       }
