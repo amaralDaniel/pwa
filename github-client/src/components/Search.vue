@@ -1,14 +1,14 @@
 <template>
-    <div>
+    <div id="search-component">
       <v-container grid-list-xl text-xs-center fluid>
         <v-layout row wrap>
           <v-container>
             <v-layout row justify-center>
               <v-flex>
-                <v-text-field v-model="searchString" color="secondary"></v-text-field>
+                <v-text-field v-model="searchString" color="secondary" id="search-input-field"></v-text-field>
               </v-flex>
               <v-flex align-baseline>
-                <v-btn icon v-on:click="doSearch">
+                <v-btn icon v-on:click="doSearch" id="execute-search-button">
                   <v-icon>search</v-icon>
                 </v-btn>
               </v-flex>
@@ -16,7 +16,7 @@
           </v-container>
           <v-flex xs12 >
             <v-expansion-panel focusable popout>
-              <v-expansion-panel-content >
+              <v-expansion-panel-content id="repositories-search-filter" >
                 <div slot="header" class="body-2">Repositories</div>
                 <v-card>
                   <v-card-text class="grey lighten-3">
@@ -97,7 +97,7 @@
                   </v-card-text>
                 </v-card>
               </v-expansion-panel-content>
-              <v-expansion-panel-content >
+              <v-expansion-panel-content id="users-search-filter">
                 <div slot="header" class="body-2">Users</div>
                 <v-card>
                   <v-card-text class="grey lighten-3">
@@ -119,7 +119,7 @@
                   </v-card-text>
                 </v-card>
               </v-expansion-panel-content>
-              <v-expansion-panel-content >
+              <v-expansion-panel-content id="code-search-filter">
                 <div slot="header" class="body-2">Code</div>
                 <v-card>
                   <v-card-text class="grey lighten-3">
@@ -138,7 +138,7 @@
                   </v-card-text>
                 </v-card>
               </v-expansion-panel-content>
-              <v-expansion-panel-content >
+              <v-expansion-panel-content id="issues-search-filter">
                 <div slot="header" class="body-2">Issues</div>
                 <v-card>
                   <v-card-text class="grey lighten-3">

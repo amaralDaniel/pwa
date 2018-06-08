@@ -1,5 +1,5 @@
 <template>
-  <v-container grid-list-md text-sm-left class="mt-4">
+  <v-container grid-list-md text-sm-left class="mt-4" id="single-pull-request">
     <span class="title">{{repository.pullRequest.title}} #{{repository.pullRequest.number}} by
       <router-link :to="{name: 'User', params: { login: repository.pullRequest.author.login}}">
             <v-avatar>

@@ -1,5 +1,5 @@
 <template>
-  <v-container  grid-list-md text-xs-center>
+  <v-container  grid-list-md text-xs-center id="create-issue">
     <v-alert type="error" class="alert custom-alert" :value="error">
       {{errorMessage}}
     </v-alert>
@@ -86,8 +86,8 @@
             title: _self.title,
             body: _self.comment
           }).then(function (response) {
-            if (response.status === 200) {
-              _self.successMessage = 'File updated, you\'ll be redirected in 5 seconds'
+            if (response.status === 201) {
+              _self.successMessage = 'Issue created, you\'ll be redirected in 5 seconds'
               _self.success = true
               setTimeout(function () {
                 _self.$router.push('/repo/' + _self.owner + '/' + _self.repo + '/issues/' + response.data.number)

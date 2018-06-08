@@ -1,5 +1,5 @@
 <template>
-  <v-container  grid-list-md text-xs-center>
+  <v-container  grid-list-md text-xs-center id="create-pull-request">
     <v-alert type="error" class="alert custom-alert" :value="error">
       {{errorMessage}}
     </v-alert>
@@ -25,7 +25,7 @@
         <v-flex xs4>
           <v-subheader class="subheading">Base</v-subheader>
         </v-flex>
-        <v-flex xs8 sm6>
+        <v-flex xs8 sm6 id="base-branch-select">
           <v-select
             :items="branches"
             v-model="selectedBase"
@@ -42,7 +42,7 @@
         <v-flex xs4>
           <v-subheader class="subheading">Head</v-subheader>
         </v-flex>
-        <v-flex xs8 sm6>
+        <v-flex xs8 sm6 id="head-branch-select">
         <v-select
           :items="branches"
           v-model="selectedHead"
@@ -71,13 +71,14 @@
         </div>
       </v-flex>
       <v-layout row wrap>
-        <v-flex xs12 sm6>
+        <v-flex xs12 sm6 id="pr-modify-checkbox">
           <v-checkbox color="primary" label="Maintainer can modify" v-model="maintainerCanModifyCheckbox"></v-checkbox>
         </v-flex>
       </v-layout>
       <v-btn
         @click="pushNewPR"
         :disabled="!valid"
+        id="create-new-pr-button"
       >
         Create New Pull Request
       </v-btn>
@@ -96,7 +97,7 @@
         valid: true,
         branches: [],
         repositoryOwner: this.$route.params.owner,
-        repositoryName: this.$route.params.repo,
+        repositoryName: this.$route.params.name,
         title: '',
         titleRules: [
           v => !!v || 'Title is required'

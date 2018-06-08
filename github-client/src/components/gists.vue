@@ -8,6 +8,7 @@
       fluid
       style="min-height: 0;"
       grid-list-lg
+      id="gists-list"
     >
       <v-layout row wrap>
         <v-flex xs12>

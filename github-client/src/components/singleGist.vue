@@ -10,6 +10,7 @@
       style="min-height: 0; position: relative;"
       grid-list-lg
       class="text-sm-left text-xs-left"
+      id="single-gist"
     >
       <span class="body-1 text-sm-left text-xs-left">{{viewer.gist.name}}</span>
       <p class="caption text-sm-left text-xs-left">{{viewer.gist.createdAt | moment("from") }}</p>

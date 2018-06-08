@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container id="create-file">
     <v-layout row>
       <v-flex xs4>
         <v-subheader class="subheading">Filename</v-subheader>
@@ -64,6 +64,7 @@
     </v-alert>
     <v-btn
       @click="uploadFile"
+      id="create-file-button"
     >
       Commit New File
     </v-btn>

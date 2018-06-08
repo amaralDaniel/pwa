@@ -12,7 +12,7 @@
     >
       <v-layout row wrap>
         <v-flex xs12>
-          <ul>
+          <ul id="repos-list">
             <li v-for="repo in orderedRepos">
               <router-link :to="{name: 'knownRepo', params: { owner: repo.owner.login, name: repo.name }}">
                 <v-card ripple tile append replace xs2 class="my-2">

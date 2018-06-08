@@ -1,5 +1,5 @@
 <template>
-    <v-container  grid-list-md text-xs-center>
+    <v-container  grid-list-md text-xs-center id="create-repo-container">
       <v-form v-model="valid" ref="form" lazy-validation>
         <v-alert type="error" class="alert custom-alert" :value="error">
           {{errorMessage}}

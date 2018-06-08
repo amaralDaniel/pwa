@@ -1,5 +1,5 @@
 <template>
-  <v-container v-if="file" class="text-sm-left">
+  <v-container v-if="file" class="text-sm-left" id="file-container">
     <v-flex row>
     <span class="display-1">{{file.name}}</span>
       <span>

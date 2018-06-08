@@ -1,5 +1,5 @@
 <template>
-    <v-container class="text-md-left text-xs-left text-sm-left" v-if="issue">
+    <v-container class="text-md-left text-xs-left text-sm-left" v-if="issue" id="single-issue">
       <span class="title">{{issue.title}}</span>
       <p class="subheading">Created {{issue.created_at | moment("from")}} by</p>
         <p>
@@ -104,6 +104,7 @@
         }).then(function (response) {
           if (response.status === 201) {
             _self.issueComments.push(response.data)
+            _self.comment.body = ''
           }
         }).catch(function (error) {
           console.log(error)

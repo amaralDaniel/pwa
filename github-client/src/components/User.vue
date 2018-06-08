@@ -1,5 +1,5 @@
 <template>
-  <v-container grid-list-md class="mt-5" >
+  <v-container grid-list-md class="mt-5" id="user-container">
     <v-layout row wrap v-if="user">
       <v-avatar
         :size="150"
@@ -17,7 +17,7 @@
         </v-flex>
       </v-layout>
       <v-expansion-panel focusable class="mt-4">
-        <v-expansion-panel-content >
+        <v-expansion-panel-content id="profile-info">
           <div slot="header" class="body-2">Profile info</div>
           <v-card>
             <v-container fluid>
@@ -72,7 +72,7 @@
             </v-container>
           </v-card>
         </v-expansion-panel-content>
-        <v-expansion-panel-content >
+        <v-expansion-panel-content id="user-repositories" >
           <div slot="header" class="body-2">Repositories</div>
           <v-card>
             <v-container>
@@ -123,7 +123,7 @@
             </v-container>
           </v-card>
         </v-expansion-panel-content>
-        <v-expansion-panel-content >
+        <v-expansion-panel-content id="user-gists">
           <div slot="header" class="body-2">Gists</div>
           <v-card>
             <v-container>
@@ -151,7 +151,7 @@
             </v-container>
           </v-card>
         </v-expansion-panel-content>
-        <v-expansion-panel-content >
+        <v-expansion-panel-content id="user-followers">
           <div slot="header" class="body-2">Followers</div>
           <v-card>
             <v-container>
@@ -169,7 +169,7 @@
             </v-container>
           </v-card>
         </v-expansion-panel-content>
-        <v-expansion-panel-content >
+        <v-expansion-panel-content id="user-following">
           <div slot="header" class="body-2">Following</div>
           <v-card>
             <v-container>
@@ -187,7 +187,7 @@
             </v-container>
           </v-card>
         </v-expansion-panel-content>
-        <v-expansion-panel-content >
+        <v-expansion-panel-content id="user-starred">
           <div slot="header" class="body-2">Starred Repositories</div>
           <v-card>
             <v-container>

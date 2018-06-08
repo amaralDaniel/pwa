@@ -1,42 +1,42 @@
 <template>
-  <div>
-    <v-alert type="error" class="alert custom-alert" :value="error">
+  <div id="known-repo-container">
+    <v-alert type="error" class="alert custom-alert" :value="error" id="error-alert">
       {{errorMessage}}
     </v-alert>
-    <v-alert type="success" class="alert custom-alert" :value="success">
+    <v-alert type="success" class="alert custom-alert" :value="success" id="success-alert">
       {{successMessage}}
     </v-alert>
-    <v-alert :value="warning" type="warning" class="alert custom-alert">
+    <v-alert :value="warning" type="warning" class="alert custom-alert" id="warning-alert">
       {{warningMessage}}
     </v-alert>
 
     <v-container grid-list-xl text-xs-center fluid class="mt-3" v-if="repo">
       <v-card height="10vh">
         <v-layout align-center justify-center>
-          <button class="icon" v-bind:class="{isTrue: isStarred}" v-on:click="starLogic">
+          <button class="icon" v-bind:class="{isTrue: isStarred}" v-on:click="starLogic" id="star-button">
             <i class="material-icons">
               star
             </i>
           </button>
           <span>{{repo.stargazers_count}}</span>
-          <button class="icon" v-bind:class="{isTrue: isWatched}" v-on:click="watchLogic">
+          <button class="icon" v-bind:class="{isTrue: isWatched}" v-on:click="watchLogic" id="watch-button">
             <i class="material-icons">
               visibility
             </i>
           </button>
           <span>{{repo.watchers_count}}</span>
-          <button class="icon" v-on:click="forkLogic">
+          <button class="icon" v-on:click="forkLogic" id="fork-button">
             <i class="material-icons">
               call_split
             </i>
           </button>
           <span>{{repo.fork_count}}</span>
-          <button class="icon" v-on:click="goToUploadFile">
+          <button class="icon" v-on:click="goToUploadFile" id="upload-button">
             <i class="material-icons">
               backup
             </i>
           </button>
-          <button class="icon" id="save-button" v-on:click="saveRepo">
+          <button class="icon" id="save-button" v-on:click="saveRepo" >
             <i class="material-icons">
               save
             </i>
@@ -159,7 +159,7 @@
                     </li>
                   </ul>
                 </div>
-                <div v-if="item === 'Pull requests'">
+                <div v-if="item === 'Pull-requests'">
                   <router-link :to="{name: 'CreatePullRequest'}">
                     <v-btn
                       color="pink"
@@ -229,7 +229,7 @@
         contributors: [],
         currentItem: 'Readme',
         items: [
-          'Readme', 'Files', 'Commits', 'Collaborators', 'Issues', 'Contributors', 'Pull requests'
+          'Readme', 'Files', 'Commits', 'Collaborators', 'Issues', 'Contributors', 'Pull-requests'
         ],
         readme: '',
         commits: [],
@@ -274,7 +274,7 @@
 
         getRepo.onsuccess = function () {
           console.log('repo', getRepo.result)
-          if (getRepo.result) {
+          if (getRepo.result !== undefined) {
             _self.repoGH = getRepo.result.content
 
             var repo = store.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName)
@@ -401,8 +401,18 @@
           axios.put('/user/starred/' + _self.repositoryOwner + '/' + _self.repositoryName).then(function (response) {
             if (response.status === 204) {
               _self.starred = true
+              _self.successMessage = 'Repository was starred.'
+              _self.success = true
+              setTimeout(function () {
+                _self.success = false
+              }, 5000)
             }
           }).catch(function (error) {
+            _self.errorMessage = 'Something went wrong when starring the repository.'
+            _self.error = true
+            setTimeout(function () {
+              _self.error = false
+            }, 5000)
             throw error
           })
         }
@@ -413,9 +423,19 @@
         axios.post('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/forks').then(response => {
           if (response.status === 202) {
             _self.viewerHasForked = true
-            _self.$router.push('/repos')
+            _self.successMessage = 'Repository was forked, you\'ll be redirected in 5s.'
+            _self.success = true
+            setTimeout(function () {
+              _self.success = false
+              // _self.$router.push('/repos')
+            }, 5000)
           }
         }).catch(error => {
+          _self.errorMessage = 'Something went wrong when forking the repository.'
+          _self.error = true
+          setTimeout(function () {
+            _self.error = false
+          }, 5000)
           throw error
         })
       },
@@ -430,8 +450,18 @@
           }).then(response => {
             if (response.status === 200) {
               _self.watched = true
+              _self.successMessage = 'Repository is being watched.'
+              _self.success = true
+              setTimeout(function () {
+                _self.success = false
+              }, 5000)
             }
           }).catch(function (error) {
+            _self.errorMessage = 'Something went wrong when watching the repository.'
+            _self.error = true
+            setTimeout(function () {
+              _self.error = false
+            }, 5000)
             throw error
           })
         } else {
@@ -471,8 +501,6 @@
           // new tx
           var db = idb.result
           var tx = db.transaction('saved-repos', 'readwrite')
-          // var store = tx.objectStore('saved-repos')
-          // store.index('url')
           console.log('new transaction is ', tx)
 
           if (navigator.storage && navigator.storage.persist) {

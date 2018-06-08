@@ -1,5 +1,14 @@
 <template>
   <div>
+    <v-alert type="error" class="alert custom-alert" :value="error" id="error-alert">
+      {{errorMessage}}
+    </v-alert>
+    <v-alert type="success" class="alert custom-alert" :value="success" id="success-alert">
+      {{successMessage}}
+    </v-alert>
+    <v-alert :value="warning" type="warning" class="alert custom-alert" id="warning-alert">
+      {{warningMessage}}
+    </v-alert>
     <v-container grid-list-xl text-xs-center fluid class="mt-3">
       <v-card height="10vh">
         <v-layout align-center justify-center>
@@ -223,7 +232,13 @@
         issues: null,
         pullRequests: null,
         authUser: null,
-        viewerIsWatching: null
+        viewerIsWatching: null,
+        error: false,
+        errorMessage: '',
+        success: false,
+        successMessage: '',
+        warning: false,
+        warningMessage: ''
       }
     },
     beforeMount () {
@@ -337,6 +352,13 @@
             }).catch(function (error) {
               throw error
             })
+            axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/contents').then(function (response) {
+              response.data.forEach(function (each) {
+                _self.contents.push(each)
+              })
+            }).catch(function (error) {
+              throw error
+            })
           }
         }
       }
@@ -422,39 +444,108 @@
           // new tx
           var db = idb.result
           var tx = db.transaction('saved-repos', 'readwrite')
-          var store = tx.objectStore('saved-repos')
-          store.index('url')
-          console.log('new transaction')
+          console.log('new transaction is ', tx)
 
-          store.put({url: '/gh/' + _self.repositoryOwner + '/' + _self.repositoryName, content: _self.repoGH})
-          store.put({url: '/repos/' + _self.repositoryOwner + '/' + _self.repositoryName, content: _self.repo})
-          store.put({url: '/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/commits', content: _self.commits})
-          store.put({url: '/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/contributors', content: _self.contributors})
-          store.put({url: '/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/readme', content: _self.readme})
-          store.put({url: '/user/starred/' + _self.repositoryOwner + '/' + _self.repositoryName, content: _self.viewerHasStarred})
-          store.put({url: '/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/issues', content: _self.issues})
-          store.put({url: '/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/subscription', content: _self.viewerIsWatching})
-          store.put({url: '/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/pulls', content: _self.pullRequests})
-
+          if (navigator.storage && navigator.storage.persist) {
+            navigator.storage.persist().then(granted => {
+              if (granted) {
+                var _tx = db.transaction('saved-repos', 'readwrite')
+                var store = _tx.objectStore('saved-repos')
+                store.index('url')
+                console.log('new transaction is ', _tx)
+                store.put({url: '/gh/' + _self.repositoryOwner + '/' + _self.repositoryName, content: _self.repoGH})
+                store.put({url: '/repos/' + _self.repositoryOwner + '/' + _self.repositoryName, content: _self.repo})
+                store.put({
+                  url: '/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/commits',
+                  content: _self.commits
+                })
+                store.put({
+                  url: '/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/contributors',
+                  content: _self.contributors
+                })
+                store.put({
+                  url: '/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/readme',
+                  content: _self.readme
+                })
+                store.put({
+                  url: '/user/starred/' + _self.repositoryOwner + '/' + _self.repositoryName,
+                  content: _self.viewerHasStarred
+                })
+                store.put({
+                  url: '/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/issues',
+                  content: _self.issues
+                })
+                store.put({
+                  url: '/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/subscription',
+                  content: _self.viewerIsWatching
+                })
+                store.put({
+                  url: '/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/pulls',
+                  content: _self.pullRequests
+                })
+                store.put({
+                  url: '/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/contents',
+                  content: _self.contents
+                })
+                _self.saveFiles('')
+              } else {
+                _self.warningMessage = 'Storage may be cleared by the UA under storage pressure.'
+                _self.warning = true
+                setTimeout(function () {
+                  _self.warning = false
+                }, 5000)
+              }
+            })
+          }
           tx.oncomplete = function () {
-            console.log('completed')
             _self.successMessage = 'Repository saved.'
             _self.success = true
             setTimeout(function () {
-              _self.$router.push('/repo/' + _self.repositoryOwner + '/' + _self.repositoryName)
-              _self.$destroy()
+              _self.success = false
             }, 5000)
             db.close()
           }
 
           tx.onerror = function () {
-            console.log('failed')
             _self.errorMessage = 'Something went wrong when saving the repository.'
             _self.error = true
             setTimeout(function () {
               _self.error = false
             }, 5000)
           }
+        }
+      },
+      saveFiles: function (path) {
+        var _self = this
+        const idb = indexedDB.open('saved-repos', 1)
+        idb.onsuccess = function () {
+          // new tx
+          var db = idb.result
+
+          axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/contents/' + path).then(function (response) {
+            var tx = db.transaction('saved-repos', 'readwrite')
+            var store = tx.objectStore('saved-repos')
+            store.index('url')
+            store.put({
+              url: '/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/contents/' + path,
+              content: response.data
+            })
+            response.data.forEach(function (each) {
+              if (each.type === 'file') {
+                axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/contents/' + each.path).then(function (response) {
+                  var tx = db.transaction('saved-repos', 'readwrite')
+                  var store = tx.objectStore('saved-repos')
+                  store.index('url')
+                  store.put({
+                    url: '/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/contents/' + each.path,
+                    content: response.data
+                  })
+                })
+              } else {
+                _self.saveFiles(each.path)
+              }
+            })
+          })
         }
       }
     },
@@ -509,4 +600,11 @@
 
   .material-icons
     font-size: 40px
+
+  .custom-alert
+    position: absolute
+    top: 14%
+    left: 50%
+    right: 5%
+    z-index: 999
 </style>

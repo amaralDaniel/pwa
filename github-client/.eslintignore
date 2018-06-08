@@ -3,3 +3,6 @@
 /dist/
 /*.js
 /test/unit/coverage/
+/test/unit/specs/
+/node_modules/es6-promise/auto
+/src/mysw.js

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="hello-component">
     <v-container grid-list-xl text-xs-center fluid>
       <v-jumbotron color="grey lighten-2" light >
         <v-container fill-height>
@@ -89,6 +89,7 @@
       authenticate: function () {
         var url = 'https://github.com/login/oauth/authorize?client_id=' + process.env.client_id + '&scope=user%20notifications%20gist%20repo%20public_repo%20delete_repo%20user:follow%20read:user%20write:discussion%20read:discussion&redirect_uri=' + process.env.redirect_uri
         var link = document.createElement('a')
+        link.setAttribute('id', 'login-button')
         link.href = url
         link.innerHTML = 'Log in with GitHub'
         link.addEventListener('click', this.getCodeAndToken())
