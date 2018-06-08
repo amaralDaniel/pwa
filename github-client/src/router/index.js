@@ -19,6 +19,8 @@ import File from '@/components/File'
 import Commit from '@/components/Commit'
 import CreateFile from '@/components/CreateFile'
 import UpdateFile from '@/components/UpdateFile'
+import StorageManagement from '@/components/StorageManagement'
+import Feed from '@/components/Feed'
 import NotFound from '@/components/NotFound'
 
 Vue.use(Router)
@@ -137,6 +139,18 @@ export default new Router({
       path: '/repos/:owner/:repo/update/:path',
       name: 'UpdateFile',
       component: UpdateFile,
+      meta: { auth: true }
+    },
+    {
+      path: '/storage',
+      name: 'StorageManagement',
+      component: StorageManagement,
+      meta: { auth: true }
+    },
+    {
+      path: '/feed',
+      name: 'Feed',
+      component: Feed,
       meta: { auth: true }
     },
     {

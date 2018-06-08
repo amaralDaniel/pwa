@@ -18,7 +18,7 @@
           </v-list-tile-action>
         </v-list-tile>
         <v-list-tile avatar tag="div" v-if="viewer">
-          <router-link :to="{name: 'User', params: { login: viewer.login}}">
+          <router-link :to="{name: 'User', params: { login: viewer.login}}" id="profile-drawer-button">
             <v-layout row align-center>
               <v-list-tile-avatar size="50" >
                 <img :src="viewer.avatar_url" >
@@ -57,9 +57,20 @@
           </v-list-tile-content>
         </v-list-tile>
       </v-list>
-      <v-divider dark></v-divider>
       <v-list class="pt-0" dense>
-        <v-list-tile v-if="$store.getters.getAuthState && !mini" v-on:click="logout">
+        <v-divider light></v-divider>
+        <v-list-tile v-for="item in storageManagement" :key="item.title" append replace :to="item.route">
+          <v-list-tile-action >
+            <v-icon>{{ item.icon }}</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+      </v-list>
+      <v-divider dark></v-divider>
+      <v-list class="pt-0" dense >
+        <v-list-tile v-if="$store.getters.getAuthState && !mini" v-on:click="logout" id="logout-button">
           <v-list-tile-action>
             <v-icon>
               exit_to_app
@@ -81,7 +92,7 @@
       </v-list>
     </v-navigation-drawer>
     <v-toolbar dark color="primary" extended >
-      <v-toolbar-side-icon @click.native.stop="drawer = !drawer" dark v-if="$store.getters.getAuthState">
+      <v-toolbar-side-icon @click.native.stop="drawer = !drawer" dark v-if="$store.getters.getAuthState" id="toolbar-side-icon">
       </v-toolbar-side-icon>
       <router-link :to="{name: 'CreateRepo'}" v-if="$store.getters.getAuthState">
         <v-btn
@@ -99,8 +110,8 @@
       <v-toolbar-title class="white--text title-gh">GitHub Client</v-toolbar-title>
       <v-spacer></v-spacer>
       <!--<v-container >-->
-        <router-link :to="{name: 'Search'}" class="search-container" v-if="$store.getters.getAuthState">
-          <v-btn icon>
+        <router-link :to="{name: 'Search'}" class="search-container" v-if="$store.getters.getAuthState" >
+          <v-btn icon id="search-button">
             <v-icon>search</v-icon>
           </v-btn>
         </router-link>
@@ -115,6 +126,10 @@
     </main>
     <v-card height="100px" flat v-if="$store.getters.getAuthState" style="background-color: transparent"  >
       <v-bottom-nav absolute :value="true" :active.sync="activeNav" color="white" class="footer--fixed" >
+        <v-btn flat color="blue-grey" value="feed" append replace to="/feed">
+          <span>Feed</span>
+          <v-icon>timeline</v-icon>
+        </v-btn>
         <v-btn flat color="blue-grey" value="repositories" append replace to="/repos">
           <span>Repositories</span>
           <v-icon>code</v-icon>
@@ -146,6 +161,7 @@
       activeNav: store.getters.getActiveNav,
       drawer: null,
       items: [
+        { title: 'Feed', icon: 'timeline', route: '/feed' },
         { title: 'Repositories', icon: 'code', route: '/repos' },
         { title: 'Issues', icon: 'info', route: '/issues' },
         { title: 'Gists', icon: 'description', route: '/gists' },
@@ -153,6 +169,9 @@
       ],
       actions: [
         { title: 'Create Repository', icon: 'add', route: '/create' }
+      ],
+      storageManagement: [
+        { title: 'Manage storage', icon: 'storage', route: '/storage' }
       ],
       mini: false,
       right: null
