@@ -56,10 +56,10 @@
         ></v-text-field>
       </v-layout>
     </v-flex>
-    <v-alert type="error" class="alert custom-alert" :value="error">
+    <v-alert type="error" class="alert custom-alert" :value="error" id="error-alert">
       {{errorMessage}}
     </v-alert>
-    <v-alert type="success" class="alert custom-alert" :value="success">
+    <v-alert type="success" class="alert custom-alert" :value="success" id="success-alert">
       {{successMessage}}
     </v-alert>
     <v-btn
@@ -154,6 +154,7 @@
           setTimeout(function () {
             _self.$router.push('/repo/' + _self.repositoryOwner + '/' + _self.repositoryName)
             _self.$destroy()
+            _self.success = false
           }, 5000)
         }).catch(function (error) {
           _self.errorMessage = 'Something went wrong, check your inputs.'

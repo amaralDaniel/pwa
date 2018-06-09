@@ -393,6 +393,11 @@
           axios.delete('/user/starred/' + _self.repositoryOwner + '/' + _self.repositoryName).then(function (response) {
             if (response.status === 204) {
               _self.starred = false
+              _self.successMessage = 'Repository is no longer starred.'
+              _self.success = true
+              setTimeout(function () {
+                _self.success = false
+              }, 5000)
             }
           }).catch(function (error) {
             throw error
@@ -448,6 +453,7 @@
               ignored: false
             }
           }).then(response => {
+            console.log(response.status)
             if (response.status === 200) {
               _self.watched = true
               _self.successMessage = 'Repository is being watched.'
@@ -468,6 +474,11 @@
           axios.delete('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/subscription').then(response => {
             if (response.status === 204) {
               _self.watched = false
+              _self.successMessage = 'Repository is no longer being watched.'
+              _self.success = true
+              setTimeout(function () {
+                _self.success = false
+              }, 5000)
             }
           }).catch(function (error) {
             throw error

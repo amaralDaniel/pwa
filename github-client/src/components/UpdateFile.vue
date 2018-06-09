@@ -12,10 +12,10 @@
                     class="CodeMirror">
         </codemirror>
       </v-flex>
-      <v-alert type="error" class="alert custom-alert" :value="error">
+      <v-alert type="error" class="alert custom-alert" :value="error" id="error-alert">
         {{errorMessage}}
       </v-alert>
-      <v-alert type="success custom-alert" :value="success">
+      <v-alert type="success custom-alert" :value="success" id="success-alert">
         {{successMessage}}
       </v-alert>
       <v-flex xs12>

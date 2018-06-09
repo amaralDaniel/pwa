@@ -165,15 +165,15 @@
         if (this.$refs.form.validate()) {
           // Native form submission is not yet supported
           var _self = this
-          var me = _self.gh.getUser()
-          me.createRepo({
+          axios.post('/user/repos', {
             name: this.name,
             description: this.description,
             homepage: this.homepage,
             license: this.license.key,
             gitignore: this.gitignore,
             private: this.publicOrPrivate,
-            auto_init: this.readmeCheckbox}).then(function (response) {
+            auto_init: this.readmeCheckbox
+          }).then(function (response) {
             if (response.status === 201) {
               _self.successMessage = 'Repository created, you\'ll be redirected in 5 seconds'
               _self.success = true

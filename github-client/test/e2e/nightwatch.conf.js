@@ -13,7 +13,10 @@ module.exports = {
     host: '127.0.0.1',
     port: 4448,
     cli_args: {
-      'webdriver.chrome.driver': require('chromedriver').path
+      'webdriver.chrome.driver': require('chromedriver').path,
+      'webdriver.gecko.driver': require('geckodriver'),
+      'webdriver.edge.driver': require('edgedriver'),
+
     }
   },
 
@@ -25,12 +28,26 @@ module.exports = {
       globals: {
         devServerURL: 'http://localhost:' + (process.env.PORT || config.dev.port),
         data: require('./data/dev')
+      },
+      desiredCapabilities: {
+        browserName: 'firefox',
+        marionette: true,
+        javascriptEnabled: true,
+        acceptSslCerts: true
       }
     },
 
     chrome: {
       desiredCapabilities: {
         browserName: 'chrome',
+        javascriptEnabled: true,
+        acceptSslCerts: true
+      }
+    },
+
+    edge : {
+      desiredCapabilities: {
+        browserName: 'MicrosoftEdge',
         javascriptEnabled: true,
         acceptSslCerts: true
       }

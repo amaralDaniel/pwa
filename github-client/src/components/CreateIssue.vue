@@ -1,9 +1,9 @@
 <template>
   <v-container  grid-list-md text-xs-center id="create-issue">
-    <v-alert type="error" class="alert custom-alert" :value="error">
+    <v-alert type="error" class="alert custom-alert" :value="error" id="error-alert">
       {{errorMessage}}
     </v-alert>
-    <v-alert type="success custom-alert" :value="success">
+    <v-alert type="success custom-alert" :value="success" id="success-alert">
       {{successMessage}}
     </v-alert>
     <v-form v-model="valid" ref="form" lazy-validation>
@@ -60,7 +60,11 @@
         titleRules: [
           v => !!v || 'Title is required'
         ],
-        comment: ''
+        comment: '',
+        error: false,
+        errorMessage: '',
+        success: false,
+        successMessage: ''
       }
     },
     computed: {
