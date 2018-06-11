@@ -126,6 +126,10 @@
     </main>
     <v-card height="100px" flat v-if="$store.getters.getAuthState" style="background-color: transparent"  >
       <v-bottom-nav absolute :value="true" :active.sync="activeNav" color="white" class="footer--fixed" >
+        <v-btn flat color="blue-grey" value="feed" append replace to="/notifications">
+          <span>Notifications</span>
+          <v-icon>notification_important</v-icon>
+        </v-btn>
         <v-btn flat color="blue-grey" value="feed" append replace to="/feed">
           <span>Feed</span>
           <v-icon>timeline</v-icon>
@@ -161,6 +165,7 @@
       activeNav: store.getters.getActiveNav,
       drawer: null,
       items: [
+        { title: 'Notifications', icon: 'notification_important', route: '/notifications' },
         { title: 'Feed', icon: 'timeline', route: '/feed' },
         { title: 'Repositories', icon: 'code', route: '/repos' },
         { title: 'Issues', icon: 'info', route: '/issues' },
@@ -171,7 +176,7 @@
         { title: 'Create Repository', icon: 'add', route: '/create' }
       ],
       storageManagement: [
-        { title: 'Manage storage', icon: 'storage', route: '/storage' }
+        { title: 'Storage Management', icon: 'storage', route: '/storage' }
       ],
       mini: false,
       right: null

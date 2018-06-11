@@ -3,7 +3,7 @@
     <v-alert type="error" class="alert custom-alert" :value="error">
       {{errorMessage}}
     </v-alert>
-    <v-alert type="success custom-alert" :value="success">
+    <v-alert type="success" class="success custom-alert" :value="success">
       {{successMessage}}
     </v-alert>
     <v-form v-model="valid" ref="form" lazy-validation>
@@ -35,6 +35,7 @@
             required
             autocomplete
             :rules="[() => !!selectedBase || 'This field is required']"
+            id="base-select"
           ></v-select>
         </v-flex>
       </v-layout>
@@ -52,6 +53,7 @@
           required
           autocomplete
           :rules="[() => !!selectedHead || 'This field is required']"
+          id="head-select"
         ></v-select>
         </v-flex>
       </v-layout>
@@ -121,6 +123,7 @@
           _self.branches.push({ text: each.name })
         })
       })
+      console.log('mounted ', _self.branches)
     },
     methods: {
       clear () {

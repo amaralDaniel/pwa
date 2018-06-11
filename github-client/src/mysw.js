@@ -42,6 +42,7 @@
           var fetchPromise = fetch(event.request).then(function (networkResponse) {
             caches.open(staticCacheName).then(function (cache) {
               cache.put(event.request.url, networkResponse.clone());
+              console.log('Network request for ' + event.request.url + ' and saved it in cache.')
             })
             return networkResponse;
           })

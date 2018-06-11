@@ -66,7 +66,7 @@
       @click="uploadFile"
       id="create-file-button"
     >
-      Commit New File
+      Commit & Push New File
     </v-btn>
   </v-container>
 </template>

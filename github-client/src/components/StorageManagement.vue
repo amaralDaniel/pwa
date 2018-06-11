@@ -19,7 +19,7 @@
                   <v-text-field v-model="editedItem.name" label="Cache name"></v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md4>
-                  <v-text-field v-model="editedItem.space" label="Usage (%)"></v-text-field>
+                  <v-text-field v-model="editedItem.space" label="Used space"></v-text-field>
                 </v-flex>
               </v-layout>
             </v-container>
@@ -28,7 +28,7 @@
       </v-dialog>
       <v-data-table
         :headers="headers"
-        :items="caches"
+        :items="repos"
         hide-actions
         class="elevation-1"
       >
@@ -56,12 +56,12 @@
       dialog: false,
       headers: [
         {
-          text: 'Cache Name',
+          text: 'Repositories',
           align: 'left',
-          sortable: false,
+          sortable: true,
           value: 'name'
         },
-        { text: 'Used Space', value: 'space' }
+        { text: 'Used Space (kb)', value: 'space' }
       ],
       caches: [],
       editedIndex: -1,
@@ -82,6 +82,9 @@
     computed: {
       formTitle () {
         return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
+      },
+      repos () {
+        return this.caches
       }
     },
 
@@ -96,16 +99,31 @@
     },
 
     methods: {
+
       initialize () {
         var _self = this
-        navigator.storage.estimate().then(function (estimate) {
-          _self.caches = [
-            {
-              name: 'Cache',
-              space: (estimate.usage / estimate.quota).toFixed(3) + ' %'
+        var idb = window.indexedDB.open('saved-repos', 1)
+
+        idb.onsuccess = function (e) {
+          var db = idb.result
+          var tx = db.transaction('saved-repos', 'readwrite')
+          var store = tx.objectStore('saved-repos')
+
+          var regex = /^\/repos\/([aA-zZ\d])+\/([aA-zZ\d])+$/gm
+          store.openCursor().onsuccess = function (ev) {
+            var cursor = ev.target.result
+            if (cursor) {
+              var found = cursor.key.match(regex)
+              if (found) {
+                _self.caches.push({
+                  name: cursor.value.content.full_name,
+                  space: cursor.value.content.size
+                })
+              }
+              cursor.continue()
             }
-          ]
-        })
+          }
+        }
       },
 
       editItem (item) {
@@ -115,38 +133,36 @@
       },
 
       deleteItem (item) {
-        confirm('Are you sure you want to delete this item?') && this.doWipeout()
+        console.log(item)
+        confirm('Are you sure you want to delete ' + item.name + ' ?') && this.doWipeout(item.name)
       },
 
-      doWipeout () {
-        console.log('yo')
+      doWipeout (name) {
         var _self = this
-        var dbV = 2
+        var dbV = 1
         var idb = indexedDB.open('saved-repos', dbV)
-        console.log('idb ', idb)
-        idb.onupgradeneeded = function (e) {
+
+        idb.onsuccess = function (e) {
           var db = idb.result
-          if (e.oldVersion < 2) {
-            console.log('version 2')
-            db.deleteObjectStore('saved-repos')
-            console.log('delete')
-            caches.delete('pwa-client').then(function (boolean) {
-              if (boolean) {
-                _self.successMessage = 'Storage was deleted.'
-                _self.success = true
-                setTimeout(function () {
-                  _self.success = false
-                }, 5000)
-                db.close()
-              } else {
-                _self.errorMessage = 'Something went wrong when deleting the cache.'
-                _self.error = true
-                setTimeout(function () {
-                  _self.error = false
-                }, 5000)
+          var tx = db.transaction('saved-repos', 'readwrite')
+          var store = tx.objectStore('saved-repos')
+
+          store.openCursor().onsuccess = function (ev) {
+            var cursor = ev.target.result
+            if (cursor) {
+              var found = cursor.key.match(name)
+              if (found) {
+                store.delete(cursor.key)
               }
-            })
+              cursor.continue()
+            }
           }
+          _self.caches.forEach(function callback (cache, index) {
+            console.log(cache)
+            if (cache.name === name) {
+              return _self.caches.splice(index, 1)
+            }
+          })
         }
       }
     }

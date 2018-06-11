@@ -14,9 +14,7 @@ module.exports = {
     port: 4448,
     cli_args: {
       'webdriver.chrome.driver': require('chromedriver').path,
-      'webdriver.gecko.driver': require('geckodriver'),
-      'webdriver.edge.driver': require('edgedriver'),
-
+      'webdriver.gecko.driver': require('geckodriver').path
     }
   },
 
@@ -30,8 +28,7 @@ module.exports = {
         data: require('./data/dev')
       },
       desiredCapabilities: {
-        browserName: 'firefox',
-        marionette: true,
+        browserName: 'chrome',
         javascriptEnabled: true,
         acceptSslCerts: true
       }
@@ -45,9 +42,10 @@ module.exports = {
       }
     },
 
-    edge : {
+    firefox: {
       desiredCapabilities: {
-        browserName: 'MicrosoftEdge',
+        browserName: 'firefox',
+        marionette: true,
         javascriptEnabled: true,
         acceptSslCerts: true
       }
