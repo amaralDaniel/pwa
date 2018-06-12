@@ -67,6 +67,82 @@
           <v-card flat class="card-item">
             <v-card-text >
               <v-layout text-sm-left class="my-2 mx-2">
+                <div v-if="item === 'Notifications'">
+                  <v-flex v-if="notifications.length === 0" >
+                    <span ripple tile append replace xs2 class="body-2 grey--text py-5">
+                      There are no notifications to read.
+                  </span>
+                  </v-flex>
+                  <ul id="notifications-list" v-else>
+                    <v-btn flat color="primary" @click="markAsRead">Mark all as read</v-btn>
+                    <li v-for="notification in notifications">
+                      <v-card ripple tile append replace xs2 class="my-2" v-if="notification.subject.type === 'Issue'">
+                        <router-link  :to="{name: 'singleIssue', params: {owner: notification.repository.owner.login, repo: notification.repository.name, number: notification.resourceNumber}}">
+                          <v-card-title primary-title class="text-xs-left" >
+                            <v-layout row>
+                              <v-flex xs12 sm12>
+                                <span class="headline text-sm-left grey--text">{{notification.repository.full_name}}</span>
+                                <p class="headline text-sm-left">{{notification.subject.title}}</p>
+                                <p class="body-2 grey--text text-sm-left mt-2" v-if="!notification.unread">Read <span class="done-green"><i class="material-icons">done</i></span></p>
+                                <p class="body-2 grey--text text-sm-left">Last updated <span class="body-1">{{ notification.updated_at | moment("from") }}</span></p>
+                                <p class="body-2 grey--text text-sm-left" v-if="!notification.unread">Last read: <span class="body-1">{{notification.last_read_at | moment("from")}}</span></p>
+                                <!--<ul class="text-sm-left">-->
+                                <!--<li v-for="lang in repo.languages.nodes">-->
+                                <!--<div class="text-xs-center">-->
+                                <!--<v-chip v-bind:color="lang.color">{{lang.name}}</v-chip>-->
+                                <!--</div>-->
+                                <!--</li>-->
+                                <!--</ul>-->
+                              </v-flex>
+                            </v-layout>
+                          </v-card-title>
+                          <v-card-text>
+                            <div>
+                              <p class="issue-type body-2 text-xs-left" v-if="notification.subject.type === 'Issue'">Issue</p>
+                              <p class="pr-type body-2 text-xs-left" v-if="notification.subject.type === 'PullRequest'">Pull Request</p>
+
+                            </div>
+                          </v-card-text>
+                        </router-link>
+                        <!--<v-card-actions v-if="notification.unread">-->
+                        <!--<v-btn flat color="primary" @click="markAsRead(notification)">Mark as read</v-btn>-->
+                        <!--</v-card-actions>-->
+                      </v-card>
+                      <v-card ripple tile append replace xs2 class="my-2" v-if="notification.subject.type === 'PullRequest'">
+                        <router-link  :to="{name: 'PullRequest', params: {owner: notification.repository.owner.login, name: notification.repository.name, number: notification.resourceNumber}}">
+                          <v-card-title primary-title class="text-xs-left" >
+                            <v-layout row>
+                              <v-flex xs12 sm12>
+                                <span class="headline text-sm-left grey--text">{{notification.repository.full_name}}</span>
+                                <p class="headline text-sm-left">{{notification.subject.title}}</p>
+                                <p class="body-2 grey--text text-sm-left mt-2" v-if="!notification.unread">Read <span class="done-green"><i class="material-icons">done</i></span></p>
+                                <p class="body-2 grey--text text-sm-left">Last updated <span class="body-1">{{ notification.updated_at | moment("from") }}</span></p>
+                                <p class="body-2 grey--text text-sm-left" v-if="!notification.unread">Last read: <span class="body-1">{{notification.last_read_at | moment("from")}}</span></p>
+                                <!--<ul class="text-sm-left">-->
+                                <!--<li v-for="lang in repo.languages.nodes">-->
+                                <!--<div class="text-xs-center">-->
+                                <!--<v-chip v-bind:color="lang.color">{{lang.name}}</v-chip>-->
+                                <!--</div>-->
+                                <!--</li>-->
+                                <!--</ul>-->
+                              </v-flex>
+                            </v-layout>
+                          </v-card-title>
+                          <v-card-text>
+                            <div>
+                              <p class="issue-type body-2 text-xs-left" v-if="notification.subject.type === 'Issue'">Issue</p>
+                              <p class="pr-type body-2 text-xs-left" v-if="notification.subject.type === 'PullRequest'">Pull Request</p>
+
+                            </div>
+                          </v-card-text>
+                        </router-link>
+                        <!--<v-card-actions v-if="notification.unread">-->
+                        <!--<v-btn flat color="primary" @click="markAsRead(notification)">Mark as read</v-btn>-->
+                        <!--</v-card-actions>-->
+                      </v-card>
+                    </li>
+                  </ul>
+                </div>
                 <div v-if="item === 'Readme'">
                   <div v-if="readme === ''">
                     <span class="body-2 grey--text text-xs-left text-sm-left">Nothing to show here</span>
@@ -229,7 +305,7 @@
         contributors: [],
         currentItem: 'Readme',
         items: [
-          'Readme', 'Files', 'Commits', 'Collaborators', 'Issues', 'Contributors', 'Pull-requests'
+          'Notifications', 'Readme', 'Files', 'Commits', 'Collaborators', 'Issues', 'Contributors', 'Pull-requests'
         ],
         readme: '',
         commits: [],
@@ -254,7 +330,8 @@
         successMessage: '',
         warning: false,
         warningMessage: '',
-        contents: []
+        contents: [],
+        notifications: []
       }
     },
     beforeMount () {
@@ -385,6 +462,9 @@
           }
         }
       }
+      axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName + '/notifications').then(function (notifications) {
+        _self.notifications = notifications.data
+      })
     },
     methods: {
       starLogic: function () {
@@ -619,6 +699,13 @@
             })
           })
         }
+      },
+      markAsRead: function () {
+        axios.put('/repos/' + this.repositoryOwner + '/' + this.repositoryName + '/notifications', {
+          params: {
+            last_read_at: Date.now()
+          }
+        })
       }
     },
     computed: {
