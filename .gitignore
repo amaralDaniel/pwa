@@ -3,3 +3,4 @@ node_modules
 docs/_book
 .firebaserc
 firebase.json
+dev.js
