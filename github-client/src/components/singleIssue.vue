@@ -103,48 +103,13 @@
         axios.post('/repos/' + this.owner + '/' + this.repo + '/issues/' + this.number + '/comments', {
           body: _self.comment.body
         }).then(function (response) {
-
-
-          // let requestParams = {
-        //   method: 'post',
-        //   url: '/repos/' + _self.owner + '/' + _self.repo + '/issues/' + _self.number + '/comments',
-        //   data: {
-        //     body: _self.comment.body
-        //   }
-        // }
-        //
-        // axios(requestParams).then(function (response) {
-        //   if (response.status === 201) {
-        //     _self.issueComments.push(response.data)
-        //     _self.comment.body = ''
-        //   }
-        // }).catch(function (error) {
-        //   console.log('Network error: ', error)
-        //   const outdb = indexedDB.open('outbox', 1)
-        //   outdb.onsuccess = function () {
-        //     var db = outdb.result
-        //     var tx = db.transaction('outbox', 'readwrite')
-        //     var store = tx.objectStore('outbox')
-        //     console.log('New transaction to outbox ', tx)
-        //     store.index('request')
-        //     var requestParams = {
-        //       method: 'post',
-        //       owner: _self.owner,
-        //       repo: _self.repo,
-        //       number: _self.number,
-        //       body: _self.comment.body
-        //     }
-        //     store.put({
-        //       request: 'issue',
-        //       content: requestParams
-        //     })
-        //     tx.oncomplete = function () {
-        //       navigator.serviceWorker.ready.then(function (swRegistration) {
-        //         return swRegistration.sync.register('comment-issue')
-        //       })
-        //     }
-        //   }
-        // })
+          if (response.status === 201) {
+            _self.issueComments.push(response.data)
+            _self.comment.body = ''
+          }
+        }).catch(function (error) {
+          console.log(error)
+        })
       }
     }
   }
