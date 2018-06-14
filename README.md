@@ -16,9 +16,9 @@ The achieved Progressive Web App delivers a lightweight product, capable of func
 
 #### How to use?
 
-The PWA lives[here](https://pwa-github-client.firebaseapp.com/)and requires a GitHub login to be used. There are bugs and Safari doesn't support Service Workers at the moment, however this PWA is a proof-of-concept and should be used as such. 
+The PWA lives [here](https://pwa-github-client.firebaseapp.com/) and requires a GitHub login to be used. There are bugs and Safari doesn't support Service Workers at the moment, however this PWA is a proof-of-concept and should be used as such. 
 
 
 
 Any bug or error found, please use the issues of this repository to give me feedback and I'll try to improve it as much as possible.
-This software is a fork from this[guide](http://vuejs-templates.github.io/webpack/). I deeply appreciate the time and effort put on the template by it's team.
+This software is a fork from this [guide](http://vuejs-templates.github.io/webpack/). I deeply appreciate the time and effort put on the template by it's team.
