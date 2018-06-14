@@ -138,30 +138,6 @@ const webpackConfig = merge(baseWebpackConfig, {
           urlPattern: /^https:\/\/fonts\.gstatic\.com\//,
           handler: 'cacheFirst'
         }
-        // {
-        //   urlPattern: /^https:\/\/api\.github\.com\//,
-        //   handler: 'cacheFirst',
-        //   options: {
-        //     cache: 'api-github-cache',
-        //     maxAgeSeconds: 2678400 // one month
-        //   }
-        // },
-        // {
-        //   urlPattern: /^https:\/\/avatars1\.githubusercontent\.com\//,
-        //   handler: 'cacheFirst',
-        //   options: {
-        //     cache: 'api-github-cache',
-        //     maxAgeSeconds: 2678400 // one month
-        //   }
-        // },
-        // {
-        //   urlPattern: /^https:\/\/avatars2\.githubusercontent\.com\//,
-        //   handler: 'cacheFirst',
-        //   options: {
-        //     cache: 'api-github-cache',
-        //     maxAgeSeconds: 2678400 // one month
-        //   }
-        // }
       ]
 
     })

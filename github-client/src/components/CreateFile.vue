@@ -65,6 +65,7 @@
     <v-btn
       @click="uploadFile"
       id="create-file-button"
+      v-if="networkAvailable"
     >
       Commit & Push New File
     </v-btn>

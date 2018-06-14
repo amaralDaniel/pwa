@@ -58,225 +58,254 @@
           {{ item }}
         </v-tab>
       </v-tabs>
-      <v-tabs-items v-model="currentItem">
+      <v-tabs-items v-model="currentItem" class="py-5">
         <v-tab-item
           v-for="item in items"
           :key="item"
           :id="item"
         >
-          <v-card flat class="card-item">
-            <v-card-text >
-              <v-layout text-sm-left class="my-2 mx-2">
-                <div v-if="item === 'Notifications'">
-                  <v-flex v-if="notifications.length === 0" >
+          <v-layout text-sm-left class="my-2 mx-2">
+            <div v-if="item === 'Notifications'">
+              <v-flex v-if="notifications.length === 0" >
                     <span ripple tile append replace xs2 class="body-2 grey--text py-5">
                       There are no notifications to read.
-                  </span>
-                  </v-flex>
-                  <ul id="notifications-list" v-else>
-                    <v-btn flat color="primary" @click="markAsRead">Mark all as read</v-btn>
-                    <li v-for="notification in notifications">
-                      <v-card ripple tile append replace xs2 class="my-2" v-if="notification.subject.type === 'Issue'">
-                        <router-link  :to="{name: 'singleIssue', params: {owner: notification.repository.owner.login, repo: notification.repository.name, number: notification.resourceNumber}}">
-                          <v-card-title primary-title class="text-xs-left" >
-                            <v-layout row>
-                              <v-flex xs12 sm12>
-                                <span class="headline text-sm-left grey--text">{{notification.repository.full_name}}</span>
-                                <p class="headline text-sm-left">{{notification.subject.title}}</p>
-                                <p class="body-2 grey--text text-sm-left mt-2" v-if="!notification.unread">Read <span class="done-green"><i class="material-icons">done</i></span></p>
-                                <p class="body-2 grey--text text-sm-left">Last updated <span class="body-1">{{ notification.updated_at | moment("from") }}</span></p>
-                                <p class="body-2 grey--text text-sm-left" v-if="!notification.unread">Last read: <span class="body-1">{{notification.last_read_at | moment("from")}}</span></p>
-                                <!--<ul class="text-sm-left">-->
-                                <!--<li v-for="lang in repo.languages.nodes">-->
-                                <!--<div class="text-xs-center">-->
-                                <!--<v-chip v-bind:color="lang.color">{{lang.name}}</v-chip>-->
-                                <!--</div>-->
-                                <!--</li>-->
-                                <!--</ul>-->
-                              </v-flex>
-                            </v-layout>
-                          </v-card-title>
-                          <v-card-text>
-                            <div>
-                              <p class="issue-type body-2 text-xs-left" v-if="notification.subject.type === 'Issue'">Issue</p>
-                              <p class="pr-type body-2 text-xs-left" v-if="notification.subject.type === 'PullRequest'">Pull Request</p>
-
-                            </div>
-                          </v-card-text>
-                        </router-link>
-                        <!--<v-card-actions v-if="notification.unread">-->
-                        <!--<v-btn flat color="primary" @click="markAsRead(notification)">Mark as read</v-btn>-->
-                        <!--</v-card-actions>-->
-                      </v-card>
-                      <v-card ripple tile append replace xs2 class="my-2" v-if="notification.subject.type === 'PullRequest'">
-                        <router-link  :to="{name: 'PullRequest', params: {owner: notification.repository.owner.login, name: notification.repository.name, number: notification.resourceNumber}}">
-                          <v-card-title primary-title class="text-xs-left" >
-                            <v-layout row>
-                              <v-flex xs12 sm12>
-                                <span class="headline text-sm-left grey--text">{{notification.repository.full_name}}</span>
-                                <p class="headline text-sm-left">{{notification.subject.title}}</p>
-                                <p class="body-2 grey--text text-sm-left mt-2" v-if="!notification.unread">Read <span class="done-green"><i class="material-icons">done</i></span></p>
-                                <p class="body-2 grey--text text-sm-left">Last updated <span class="body-1">{{ notification.updated_at | moment("from") }}</span></p>
-                                <p class="body-2 grey--text text-sm-left" v-if="!notification.unread">Last read: <span class="body-1">{{notification.last_read_at | moment("from")}}</span></p>
-                                <!--<ul class="text-sm-left">-->
-                                <!--<li v-for="lang in repo.languages.nodes">-->
-                                <!--<div class="text-xs-center">-->
-                                <!--<v-chip v-bind:color="lang.color">{{lang.name}}</v-chip>-->
-                                <!--</div>-->
-                                <!--</li>-->
-                                <!--</ul>-->
-                              </v-flex>
-                            </v-layout>
-                          </v-card-title>
-                          <v-card-text>
-                            <div>
-                              <p class="issue-type body-2 text-xs-left" v-if="notification.subject.type === 'Issue'">Issue</p>
-                              <p class="pr-type body-2 text-xs-left" v-if="notification.subject.type === 'PullRequest'">Pull Request</p>
-
-                            </div>
-                          </v-card-text>
-                        </router-link>
-                        <!--<v-card-actions v-if="notification.unread">-->
-                        <!--<v-btn flat color="primary" @click="markAsRead(notification)">Mark as read</v-btn>-->
-                        <!--</v-card-actions>-->
-                      </v-card>
-                    </li>
-                  </ul>
-                </div>
-                <div v-if="item === 'Readme'">
-                  <div v-if="readme === ''">
-                    <span class="body-2 grey--text text-xs-left text-sm-left">Nothing to show here</span>
-                  </div>
-                  <vue-markdown v-bind:source="readme" class="text-xs-left text-sm-left"></vue-markdown>
-                </div>
-                <div v-if="item === 'Files'">
-                  <TreeView></TreeView>
-                </div>
-                <div v-if="item === 'Commits'">
-                  <ul>
-                    <li v-for="commit in commits" class="text-xs-left text-sm-left">
-                      <router-link :to="{name: 'Commit', params: {owner: repositoryOwner, repo: repositoryName, sha: commit.sha}}">
-                        <span class="body-2">{{commit.commit.message}}</span></router-link>
-                      by
-                      <router-link :to="{name: 'User', params: {login: commit.author.login}}">
-                        <span class="body-1 primary" >{{commit.author.login}}</span>
-                      </router-link>
-                    </li>
-                  </ul>
-                </div>
-                <div v-if="item === 'Collaborators'">
-                  <ul >
-                    <li v-for="user in collaborators" class="text-xs-left text-sm-left">
-                      <router-link :to="{name: 'User', params: {login: user.login}}">
-                        <v-layout align-center class="my-2" row>
-                          <v-avatar>
-                            <img :src="user.avatar_url" alt="John">
-                          </v-avatar>
-                          <v-spacer></v-spacer>
-                          <span class="body-2">{{user.login}}</span>
+                    </span>
+              </v-flex>
+              <ul id="notifications-list" v-else>
+                <v-btn flat color="primary" @click="markAsRead">Mark all as read</v-btn>
+                <li v-for="notification in notifications">
+                  <v-card ripple tile append replace xs2 class="my-2" v-if="notification.subject.type === 'Issue'">
+                    <router-link  :to="{name: 'singleIssue', params: {owner: notification.repository.owner.login, repo: notification.repository.name, number: notification.resourceNumber}}">
+                      <v-card-title primary-title class="text-xs-left" >
+                        <v-layout row>
+                          <v-flex xs12 sm12>
+                            <span class="headline text-sm-left grey--text">{{notification.repository.full_name}}</span>
+                            <p class="headline text-sm-left">{{notification.subject.title}}</p>
+                            <p class="body-2 grey--text text-sm-left mt-2" v-if="!notification.unread">Read <span class="done-green"><i class="material-icons">done</i></span></p>
+                            <p class="body-2 grey--text text-sm-left">Last updated <span class="body-1">{{ notification.updated_at | moment("from") }}</span></p>
+                            <p class="body-2 grey--text text-sm-left" v-if="!notification.unread">Last read: <span class="body-1">{{notification.last_read_at | moment("from")}}</span></p>
+                            <!--<ul class="text-sm-left">-->
+                            <!--<li v-for="lang in repo.languages.nodes">-->
+                            <!--<div class="text-xs-center">-->
+                            <!--<v-chip v-bind:color="lang.color">{{lang.name}}</v-chip>-->
+                            <!--</div>-->
+                            <!--</li>-->
+                            <!--</ul>-->
+                          </v-flex>
                         </v-layout>
-                      </router-link>
-                    </li>
-                  </ul>
-                </div>
-                <div v-if="item === 'Issues'">
-                  <v-flex row>
-                    <router-link :to="{name: 'CreateIssue'}">
-                      <v-btn
-                        color="pink"
-                        small
-                        absolute
-                        top
-                        right
-                        class="mt-5 mr-2"
-                      >
-                        Create Issue
-                      </v-btn>
+                      </v-card-title>
+                      <v-card-text>
+                        <div>
+                          <p class="issue-type body-2 text-xs-left" v-if="notification.subject.type === 'Issue'">Issue</p>
+                          <p class="pr-type body-2 text-xs-left" v-if="notification.subject.type === 'PullRequest'">Pull Request</p>
+
+                        </div>
+                      </v-card-text>
                     </router-link>
-                    <ul >
-                      <li v-for="issue in issues" class="text-xs-left text-sm-left">
-                        <router-link :to="{name: 'singleIssue', params: { owner: issue.user.login, repo: repositoryName, number: issue.number }}">
-                          <v-card ripple tile append replace xs2 class="my-2">
-                            <v-card-title primary-title class="text-xs-left" >
-                              <v-layout row>
-                                <v-flex xs12 sm12>
-                                  <span class="title">{{issue.title}}</span>
-                                </v-flex>
-                              </v-layout>
-                            </v-card-title>
-                            <v-card-text>
-                              <router-link :to="{name: 'User', params: {login: issue.user.login}}">
-                                <v-avatar>
-                                  <img :src="issue.user.avatar_url" :alt="issue.user.login">
-                                </v-avatar>
-                                <span class="body-2">{{issue.user.login}}</span>
-                              </router-link>
-                              <span class="body-2 grey--text text-sm-left">created this issue {{ issue.created_at | moment("from") }}</span>
-                            </v-card-text>
-                          </v-card>
-                        </router-link>
-                      </li>
-                    </ul>
-                  </v-flex>
-                </div>
-                <div v-if="item === 'Contributors'">
-                  <ul >
-                    <li v-for="user in contributors" class="text-xs-left text-sm-left">
-
-                      <router-link :to="{name: 'User', params: {login: user.login}}">
-                        <v-layout class="my-2" row>
-                          <v-avatar>
-                            <img :src="user.avatar_url" alt="John Doe">
-                          </v-avatar>
-                          <v-spacer></v-spacer>
-                          <span class="body-1">{{user.login}}</span>
+                    <!--<v-card-actions v-if="notification.unread">-->
+                    <!--<v-btn flat color="primary" @click="markAsRead(notification)">Mark as read</v-btn>-->
+                    <!--</v-card-actions>-->
+                  </v-card>
+                  <v-card ripple tile append replace xs2 class="my-2" v-if="notification.subject.type === 'PullRequest'">
+                    <router-link  :to="{name: 'PullRequest', params: {owner: notification.repository.owner.login, name: notification.repository.name, number: notification.resourceNumber}}">
+                      <v-card-title primary-title class="text-xs-left" >
+                        <v-layout row>
+                          <v-flex xs12 sm12>
+                            <span class="headline text-sm-left grey--text">{{notification.repository.full_name}}</span>
+                            <p class="headline text-sm-left">{{notification.subject.title}}</p>
+                            <p class="body-2 grey--text text-sm-left mt-2" v-if="!notification.unread">Read <span class="done-green"><i class="material-icons">done</i></span></p>
+                            <p class="body-2 grey--text text-sm-left">Last updated <span class="body-1">{{ notification.updated_at | moment("from") }}</span></p>
+                            <p class="body-2 grey--text text-sm-left" v-if="!notification.unread">Last read: <span class="body-1">{{notification.last_read_at | moment("from")}}</span></p>
+                            <!--<ul class="text-sm-left">-->
+                            <!--<li v-for="lang in repo.languages.nodes">-->
+                            <!--<div class="text-xs-center">-->
+                            <!--<v-chip v-bind:color="lang.color">{{lang.name}}</v-chip>-->
+                            <!--</div>-->
+                            <!--</li>-->
+                            <!--</ul>-->
+                          </v-flex>
                         </v-layout>
-                      </router-link>
-                    </li>
-                  </ul>
-                </div>
-                <div v-if="item === 'Pull-requests'">
-                  <router-link :to="{name: 'CreatePullRequest'}">
-                    <v-btn
-                      color="pink"
-                      small
-                      absolute
-                      top
-                      right
-                      class="mt-5 mr-2"
-                    >
-                      Create Pull Request
-                    </v-btn>
-                  </router-link>
-                  <ul >
-                    <li v-for="pr in pullRequests" class="text-xs-left text-sm-left">
+                      </v-card-title>
+                      <v-card-text>
+                        <div>
+                          <p class="issue-type body-2 text-xs-left" v-if="notification.subject.type === 'Issue'">Issue</p>
+                          <p class="pr-type body-2 text-xs-left" v-if="notification.subject.type === 'PullRequest'">Pull Request</p>
+
+                        </div>
+                      </v-card-text>
+                    </router-link>
+                    <!--<v-card-actions v-if="notification.unread">-->
+                    <!--<v-btn flat color="primary" @click="markAsRead(notification)">Mark as read</v-btn>-->
+                    <!--</v-card-actions>-->
+                  </v-card>
+                </li>
+              </ul>
+            </div>
+            <div v-if="item === 'Readme'">
+              <v-layout text-sm-left v-if="readme === ''">
+                <span class="body-2 grey--text text-xs-left text-sm-left">Nothing to show here</span>
+              </v-layout>
+              <vue-markdown v-bind:source="readme" class="text-xs-left text-sm-left"></vue-markdown>
+            </div>
+            <div v-if="item === 'Files'">
+              <TreeView></TreeView>
+            </div>
+            <v-flex v-if="item === 'Commits'" column>
+              <ul>
+                <li v-for="commit in commits" class="text-xs-left text-sm-left">
+                  <v-card ripple tile append replace xs2 class="my-2">
+                    <v-card-title primary-title class="text-xs-left" >
                       <v-layout row>
-                        <v-flex fluid>
-                          <router-link :to="{name: 'PullRequest', params: {owner: repositoryOwner, name: repositoryName, number: pr.number}}">
-                            <v-card ripple tile append replace xs6 class="my-2">
-                              <v-card-title primary-title>
-                                <span class="body-2">#{{pr.number}} {{pr.title}} by <router-link :to="{name: 'User', params: {login: pr.user.login}}">{{pr.user.login}}</router-link></span>
-                              </v-card-title>
-                              <v-card-text>
-                                <v-spacer></v-spacer>
-                                <span class="body-2">Created {{pr.created_at | moment("from")}}</span>
-                                <v-spacer></v-spacer>
-                                <span class="body-2">State: {{pr.state}}</span>
-                                <v-spacer></v-spacer>
-                                <span class="body-2" :v-if="pr.merged">Merged {{pr.merged_at | moment("from")}}</span>
-                                <v-spacer></v-spacer>
-                                <span class="body-2" :v-if="pr.mer">Closed {{pr.closed_at | moment("from")}}</span>
-                              </v-card-text>
-                            </v-card>
+                        <v-flex xs12 sm12>
+                          <router-link :to="{name: 'Commit', params: {owner: repositoryOwner, repo: repositoryName, sha: commit.sha}}">
+                            <span class="title">{{commit.commit.message}}</span></router-link>
+                          by
+                          <router-link :to="{name: 'User', params: {login: commit.author.login}}">
+                            <span class="body-2 primary" >{{commit.author.login}}</span>
                           </router-link>
                         </v-flex>
                       </v-layout>
-                    </li>
-                  </ul>
-                </div>
-              </v-layout>
-            </v-card-text>
-          </v-card>
+                    </v-card-title>
+                    <v-card-text>
+                      <div>
+                        <p class="body-2 grey--text text-sm-left"><span class="body-1">{{ commit.commit.author.date | moment("from") }}</span></p>
+                      </div>
+                    </v-card-text>
+                    <!--<v-card-actions v-if="notification.unread">-->
+                    <!--<v-btn flat color="primary" @click="markAsRead(notification)">Mark as read</v-btn>-->
+                    <!--</v-card-actions>-->
+                  </v-card>
+                </li>
+              </ul>
+            </v-flex>
+            <v-flex v-if="item === 'Collaborators'" column>
+              <ul >
+                <li v-for="user in collaborators" class="text-xs-left text-sm-left">
+                  <v-card ripple tile append replace xs2 class="my-2">
+                    <v-card-title primary-title class="text-xs-left" >
+                      <v-layout row>
+                        <v-flex xs12 sm12>
+                          <router-link :to="{name: 'User', params: {login: user.login}}">
+                            <v-layout align-center class="my-2 ml-2">
+                              <v-avatar>
+                                <img :src="user.avatar_url" alt="John">
+                              </v-avatar>
+                              <span class="title ml-2">{{user.login}}</span>
+                            </v-layout>
+                          </router-link>
+                        </v-flex>
+                      </v-layout>
+                    </v-card-title>
+                  </v-card>
+                </li>
+              </ul>
+            </v-flex>
+            <v-flex v-if="item === 'Issues'" column>
+              <v-flex row>
+                <router-link :to="{name: 'CreateIssue'}">
+                  <v-btn
+                    color="pink"
+                    small
+                    absolute
+                    top
+                    right
+                    class="mt-5 mr-2"
+                  >
+                    Create Issue
+                  </v-btn>
+                </router-link>
+                <ul class="mt-5">
+                  <li v-for="issue in issues" class="text-xs-left text-sm-left">
+                    <router-link :to="{name: 'singleIssue', params: { owner: issue.user.login, repo: repositoryName, number: issue.number }}">
+                      <v-card ripple tile append replace xs2 class="my-2">
+                        <v-card-title primary-title class="text-xs-left" >
+                          <v-layout row>
+                            <v-flex xs12 sm12>
+                              <span class="title">{{issue.title}}</span>
+                            </v-flex>
+                          </v-layout>
+                        </v-card-title>
+                        <v-card-text>
+                          <router-link :to="{name: 'User', params: {login: issue.user.login}}">
+                            <v-avatar>
+                              <img :src="issue.user.avatar_url" :alt="issue.user.login">
+                            </v-avatar>
+                            <span class="body-2">{{issue.user.login}}</span>
+                          </router-link>
+                          <span class="body-2 grey--text text-sm-left">created this issue {{ issue.created_at | moment("from") }}</span>
+                        </v-card-text>
+                      </v-card>
+                    </router-link>
+                  </li>
+                </ul>
+              </v-flex>
+            </v-flex>
+            <v-flex v-if="item === 'Contributors'" column>
+              <ul >
+                <li v-for="user in contributors" class="text-xs-left text-sm-left">
+                  <v-card ripple tile append replace xs2 class="my-2">
+                    <v-card-title primary-title class="text-xs-left" >
+                      <v-layout row>
+                        <v-flex xs12 sm12>
+                          <router-link :to="{name: 'User', params: {login: user.login}}">
+                            <v-layout align-center class="my-2 ml-2">
+                              <v-avatar>
+                                <img :src="user.avatar_url" alt="John">
+                              </v-avatar>
+                              <span class="title ml-2">{{user.login}}</span>
+                            </v-layout>
+                          </router-link>
+                        </v-flex>
+                      </v-layout>
+                    </v-card-title>
+                  </v-card>
+                </li>
+              </ul>
+            </v-flex>
+            <v-flex v-if="item === 'Pull-requests'" column>
+              <router-link :to="{name: 'CreatePullRequest'}">
+                <v-btn
+                  color="pink"
+                  small
+                  absolute
+                  top
+                  right
+                  class="mt-5 mr-2"
+                >
+                  Create Pull Request
+                </v-btn>
+              </router-link>
+              <ul class="mt-5" >
+                <li v-for="pr in pullRequests" class="text-xs-left text-sm-left">
+                  <v-layout row>
+                    <v-flex fluid>
+                      <router-link :to="{name: 'PullRequest', params: {owner: repositoryOwner, name: repositoryName, number: pr.number}}">
+                        <v-card ripple tile append replace xs6 class="my-2">
+                          <v-card-title primary-title class="text-xs-left">
+                            <v-layout row>
+                              <v-flex xs12 sm12>
+                                <span class="title">#{{pr.number}} {{pr.title}}</span>
+                                <span class="state ml-1 body-2" v-if="pr.state === 'open'">OPEN</span>
+                              </v-flex>
+                            </v-layout>
+                          </v-card-title>
+                          <v-card-text>
+                            <v-spacer></v-spacer>
+                            <span class="body-2 grey--text">Created {{pr.created_at | moment("from")}} by <router-link :to="{name: 'User', params: {login: pr.user.login}}">{{pr.user.login}}</router-link></span>
+                            <v-spacer></v-spacer>
+                            <span class="body-2 grey--text" v-if="pr.merged_at">Merged {{pr.merged_at | moment("from")}}</span>
+                            <v-spacer></v-spacer>
+                            <span class="body-2 grey--text" v-if="pr.closed_at">Closed {{pr.closed_at | moment("from")}}</span>
+                          </v-card-text>
+                        </v-card>
+                      </router-link>
+                    </v-flex>
+                  </v-layout>
+                </li>
+              </ul>
+            </v-flex>
+          </v-layout>
+
         </v-tab-item>
       </v-tabs-items>
     </v-container>
@@ -352,6 +381,7 @@
         getRepo.onsuccess = function () {
           console.log('repo', getRepo.result)
           if (getRepo.result !== undefined) {
+            console.log('Getting from IndexedDB.')
             _self.repoGH = getRepo.result.content
 
             var repo = store.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName)
@@ -391,6 +421,7 @@
               _self.viewerIsWatching = viewerIsWatching.result.content
             }
           } else {
+            console.log('Getting from Cache.')
             _self.repoGH = _self.gh.getRepo(this.repositoryOwner, this.repositoryName)
             axios.get('/repos/' + _self.repositoryOwner + '/' + _self.repositoryName).then(function (response) {
               _self.repo = response.data
@@ -584,8 +615,6 @@
       saveRepo: function () {
         var _self = this
         console.log('Saving...')
-        const channel = new BroadcastChannel('pwa_channel')
-        channel.postMessage({owner: _self.repositoryOwner, name: _self.repositoryName})
 
         const idb = indexedDB.open('saved-repos', 1)
         idb.onsuccess = function () {
@@ -597,6 +626,7 @@
           if (navigator.storage && navigator.storage.persist) {
             navigator.storage.persist().then(granted => {
               if (granted) {
+                console.log('Storage was granted.')
                 var _tx = db.transaction('saved-repos', 'readwrite')
                 var store = _tx.objectStore('saved-repos')
                 store.index('url')
@@ -766,4 +796,7 @@
     left: 50%
     right: 5%
     z-index: 999
+
+  .state
+    color: $primary
 </style>

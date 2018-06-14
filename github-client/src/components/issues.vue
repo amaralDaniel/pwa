@@ -1,232 +1,243 @@
 <template>
-  <div>
-    <v-tabs
-      fixed-tabs
-      v-model="currentItem"
-      color="transparent"
-      slider-color="secondary"
-      slot="extension"
+  <div
+    id="e3"
+    style="max-width: 85vh; margin: auto;"
+    class=" lighten-3"
+  >
+
+    <v-container
+      fluid
+      style="min-height: 0; position: relative;"
+      grid-list-lg
     >
-      <v-tab
-        v-for="item in tabItems"
-        :key="item"
-        :href="'#' + item"
-        class="caption"
+      <v-tabs
+        fixed-tabs
+        v-model="currentItem"
+        color="transparent"
+        slider-color="secondary"
+        slot="extension"
       >
-        {{ item }}
-      </v-tab>
-    </v-tabs>
-    <v-tabs-items v-model="currentItem">
-      <v-tab-item
-        v-for="item in tabItems"
-        :key="item"
-        :id="item"
-      >
-        <v-container
-          fluid
-          style="min-height: 0; position: relative;"
-          grid-list-lg
+        <v-tab
+          v-for="item in tabItems"
+          :key="item"
+          :href="'#' + item"
+          class="caption"
         >
-          <v-layout row wrap>
-            <v-flex xs12>
-              <div v-if="item === 'Created'" class="issue-outer">
-                <v-switch
-                  label="Open"
-                  v-model="createdSwitch"
-                ></v-switch>
-                <ul v-if="createdSwitch">
-                  <v-card v-if="created.length === 0">
-                    <v-card-title primary-title>
-                      <p class="headline text-md-center">Nothing to show here</p>
-                    </v-card-title>
-                  </v-card>
-                  <li v-for="issue in created">
-                    <router-link :to="{name: 'singleIssue', params: { owner: issue.repository.owner.login, repo: issue.repository.name, number: issue.number }}">
-                      <v-card ripple tile append replace class="my-2" text-md-left>
-                        <v-card-title primary-title class="text-sm-left text-xs-left">
-                          <div >
-                            <p class="headline text-sm-left">{{issue.title}} <span class="body-2 grey--text">on <span class="body-2 green--text">{{issue.repository.full_name}}</span></span></p>
-                            <p class="body-2 grey--text text-sm-left">Created <span class="body-1">{{ issue.created_at | moment("from") }}</span> by <span class="body-1">{{issue.user.login}}</span></p>
-                            <p class="body-2 grey--text text-sm-left">Last updated <span class="body-1">{{ issue.updated_at | moment("from") }}</span></p>
-                            <p class="body-2 grey--text text-sm-left">Comments: <span class="body-1">{{ issue.comments }}</span></p>
-                          </div>
-                        </v-card-title>
-                      </v-card>
-                    </router-link>
-                  </li>
-                </ul>
-                <ul v-else>
-                  <v-card v-if="createdClosed.length === 0">
-                    <v-card-title primary-title>
-                      <p class="headline text-md-center">Nothing to show here</p>
-                    </v-card-title>
-                  </v-card>
-                  <li v-for="issue in createdClosed">
-                    <router-link :to="{name: 'singleIssue', params: { owner: issue.repository.owner.login, repo: issue.repository.name, number: issue.number }}">
-                      <v-card ripple tile append replace class="my-2" text-md-left>
-                        <v-card-title primary-title class="text-sm-left text-xs-left">
-                          <div >
-                            <p class="headline text-sm-left">{{issue.title}} <span class="body-2 grey--text">on <span class="body-2 green--text">{{issue.repository.full_name}}</span></span></p>
-                            <p class="body-2 grey--text text-sm-left">Created <span class="body-1">{{ issue.created_at | moment("from") }}</span> by <span class="body-1">{{issue.user.login}}</span></p>
-                            <p class="body-2 grey--text text-sm-left">Last updated <span class="body-1">{{ issue.updated_at | moment("from") }}</span></p>
-                            <p class="body-2 grey--text text-sm-left">Comments: <span class="body-1">{{ issue.comments }}</span></p>
-                          </div>
-                        </v-card-title>
-                      </v-card>
-                    </router-link>
-                  </li>
-                </ul>
-              </div>
-              <div v-if="item === 'Watched'" class="issue-outer">
-                <v-switch
-                  label="Open"
-                  v-model="watchedSwitch"
-                ></v-switch>
-                <ul v-if="watchedSwitch">
-                  <v-card v-if="watched.length === 0">
-                    <v-card-title primary-title>
-                      <p class="headline text-md-center">Nothing to show here</p>
-                    </v-card-title>
-                  </v-card>
-                  <li v-for="issue in watched">
-                    <router-link :to="{name: 'singleIssue', params: { owner: issue.repository.owner.login, repo: issue.repository.name, number: issue.number }}">
-                      <v-card ripple tile append replace class="my-2" text-md-left>
-                        <v-card-title primary-title class="text-sm-left text-xs-left">
-                          <div >
-                            <p class="headline text-sm-left">{{issue.title}} <span class="body-2 grey--text">on <span class="body-2 green--text">{{issue.repository.full_name}}</span></span></p>
-                            <p class="body-2 grey--text text-sm-left">Created <span class="body-1">{{ issue.created_at | moment("from") }}</span> by <span class="body-1">{{issue.user.login}}</span></p>
-                            <p class="body-2 grey--text text-sm-left">Last updated <span class="body-1">{{ issue.updated_at | moment("from") }}</span></p>
-                            <p class="body-2 grey--text text-sm-left">Comments: <span class="body-1">{{ issue.comments }}</span></p>
-                          </div>
-                        </v-card-title>
-                      </v-card>
-                    </router-link>
-                  </li>
-                </ul>
-                <ul v-else>
-                  <v-card v-if="watchedClosed.length === 0">
-                    <v-card-title primary-title>
-                      <p class="headline text-md-center">Nothing to show here</p>
-                    </v-card-title>
-                  </v-card>
-                  <li v-for="issue in watchedClosed">
-                    <router-link :to="{name: 'singleIssue', params: { owner: issue.repository.owner.login, repo: issue.repository.name, number: issue.number }}">
-                      <v-card ripple tile append replace class="my-2" text-md-left>
-                        <v-card-title primary-title class="text-sm-left text-xs-left">
-                          <div >
-                            <p class="headline text-sm-left">{{issue.title}} <span class="body-2 grey--text">on <span class="body-2 green--text">{{issue.repository.full_name}}</span></span></p>
-                            <p class="body-2 grey--text text-sm-left">Created <span class="body-1">{{ issue.created_at | moment("from") }}</span> by <span class="body-1">{{issue.user.login}}</span></p>
-                            <p class="body-2 grey--text text-sm-left">Last updated <span class="body-1">{{ issue.updated_at | moment("from") }}</span></p>
-                            <p class="body-2 grey--text text-sm-left">Comments: <span class="body-1">{{ issue.comments }}</span></p>
-                          </div>
-                        </v-card-title>
-                      </v-card>
-                    </router-link>
-                  </li>
-                </ul>
-              </div>
-              <div v-if="item === 'Assigned'" class="issue-outer">
-                <v-switch
-                  label="Open"
-                  v-model="assignedSwitch"
-                ></v-switch>
-                <ul v-if="assignedSwitch">
-                  <v-card v-if="assigned.length === 0">
-                    <v-card-title primary-title class="text-sm-left text-xs-left">
-                      <p class="headline text-md-center">Nothing to show here</p>
-                    </v-card-title>
-                  </v-card>
-                  <li v-for="issue in assigned">
-                    <router-link :to="{name: 'singleIssue', params: { owner: issue.repository.owner.login, repo: issue.repository.name, number: issue.number }}">
-                      <v-card ripple tile append replace class="my-2" text-md-left>
-                        <v-card-title primary-title class="text-sm-left text-xs-left">
-                          <div >
-                            <p class="headline text-sm-left">{{issue.title}} <span class="body-2 grey--text">on <span class="body-2 green--text">{{issue.repository.full_name}}</span></span></p>
-                            <p class="body-2 grey--text text-sm-left">Created <span class="body-1">{{ issue.created_at | moment("from") }}</span> by <span class="body-1">{{issue.user.login}}</span></p>
-                            <p class="body-2 grey--text text-sm-left">Last updated <span class="body-1">{{ issue.updated_at | moment("from") }}</span></p>
-                            <p class="body-2 grey--text text-sm-left">Comments: <span class="body-1">{{ issue.comments }}</span></p>
-                          </div>
-                        </v-card-title>
-                      </v-card>
-                    </router-link>
-                  </li>
-                </ul>
-                <ul v-else>
-                  <li v-for="issue in assignedClosed">
-                    <v-card v-if="assignedClosed.length === 0">
+          {{ item }}
+        </v-tab>
+      </v-tabs>
+      <v-tabs-items v-model="currentItem">
+        <v-tab-item
+          v-for="item in tabItems"
+          :key="item"
+          :id="item"
+        >
+          <v-container
+            fluid
+            style="min-height: 0; position: relative;"
+            grid-list-lg
+          >
+            <v-layout row wrap>
+              <v-flex xs12>
+                <div v-if="item === 'Created'" class="issue-outer">
+                  <v-switch
+                    label="Open"
+                    v-model="createdSwitch"
+                  ></v-switch>
+                  <ul v-if="createdSwitch">
+                    <v-card v-if="created.length === 0">
+                      <v-card-title primary-title>
+                        <p class="headline text-md-center">Nothing to show here</p>
+                      </v-card-title>
+                    </v-card>
+                    <li v-for="issue in created">
+                      <router-link :to="{name: 'singleIssue', params: { owner: issue.repository.owner.login, repo: issue.repository.name, number: issue.number }}">
+                        <v-card ripple tile append replace class="my-2" text-md-left>
+                          <v-card-title primary-title class="text-sm-left text-xs-left">
+                            <div >
+                              <p class="headline text-sm-left">{{issue.title}} <span class="body-2 grey--text">on <span class="body-2 green--text">{{issue.repository.full_name}}</span></span></p>
+                              <p class="body-2 grey--text text-sm-left">Created <span class="body-1">{{ issue.created_at | moment("from") }}</span> by <span class="body-1">{{issue.user.login}}</span></p>
+                              <p class="body-2 grey--text text-sm-left">Last updated <span class="body-1">{{ issue.updated_at | moment("from") }}</span></p>
+                              <p class="body-2 grey--text text-sm-left">Comments: <span class="body-1">{{ issue.comments }}</span></p>
+                            </div>
+                          </v-card-title>
+                        </v-card>
+                      </router-link>
+                    </li>
+                  </ul>
+                  <ul v-else>
+                    <v-card v-if="createdClosed.length === 0">
+                      <v-card-title primary-title>
+                        <p class="headline text-md-center">Nothing to show here</p>
+                      </v-card-title>
+                    </v-card>
+                    <li v-for="issue in createdClosed">
+                      <router-link :to="{name: 'singleIssue', params: { owner: issue.repository.owner.login, repo: issue.repository.name, number: issue.number }}">
+                        <v-card ripple tile append replace class="my-2" text-md-left>
+                          <v-card-title primary-title class="text-sm-left text-xs-left">
+                            <div >
+                              <p class="headline text-sm-left">{{issue.title}} <span class="body-2 grey--text">on <span class="body-2 green--text">{{issue.repository.full_name}}</span></span></p>
+                              <p class="body-2 grey--text text-sm-left">Created <span class="body-1">{{ issue.created_at | moment("from") }}</span> by <span class="body-1">{{issue.user.login}}</span></p>
+                              <p class="body-2 grey--text text-sm-left">Last updated <span class="body-1">{{ issue.updated_at | moment("from") }}</span></p>
+                              <p class="body-2 grey--text text-sm-left">Comments: <span class="body-1">{{ issue.comments }}</span></p>
+                            </div>
+                          </v-card-title>
+                        </v-card>
+                      </router-link>
+                    </li>
+                  </ul>
+                </div>
+                <div v-if="item === 'Watched'" class="issue-outer">
+                  <v-switch
+                    label="Open"
+                    v-model="watchedSwitch"
+                  ></v-switch>
+                  <ul v-if="watchedSwitch">
+                    <v-card v-if="watched.length === 0">
+                      <v-card-title primary-title>
+                        <p class="headline text-md-center">Nothing to show here</p>
+                      </v-card-title>
+                    </v-card>
+                    <li v-for="issue in watched">
+                      <router-link :to="{name: 'singleIssue', params: { owner: issue.repository.owner.login, repo: issue.repository.name, number: issue.number }}">
+                        <v-card ripple tile append replace class="my-2" text-md-left>
+                          <v-card-title primary-title class="text-sm-left text-xs-left">
+                            <div >
+                              <p class="headline text-sm-left">{{issue.title}} <span class="body-2 grey--text">on <span class="body-2 green--text">{{issue.repository.full_name}}</span></span></p>
+                              <p class="body-2 grey--text text-sm-left">Created <span class="body-1">{{ issue.created_at | moment("from") }}</span> by <span class="body-1">{{issue.user.login}}</span></p>
+                              <p class="body-2 grey--text text-sm-left">Last updated <span class="body-1">{{ issue.updated_at | moment("from") }}</span></p>
+                              <p class="body-2 grey--text text-sm-left">Comments: <span class="body-1">{{ issue.comments }}</span></p>
+                            </div>
+                          </v-card-title>
+                        </v-card>
+                      </router-link>
+                    </li>
+                  </ul>
+                  <ul v-else>
+                    <v-card v-if="watchedClosed.length === 0">
+                      <v-card-title primary-title>
+                        <p class="headline text-md-center">Nothing to show here</p>
+                      </v-card-title>
+                    </v-card>
+                    <li v-for="issue in watchedClosed">
+                      <router-link :to="{name: 'singleIssue', params: { owner: issue.repository.owner.login, repo: issue.repository.name, number: issue.number }}">
+                        <v-card ripple tile append replace class="my-2" text-md-left>
+                          <v-card-title primary-title class="text-sm-left text-xs-left">
+                            <div >
+                              <p class="headline text-sm-left">{{issue.title}} <span class="body-2 grey--text">on <span class="body-2 green--text">{{issue.repository.full_name}}</span></span></p>
+                              <p class="body-2 grey--text text-sm-left">Created <span class="body-1">{{ issue.created_at | moment("from") }}</span> by <span class="body-1">{{issue.user.login}}</span></p>
+                              <p class="body-2 grey--text text-sm-left">Last updated <span class="body-1">{{ issue.updated_at | moment("from") }}</span></p>
+                              <p class="body-2 grey--text text-sm-left">Comments: <span class="body-1">{{ issue.comments }}</span></p>
+                            </div>
+                          </v-card-title>
+                        </v-card>
+                      </router-link>
+                    </li>
+                  </ul>
+                </div>
+                <div v-if="item === 'Assigned'" class="issue-outer">
+                  <v-switch
+                    label="Open"
+                    v-model="assignedSwitch"
+                  ></v-switch>
+                  <ul v-if="assignedSwitch">
+                    <v-card v-if="assigned.length === 0">
                       <v-card-title primary-title class="text-sm-left text-xs-left">
                         <p class="headline text-md-center">Nothing to show here</p>
                       </v-card-title>
                     </v-card>
-                    <router-link :to="{name: 'singleIssue', params: { owner: issue.repository.owner.login, repo: issue.repository.name, number: issue.number }}">
-                      <v-card ripple tile append replace class="my-2" text-md-left>
+                    <li v-for="issue in assigned">
+                      <router-link :to="{name: 'singleIssue', params: { owner: issue.repository.owner.login, repo: issue.repository.name, number: issue.number }}">
+                        <v-card ripple tile append replace class="my-2" text-md-left>
+                          <v-card-title primary-title class="text-sm-left text-xs-left">
+                            <div >
+                              <p class="headline text-sm-left">{{issue.title}} <span class="body-2 grey--text">on <span class="body-2 green--text">{{issue.repository.full_name}}</span></span></p>
+                              <p class="body-2 grey--text text-sm-left">Created <span class="body-1">{{ issue.created_at | moment("from") }}</span> by <span class="body-1">{{issue.user.login}}</span></p>
+                              <p class="body-2 grey--text text-sm-left">Last updated <span class="body-1">{{ issue.updated_at | moment("from") }}</span></p>
+                              <p class="body-2 grey--text text-sm-left">Comments: <span class="body-1">{{ issue.comments }}</span></p>
+                            </div>
+                          </v-card-title>
+                        </v-card>
+                      </router-link>
+                    </li>
+                  </ul>
+                  <ul v-else>
+                    <li v-for="issue in assignedClosed">
+                      <v-card v-if="assignedClosed.length === 0">
                         <v-card-title primary-title class="text-sm-left text-xs-left">
-                          <div >
-                            <p class="headline text-sm-left">{{issue.title}} <span class="body-2 grey--text">on <span class="body-2 green--text">{{issue.repository.full_name}}</span></span></p>
-                            <p class="body-2 grey--text text-sm-left">Created <span class="body-1">{{ issue.created_at | moment("from") }}</span> by <span class="body-1">{{issue.user.login}}</span></p>
-                            <p class="body-2 grey--text text-sm-left">Last updated <span class="body-1">{{ issue.updated_at | moment("from") }}</span></p>
-                            <p class="body-2 grey--text text-sm-left">Comments: <span class="body-1">{{ issue.comments }}</span></p>
-                          </div>
+                          <p class="headline text-md-center">Nothing to show here</p>
                         </v-card-title>
                       </v-card>
-                    </router-link>
-                  </li>
-                </ul>
-              </div>
-              <div v-if="item === 'Mentioned'" class="issue-outer">
-                <v-switch
-                  label="Open"
-                  v-model="mentionedSwitch"
-                ></v-switch>
-                <ul v-if="mentionedSwitch">
-                  <v-card v-if="mentioned.length === 0">
-                    <v-card-title primary-title class="text-sm-left text-xs-left">
-                      <p class="headline text-md-center">Nothing to show here</p>
-                    </v-card-title>
-                  </v-card>
-                  <li v-for="issue in mentioned">
-                    <router-link :to="{name: 'singleIssue', params: { owner: issue.repository.owner.login, repo: issue.repository.name, number: issue.number }}">
-                      <v-card ripple tile append replace class="my-2" text-md-left>
-                        <v-card-title primary-title class="text-sm-left text-xs-left">
-                          <div >
-                            <p class="headline text-sm-left">{{issue.title}} <span class="body-2 grey--text">on <span class="body-2 green--text">{{issue.repository.full_name}}</span></span></p>
-                            <p class="body-2 grey--text text-sm-left">Created <span class="body-1">{{ issue.created_at | moment("from") }}</span> by <span class="body-1">{{issue.user.login}}</span></p>
-                            <p class="body-2 grey--text text-sm-left">Last updated <span class="body-1">{{ issue.updated_at | moment("from") }}</span></p>
-                            <p class="body-2 grey--text text-sm-left">Comments: <span class="body-1">{{ issue.comments }}</span></p>
-                          </div>
-                        </v-card-title>
-                      </v-card>
-                    </router-link>
-                  </li>
-                </ul>
-                <ul v-else>
-                  <v-card v-if="mentionedClosed.length === 0">
-                    <v-card-title primary-title class="text-sm-left text-xs-left">
-                      <p class="headline text-md-center">Nothing to show here</p>
-                    </v-card-title>
-                  </v-card>
-                  <li v-for="issue in mentionedClosed">
-                    <router-link :to="{name: 'singleIssue', params: { owner: issue.repository.owner.login, repo: issue.repository.name, number: issue.number }}">
-                      <v-card ripple tile append replace class="my-2" text-md-left>
-                        <v-card-title primary-title class="text-sm-left text-xs-left">
-                          <div >
-                            <p class="headline text-sm-left">{{issue.title}} <span class="body-2 grey--text">on <span class="body-2 green--text">{{issue.repository.full_name}}</span></span></p>
-                            <p class="body-2 grey--text text-sm-left">Created <span class="body-1">{{ issue.created_at | moment("from") }}</span> by <span class="body-1">{{issue.user.login}}</span></p>
-                            <p class="body-2 grey--text text-sm-left">Last updated <span class="body-1">{{ issue.updated_at | moment("from") }}</span></p>
-                            <p class="body-2 grey--text text-sm-left">Comments: <span class="body-1">{{ issue.comments }}</span></p>
-                          </div>
-                        </v-card-title>
-                      </v-card>
-                    </router-link>
-                  </li>
-                </ul>
-              </div>
-            </v-flex>
-          </v-layout>
-        </v-container>
-      </v-tab-item>
-    </v-tabs-items>
-    </div>
+                      <router-link :to="{name: 'singleIssue', params: { owner: issue.repository.owner.login, repo: issue.repository.name, number: issue.number }}">
+                        <v-card ripple tile append replace class="my-2" text-md-left>
+                          <v-card-title primary-title class="text-sm-left text-xs-left">
+                            <div >
+                              <p class="headline text-sm-left">{{issue.title}} <span class="body-2 grey--text">on <span class="body-2 green--text">{{issue.repository.full_name}}</span></span></p>
+                              <p class="body-2 grey--text text-sm-left">Created <span class="body-1">{{ issue.created_at | moment("from") }}</span> by <span class="body-1">{{issue.user.login}}</span></p>
+                              <p class="body-2 grey--text text-sm-left">Last updated <span class="body-1">{{ issue.updated_at | moment("from") }}</span></p>
+                              <p class="body-2 grey--text text-sm-left">Comments: <span class="body-1">{{ issue.comments }}</span></p>
+                            </div>
+                          </v-card-title>
+                        </v-card>
+                      </router-link>
+                    </li>
+                  </ul>
+                </div>
+                <div v-if="item === 'Mentioned'" class="issue-outer">
+                  <v-switch
+                    label="Open"
+                    v-model="mentionedSwitch"
+                  ></v-switch>
+                  <ul v-if="mentionedSwitch">
+                    <v-card v-if="mentioned.length === 0">
+                      <v-card-title primary-title class="text-sm-left text-xs-left">
+                        <p class="headline text-md-center">Nothing to show here</p>
+                      </v-card-title>
+                    </v-card>
+                    <li v-for="issue in mentioned">
+                      <router-link :to="{name: 'singleIssue', params: { owner: issue.repository.owner.login, repo: issue.repository.name, number: issue.number }}">
+                        <v-card ripple tile append replace class="my-2" text-md-left>
+                          <v-card-title primary-title class="text-sm-left text-xs-left">
+                            <div >
+                              <p class="headline text-sm-left">{{issue.title}} <span class="body-2 grey--text">on <span class="body-2 green--text">{{issue.repository.full_name}}</span></span></p>
+                              <p class="body-2 grey--text text-sm-left">Created <span class="body-1">{{ issue.created_at | moment("from") }}</span> by <span class="body-1">{{issue.user.login}}</span></p>
+                              <p class="body-2 grey--text text-sm-left">Last updated <span class="body-1">{{ issue.updated_at | moment("from") }}</span></p>
+                              <p class="body-2 grey--text text-sm-left">Comments: <span class="body-1">{{ issue.comments }}</span></p>
+                            </div>
+                          </v-card-title>
+                        </v-card>
+                      </router-link>
+                    </li>
+                  </ul>
+                  <ul v-else>
+                    <v-card v-if="mentionedClosed.length === 0">
+                      <v-card-title primary-title class="text-sm-left text-xs-left">
+                        <p class="headline text-md-center">Nothing to show here</p>
+                      </v-card-title>
+                    </v-card>
+                    <li v-for="issue in mentionedClosed">
+                      <router-link :to="{name: 'singleIssue', params: { owner: issue.repository.owner.login, repo: issue.repository.name, number: issue.number }}">
+                        <v-card ripple tile append replace class="my-2" text-md-left>
+                          <v-card-title primary-title class="text-sm-left text-xs-left">
+                            <div >
+                              <p class="headline text-sm-left">{{issue.title}} <span class="body-2 grey--text">on <span class="body-2 green--text">{{issue.repository.full_name}}</span></span></p>
+                              <p class="body-2 grey--text text-sm-left">Created <span class="body-1">{{ issue.created_at | moment("from") }}</span> by <span class="body-1">{{issue.user.login}}</span></p>
+                              <p class="body-2 grey--text text-sm-left">Last updated <span class="body-1">{{ issue.updated_at | moment("from") }}</span></p>
+                              <p class="body-2 grey--text text-sm-left">Comments: <span class="body-1">{{ issue.comments }}</span></p>
+                            </div>
+                          </v-card-title>
+                        </v-card>
+                      </router-link>
+                    </li>
+                  </ul>
+                </div>
+              </v-flex>
+            </v-layout>
+          </v-container>
+        </v-tab-item>
+      </v-tabs-items>
+    </v-container>
+  </div>
 </template>
 
 <script>

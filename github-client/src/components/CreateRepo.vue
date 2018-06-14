@@ -11,7 +11,7 @@
           <v-flex xs4>
             <v-subheader class="subheading">Repository Name</v-subheader>
           </v-flex>
-          <v-flex xs8 sm8>
+          <v-flex xs8 sm6>
             <v-text-field
               label="Repository name"
               v-model="name"
@@ -62,7 +62,7 @@
           </v-flex>
         </v-layout>
         <v-layout row>
-          <v-flex xs sm6>
+          <v-flex xs4>
             <v-subheader class="subheading">.gitignore</v-subheader>
           </v-flex>
           <v-flex xs8 sm6>

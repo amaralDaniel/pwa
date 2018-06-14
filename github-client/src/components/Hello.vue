@@ -5,8 +5,8 @@
         <v-container fill-height>
           <v-layout align-center>
             <v-flex>
-              <h3 class="display-3">Welcome to GHPWA</h3>
-              <span class="subheading">This GitHub client is a Progressive Web App.</span>
+              <h3 class="display-3">Welcome to PWAGithub</h3>
+              <span class="subheading">The GitHub client implemented as a Progressive Web App.</span>
               <v-divider class="my-3"></v-divider>
               <div class="title mb-3" id="div-not-authenticated" v-if="!$store.getters.getAuthState"></div>
             </v-flex>

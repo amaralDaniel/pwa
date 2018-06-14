@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="visited-repo-container">
     <v-alert type="error" class="alert custom-alert" :value="error" id="error-alert">
       {{errorMessage}}
     </v-alert>
@@ -9,7 +9,7 @@
     <v-alert :value="warning" type="warning" class="alert custom-alert" id="warning-alert">
       {{warningMessage}}
     </v-alert>
-    <v-container grid-list-xl text-xs-center fluid class="mt-3">
+    <v-container grid-list-xl text-xs-center fluid class="mt-3" v-if="repo">
       <v-card height="10vh">
         <v-layout align-center justify-center>
           <button class="icon" v-bind:class="{isTrue: isStarred}" v-on:click="starLogic">
@@ -24,22 +24,12 @@
             </i>
           </button>
           <span>{{repo.watchers_count}}</span>
-          <button v-if="repo.has_wiki" class="icon" v-on:click="">
-            <i class="material-icons">
-              library_books
-            </i>
-          </button>
           <button class="icon" v-on:click="forkRepo">
             <i class="material-icons">
               call_split
             </i>
           </button>
           <span>{{repo.fork_count}}</span>
-          <button class="icon" id="download-button" v-on:click="downloadRepo">
-            <i class="material-icons">
-              archive
-            </i>
-          </button>
           <button class="icon" id="save-button" v-on:click="saveRepo">
             <i class="material-icons">
               save
@@ -68,125 +58,150 @@
           :key="item"
           :id="item"
         >
-          <v-card flat class="card-item">
-            <v-card-text>
-              <v-layout text-md-left class="my-2 mx-2">
-                <div v-if="item === 'Readme'">
-                  <div v-if="readme === ''">
-                    <span class="body-2 grey--text text-xs-left text-sm-left">Nothing to show here</span>
-                  </div>
-                  <vue-markdown v-bind:source="readme" class="text-xs-left text-sm-left"></vue-markdown>
-                </div>
-                <div v-if="item === 'Files'">
-                  <TreeView></TreeView>
-                </div>
-                <div v-if="item === 'Commits'">
-                  <ul>
-                    <li v-for="commit in commits" class="text-xs-left text-sm-left">
-                      <router-link :to="{name: 'Commit', params: {owner: repositoryOwner, repo: repositoryName, sha: commit.sha}}">
-                        <span class="body-2">{{commit.commit.message}}</span></router-link>
-                      <!--by-->
-                      <!--<router-link :to="{name: 'User', params: {login: commit.author.login}}">-->
-                        <!--<span class="body-1 primary" >{{commit.author.login}}</span>-->
-                      <!--</router-link>-->
-                    </li>
-                  </ul>
-                </div>
-                <div v-if="item === 'Contributors'">
-                  <ul >
-                    <li v-for="user in contributors">
-                      <router-link :to="{name: 'User', params: {login: user.login}}">
-                        <v-layout align-center class="my-2" row>
-                          <v-avatar>
-                            <img :src="user.avatar_url" :alt="user.login">
-                          </v-avatar>
-                          <v-spacer></v-spacer>
-                          <span class="body-2">{{user.login}}</span>
-                        </v-layout>
-                      </router-link>
-                    </li>
-                  </ul>
-                </div>
-                <div v-if="item === 'Issues'">
-                  <v-layout row>
-                    <router-link :to="{name: 'CreateIssue'}">
-                      <v-btn
-                        color="pink"
-                        small
-                        absolute
-                        top
-                        right
-                        class="my-5 mr-2"
-                      >
-                        Create Issue
-                      </v-btn>
-                    </router-link>
-                    <ul >
-                      <li v-for="issue in issues" class="text-xs-left text-sm-left">
-                        <router-link :to="{name: 'singleIssue', params: { owner: issue.user.login, repo: repositoryName, number: issue.number }}">
-                          <v-card ripple tile append replace xs2 class="my-2">
-                            <v-card-title primary-title class="text-xs-left" >
-                              <v-layout row>
-                                <v-flex xs12 sm12>
-                                  <span class="title">{{issue.title}}</span>
-                                </v-flex>
-                              </v-layout>
-                            </v-card-title>
-                            <v-card-text>
-                              <router-link :to="{name: 'User', params: {login: issue.user.login}}">
-                                <v-avatar>
-                                  <img :src="issue.user.avatar_url" :alt="issue.user.login">
-                                </v-avatar>
-                                <span class="body-2">{{issue.user.login}}</span>
-                              </router-link>
-                              <span class="body-2 grey--text text-sm-left">created this issue {{ issue.created_at | moment("from") }}</span>
-                            </v-card-text>
-                          </v-card>
-                        </router-link>
-                      </li>
-                    </ul>
-                  </v-layout>
-                </div>
-                <div v-if="item === 'Pull requests'">
-                  <router-link :to="{name: 'CreatePullRequest'}">
-                    <v-btn
-                      color="pink"
-                      small
-                      absolute
-                      top
-                      right
-                      class="mt-5 mr-2"
-                    >
-                      Create Pull Request
-                    </v-btn>
-                  </router-link>
-                  <ul >
-                    <li v-for="pr in pullRequests" class="text-xs-left text-sm-left">
-                      <v-layout row>
-                        <router-link :to="{name: 'PullRequest', params: {owner: repositoryOwner, name: repositoryName, number: pr.number}}">
-                          <v-card ripple tile append replace xs6 class="my-2">
-                            <v-card-title primary-title>
-                              <span class="body-2">#{{pr.number}} {{pr.title}} by <router-link :to="{name: 'User', params: {login: pr.user.login}}">{{pr.user.login}}</router-link></span>
-                            </v-card-title>
-                            <v-card-text>
-                              <v-spacer></v-spacer>
-                              <span class="body-2">Created {{pr.created_at | moment("from")}}</span>
-                              <v-spacer></v-spacer>
-                              <span class="body-2">State: {{pr.state}}</span>
-                              <v-spacer></v-spacer>
-                              <span class="body-2" :v-if="pr.merged">Merged {{pr.merged_at | moment("from")}}</span>
-                              <v-spacer></v-spacer>
-                              <span class="body-2" :v-if="pr.mer">Closed {{pr.closed_at | moment("from")}}</span>
-                            </v-card-text>
-                          </v-card>
-                        </router-link>
-                      </v-layout>
-                    </li>
-                  </ul>
-                </div>
+          <v-layout text-md-left class="my-2">
+            <div v-if="item === 'Readme'">
+              <v-layout text-sm-left class="ml-5" v-if="readme === ''">
+                <span class="body-2 grey--text text-xs-left text-sm-left">Nothing to show here</span>
               </v-layout>
-            </v-card-text>
-          </v-card>
+              <vue-markdown v-bind:source="readme" class="text-xs-left text-sm-left"></vue-markdown>
+            </div>
+            <div v-if="item === 'Files'">
+              <TreeView></TreeView>
+            </div>
+            <v-flex v-if="item === 'Commits'" column>
+              <ul>
+                <li v-for="commit in commits" class="text-xs-left text-sm-left">
+                  <v-card ripple tile append replace xs2 class="my-2">
+                    <v-card-title primary-title class="text-xs-left" >
+                      <v-layout row>
+                        <v-flex xs12 sm12>
+                          <router-link :to="{name: 'Commit', params: {owner: repositoryOwner, repo: repositoryName, sha: commit.sha}}">
+                            <span class="title">{{commit.commit.message}}</span></router-link>
+                          by
+                          <router-link :to="{name: 'User', params: {login: commit.author.login}}">
+                            <span class="body-2 primary" >{{commit.author.login}}</span>
+                          </router-link>
+                        </v-flex>
+                      </v-layout>
+                    </v-card-title>
+                    <v-card-text>
+                      <div>
+                        <p class="body-2 grey--text text-sm-left"><span class="body-1">{{ commit.commit.author.date | moment("from") }}</span></p>
+                      </div>
+                    </v-card-text>
+                    <!--<v-card-actions v-if="notification.unread">-->
+                    <!--<v-btn flat color="primary" @click="markAsRead(notification)">Mark as read</v-btn>-->
+                    <!--</v-card-actions>-->
+                  </v-card>
+                </li>
+              </ul>
+            </v-flex>
+            <v-flex v-if="item === 'Contributors'" column>
+              <ul >
+                <li v-for="user in contributors" class="text-xs-left text-sm-left">
+                  <v-card ripple tile append replace xs2 class="my-2">
+                    <v-card-title primary-title class="text-xs-left" >
+                      <v-layout row>
+                        <v-flex xs12 sm12>
+                          <router-link :to="{name: 'User', params: {login: user.login}}">
+                            <v-layout align-center class="my-2 ml-2">
+                              <v-avatar>
+                                <img :src="user.avatar_url" alt="John">
+                              </v-avatar>
+                              <span class="title ml-2">{{user.login}}</span>
+                            </v-layout>
+                          </router-link>
+                        </v-flex>
+                      </v-layout>
+                    </v-card-title>
+                  </v-card>
+                </li>
+              </ul>
+            </v-flex>
+            <v-flex v-if="item === 'Issues'" column>
+              <v-flex row>
+                <router-link :to="{name: 'CreateIssue'}">
+                  <v-btn
+                    color="pink"
+                    small
+                    absolute
+                    top
+                    right
+                    class="mt-5 mr-2"
+                  >
+                    Create Issue
+                  </v-btn>
+                </router-link>
+                <ul class="mt-5">
+                  <li v-for="issue in issues" class="text-xs-left text-sm-left">
+                    <router-link :to="{name: 'singleIssue', params: { owner: issue.user.login, repo: repositoryName, number: issue.number }}">
+                      <v-card ripple tile append replace xs2 class="my-2">
+                        <v-card-title primary-title class="text-xs-left" >
+                          <v-layout row>
+                            <v-flex xs12 sm12>
+                              <span class="title">{{issue.title}}</span>
+                            </v-flex>
+                          </v-layout>
+                        </v-card-title>
+                        <v-card-text>
+                          <router-link :to="{name: 'User', params: {login: issue.user.login}}">
+                            <v-avatar>
+                              <img :src="issue.user.avatar_url" :alt="issue.user.login">
+                            </v-avatar>
+                            <span class="body-2">{{issue.user.login}}</span>
+                          </router-link>
+                          <span class="body-2 grey--text text-sm-left">created this issue {{ issue.created_at | moment("from") }}</span>
+                        </v-card-text>
+                      </v-card>
+                    </router-link>
+                  </li>
+                </ul>
+              </v-flex>
+            </v-flex>
+            <v-flex v-if="item === 'Pull requests'" column>
+              <router-link :to="{name: 'CreatePullRequest'}">
+                <v-btn
+                  color="pink"
+                  small
+                  absolute
+                  top
+                  right
+                  class="mt-5 mr-2"
+                >
+                  Create Pull Request
+                </v-btn>
+              </router-link>
+              <ul class="mt-5" >
+                <li v-for="pr in pullRequests" class="text-xs-left text-sm-left">
+                  <v-layout row>
+                    <v-flex fluid>
+                      <router-link :to="{name: 'PullRequest', params: {owner: repositoryOwner, name: repositoryName, number: pr.number}}">
+                        <v-card ripple tile append replace xs6 class="my-2">
+                          <v-card-title primary-title class="text-xs-left">
+                            <v-layout row>
+                              <v-flex xs12 sm12>
+                                <span class="title">#{{pr.number}} {{pr.title}}</span>
+                                <span class="state ml-1 body-2" v-if="pr.state === 'open'">OPEN</span>
+                              </v-flex>
+                            </v-layout>
+                          </v-card-title>
+                          <v-card-text>
+                            <v-spacer></v-spacer>
+                            <span class="body-2 grey--text">Created {{pr.created_at | moment("from")}} by <router-link :to="{name: 'User', params: {login: pr.user.login}}">{{pr.user.login}}</router-link></span>
+                            <v-spacer></v-spacer>
+                            <span class="body-2 grey--text" v-if="pr.merged_at">Merged {{pr.merged_at | moment("from")}}</span>
+                            <v-spacer></v-spacer>
+                            <span class="body-2 grey--text" v-if="pr.closed_at">Closed {{pr.closed_at | moment("from")}}</span>
+                          </v-card-text>
+                        </v-card>
+                      </router-link>
+                    </v-flex>
+                  </v-layout>
+                </li>
+              </ul>
+            </v-flex>
+          </v-layout>
+
         </v-tab-item>
       </v-tabs-items>
     </v-container>
@@ -607,4 +622,7 @@
     left: 50%
     right: 5%
     z-index: 999
+
+  .state
+    color: $primary
 </style>

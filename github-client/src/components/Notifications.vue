@@ -127,7 +127,9 @@
         response.data.forEach(notification => {
           var resourceNumber = notification.subject.url.split('/').pop()
           notification.resourceNumber = resourceNumber
-          if (notification.unread) _self.unreadNotifications.push(notification)
+          if (notification.unread) {
+            _self.unreadNotifications.push(notification)
+          }
         })
         _self.allNotifications = response.data
       })

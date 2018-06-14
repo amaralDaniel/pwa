@@ -76,13 +76,24 @@ if (!window.indexedDB) {
 }
 const idb = indexedDB.open('saved-repos', 1)
 idb.onerror = function (event) {
-  alert('Something went wrong when creating an IndexedDB.')
+  alert('Something went wrong when creating idb.')
+}
+
+const outdb = indexedDB.open('outbox', 1)
+outdb.onerror = function (event) {
+  alert('Something went wrong when creating an outdb.')
 }
 
 idb.onupgradeneeded = function () {
   var db = idb.result
   var store = db.createObjectStore('saved-repos', {keyPath: 'url'})
   store.createIndex('url', 'url')
+}
+
+outdb.onupgradeneeded = function () {
+  var db = outdb.result
+  var store = db.createObjectStore('outbox', {keyPath: 'request'})
+  store.createIndex('request', 'request')
 }
 
 // idb.onsuccess = function () {
